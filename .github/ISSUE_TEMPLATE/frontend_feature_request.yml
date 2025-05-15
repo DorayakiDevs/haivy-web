@@ -31,6 +31,6 @@ body:
   id: purpose
   attributes:
     label: What does this feature do?
-    description: "How do you trigger this bug? Please walk us through it step by step."
+    description: "Describe in detail what the feature accomplishes."
   validations:
     required: true
