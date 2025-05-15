@@ -26,8 +26,10 @@ export function Button(props: BttProps) {
     style,
     color = "neutral",
     outline,
-    radius = "var(--radius-box)",
+    radius = "var(--radius-field)",
     size = "md",
+
+    block,
 
     active,
     disabled,
@@ -65,6 +67,8 @@ export function Button(props: BttProps) {
         }`,
         padding: fetchSize(size),
         fontSize: fetchSize(size),
+
+        display: block ? "block" : "",
 
         ...style,
       }}

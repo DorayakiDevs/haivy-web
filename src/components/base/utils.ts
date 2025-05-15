@@ -25,7 +25,7 @@ export function fetchColorVar(color: COLOR, forContent?: boolean) {
 export function fetchSize(size: SIZE) {
   switch (size) {
     case "sm":
-      return "0.9em";
+      return "0.8em";
 
     case "md":
       return "1em";

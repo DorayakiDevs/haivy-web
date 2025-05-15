@@ -14,6 +14,6 @@
   transform: translateY(0px);
 }
 
-.blocks > .dft-btt {
-  display: block;
+.flex > .dft-btt {
+  flex: 1;
 }
