@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Lexend";
+  font-size: 15px;
+
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1 200px;
+}
+
+.coll {
+  flex-direction: column;
+}
+
+.aictr {
+  align-items: center;
+}
+
+.aiart {
+  align-items: flex-start;
+}
+
+.aiend {
+  align-items: flex-end;
+}
+
+.jcctr {
+  justify-content: center;
+}
+
+.jcart {
+  justify-content: flex-start;
+}
+
+.jcend {
+  justify-content: flex-end;
+}
+
+.spard {
+  justify-content: space-around;
+}
+
+.spevl {
+  justify-content: space-evenly;
+}
+
+.spbtw {
+  justify-content: space-between;
+}
+
+.tactr {
+  text-align: center;
+}
+
+.talft {
+  text-align: left;
+}
+
+.targt {
+  text-align: right;
+}
+
+*:not(.selectable),
+.usn {
+  user-select: none;
+}
+
+.scrollable {
+  overflow-y: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  width: 4px;
+  background: var(--color-prim);
+}
+
+.scrollable.hide-scroll::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+.lock {
+  pointer-events: none;
+}

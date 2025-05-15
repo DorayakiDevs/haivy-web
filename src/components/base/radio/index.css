@@ -1,0 +1,8 @@
+.dft-input-radio {
+}
+
+.dft-input-radio > .radio-options {
+  .option {
+    gap: 16px;
+  }
+}
