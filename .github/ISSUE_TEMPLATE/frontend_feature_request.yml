@@ -1,0 +1,36 @@
+name: Feature Request
+description: This issue template is used to request a feature for the
+assignees: The3dit0r
+labels: feat
+projects: dorayakidevs/haivy
+body:
+- type: markdown
+  attributes:
+    value: "## Feature request"
+- type: dropdown
+  id: download
+  attributes:
+    label: Iteration Number
+    options:
+      - Iteration 0 - Core Infrastructure & Auth
+  validations:
+    required: true
+- type: input
+  id: name
+  attributes:
+    label: What is the feature called
+    description: "The name should be short and concise, describing the feature in the most general way."
+  validations:
+    required: true
+- type: input
+  id: figma
+  attributes:
+    label: Design file for feature
+    description: "Figma file of the feature's design"
+- type: textarea
+  id: purpose
+  attributes:
+    label: What does this feature do?
+    description: "How do you trigger this bug? Please walk us through it step by step."
+  validations:
+    required: true
