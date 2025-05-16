@@ -1,27 +1,99 @@
-@import "tailwindcss";
-@plugin "daisyui";
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
+@import url("./keyframe.css");
 
-  align-items: center;
-  justify-content: center;
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@plugin "daisyui/theme" {
+  name: "haivylight";
+  default: false;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(98% 0 0);
+  --color-base-300: oklch(95% 0 0);
+  --color-base-content: oklch(21% 0.006 285.885);
+  --color-primary: #212b00;
+  --color-primary-content: oklch(98% 0.003 247.858);
+  --color-secondary: #c6e2e9;
+  --color-secondary-content: #040404;
+  --color-accent: #a7bed3;
+  --color-accent-content: oklch(38% 0.063 188.416);
+  --color-neutral: oklch(14% 0.005 285.823);
+  --color-neutral-content: oklch(92% 0.004 286.32);
+  --color-info: #a7bed3;
+  --color-info-content: oklch(29% 0.066 243.157);
+  --color-success: oklch(76% 0.177 163.223);
+  --color-success-content: oklch(37% 0.077 168.94);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-error: oklch(71% 0.194 13.428);
+  --color-error-content: oklch(27% 0.105 12.094);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
 
   font-family: "Lexend";
-  font-size: 15px;
+  font-size: 18px;
 
   background-color: var(--color-base-200);
   color: var(--color-base-content);
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+#root {
+  background-color: #000;
+  height: 100%;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.app-wrapper {
+  height: 100%;
+  width: 100%;
+
+  background-color: var(--color-base-200);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-4xl);
+
+  overflow: hidden;
+
+  background-image: linear-gradient(
+      90deg,
+      #0006,
+      #0006 70%,
+      #212b00 70%,
+      #212b00
+    ),
+    url("https://images.unsplash.com/photo-1463320898484-cdee8141c787?q=80&h=1070&auto=format&fit=crop");
+
+  background-repeat: no-repeat;
+  background-size: auto 100%;
 }
 
 .flex {
   display: flex;
-}
-
-.flex-1 {
-  flex: 1 200px;
 }
 
 .coll {
@@ -101,4 +173,20 @@ body {
 
 .lock {
   pointer-events: none;
+}
+
+.logo-glow {
+  box-shadow: 0px 0px 60px #f1ffc4a3;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:active {
+  transform: scale(0.9);
+}
+
+.input {
+  outline: none;
 }

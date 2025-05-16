@@ -1,3 +1,5 @@
+import { AuthenticationPage } from "@test/page/auth";
+
 export default function App() {
-  return <h1>404 Not Found</h1>;
+  return <AuthenticationPage />;
 }

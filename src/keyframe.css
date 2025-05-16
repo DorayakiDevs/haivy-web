@@ -1,0 +1,29 @@
+.key-fade-in {
+  animation: base-fade-in 0.4s forwards;
+}
+
+@keyframes base-fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.key-waving {
+  animation: base-waving 0.2s 4 linear alternate forwards;
+}
+
+@keyframes base-waving {
+  0% {
+    transform: translateX(6px) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+  100% {
+    transform: translateX(-5px) rotate(-75deg);
+  }
+}
