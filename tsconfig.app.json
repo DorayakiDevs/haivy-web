@@ -31,7 +31,8 @@
       "@context/*": ["context/*"],
       "@layouts/*": ["layouts/*"],
       "@auth/*": ["auth/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@pages/*": ["page/*"]
     }
   },
   "include": ["src"]

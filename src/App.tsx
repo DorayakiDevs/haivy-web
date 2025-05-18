@@ -4,8 +4,8 @@ import { type User } from "@supabase/supabase-js";
 
 import { useClient } from "@auth/client";
 
-import AuthenticationPage from "@test/page/auth";
-import { DashboardPage } from "@test/page/dashboard";
+import AuthenticationPage from "@pages/auth";
+import { DashboardPage } from "@pages/dashboard";
 
 export default function App() {
   const client = useClient();
