@@ -30,7 +30,7 @@ export function FormLogin() {
   const password = useValidatableState("", validateBasicPassword);
   const phoneNumber = useValidatableState("", validatePhoneNumber);
 
-  const [useEmailLogin, setEmailLogin] = useState(false);
+  const [useEmailLogin, setEmailLogin] = useState(true);
 
   const confirmationOTP = useState("");
   const willSaveLoginInfo = useState(false);
@@ -79,7 +79,7 @@ export function FormLogin() {
 
       //! Temporary fix pending for signal implementation
       await wait(1000);
-      window.location.pathname = "/dashboard";
+      window.location.pathname = "/";
 
       return;
     }
