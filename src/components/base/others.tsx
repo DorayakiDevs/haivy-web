@@ -1,6 +1,12 @@
-export function LTRLoadingBar({ speed = "0.6s" }: { speed?: string }) {
+export function LTRLoadingBar({
+  speed = "0.6s",
+  height,
+}: {
+  speed?: string;
+  height: string | number;
+}) {
   return (
-    <div className="flex jcctr py-4">
+    <div className="flex jcctr aictr" style={{ height }}>
       <progress
         className="progress w-[30%] progress-primary"
         style={{

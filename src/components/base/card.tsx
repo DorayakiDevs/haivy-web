@@ -1,5 +1,3 @@
-import React from "react";
-
 type Props = {} & React.JSX.IntrinsicElements["div"];
 
 export function Card(props: Props) {

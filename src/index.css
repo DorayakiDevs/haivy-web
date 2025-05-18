@@ -78,7 +78,9 @@ body {
   border-radius: var(--radius-4xl);
 
   overflow: hidden;
+}
 
+.app-wrapper.auth-page {
   background-image: linear-gradient(
       90deg,
       #0006,

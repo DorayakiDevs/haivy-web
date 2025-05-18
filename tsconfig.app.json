@@ -29,8 +29,9 @@
       "@test/*": ["test/*"],
       "@hooks/*": ["hooks/*"],
       "@context/*": ["context/*"],
-      "@utilities/*": ["utilities/*"],
-      "@layouts/*": ["layouts/*"]
+      "@layouts/*": ["layouts/*"],
+      "@auth/*": ["auth/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": ["src"]

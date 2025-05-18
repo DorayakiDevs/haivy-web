@@ -1,6 +1,6 @@
-import { Icon } from "../icons";
+import { useState } from "react";
 
-import React, { useState } from "react";
+import { Icon } from "../icons";
 
 type ReactState<T> = [T, React.Dispatch<React.SetStateAction<T>>];
 

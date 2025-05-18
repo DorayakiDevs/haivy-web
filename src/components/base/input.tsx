@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Icon } from "../icons";
+
 import { Tooltips } from "./others";
+import { Icon } from "../icons";
 
 type InputTextProps = {
   icon?: string;
@@ -9,11 +10,12 @@ type InputTextProps = {
 
   inputClass?: string;
   className?: string;
+  maxLength?: number;
 
   children?: React.ReactNode;
   notice?: React.ReactNode;
 
-  type?: "text" | "email" | "password";
+  type?: "text" | "email" | "password" | "tel" | "number";
   state?: [string, React.Dispatch<React.SetStateAction<string>>];
 };
 
@@ -28,6 +30,8 @@ export function InputText(props: InputTextProps) {
     inputClass,
     className = "",
     type = "text",
+
+    maxLength,
 
     state,
   } = props;
@@ -76,6 +80,7 @@ export function InputText(props: InputTextProps) {
         </legend>
       )}
       <div className="flex gap-2">
+        {children}
         <label className={["input flex-1", inputClass].join(" ")}>
           {!icon || <Icon name={icon} size="1rem" />}
           <input
@@ -84,6 +89,7 @@ export function InputText(props: InputTextProps) {
             onInput={handleInput}
             onChange={handleInput}
             value={value}
+            maxLength={maxLength}
           />
           {!value ||
             (isPassword ? (
@@ -104,7 +110,6 @@ export function InputText(props: InputTextProps) {
               </Tooltips>
             ))}
         </label>
-        {children}
       </div>
     </fieldset>
   );
