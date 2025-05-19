@@ -1,0 +1,55 @@
+.key-fade-in {
+  animation: base-fade-in 0.4s forwards;
+}
+
+@keyframes base-fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.key-waving {
+  animation: base-waving 0.2s 4 linear alternate forwards;
+}
+
+@keyframes base-waving {
+  0% {
+    transform: translateX(6px) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+  100% {
+    transform: translateX(-5px) rotate(-75deg);
+  }
+}
+
+.key-pivot-tleft {
+  animation: base-pivot 4s forwards;
+}
+
+@keyframes base-pivot {
+  0% {
+    transform: rotate(0deg);
+    transform-origin: top left;
+  }
+  20% {
+    transform: rotate(130deg);
+  }
+  40% {
+    transform: rotate(60deg);
+  }
+  60% {
+    transform: rotate(110deg);
+  }
+  80% {
+    transform: rotate(80deg);
+  }
+  100% {
+    transform: rotate(90deg);
+  }
+}
