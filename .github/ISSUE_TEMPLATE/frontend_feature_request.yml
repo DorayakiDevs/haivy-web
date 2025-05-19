@@ -13,6 +13,7 @@ body:
     label: Iteration Number
     options:
       - Iteration 0 - Core Infrastructure & Auth
+      - Iteration 1 - Appointment feature
   validations:
     required: true
 - type: input
