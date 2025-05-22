@@ -1,0 +1,115 @@
+import { Route, Routes, useLocation, useNavigate } from "react-router";
+
+import { Tooltips } from "@components/base/others";
+import { Icon } from "@components/icons";
+
+import { useClient } from "@services/client";
+
+import DashboardPage from "./dashboard";
+import TicketsPage from "./tickets";
+import SettingsPage from "./settings";
+
+export default function AuthorizedPage() {
+  return (
+    <div
+      className="app-wrapper flex aictr"
+      style={{
+        backgroundImage: "linear-gradient(240deg, #fff 20%, #f1ffc170 120%)",
+      }}
+    >
+      <VerticalNavigationBar />
+
+      <div className="flex-1 h-full overflow-hidden pr-8">
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/tickets" element={<TicketsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+      </div>
+    </div>
+  );
+}
+
+function VerticalNavigationBar() {
+  const { account } = useClient();
+
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { origin } = window.location;
+
+  const size = "size-13";
+
+  const bttClass = (path: string) => {
+    const q = size + " btn btn-circle btn-secondary btn-outline";
+
+    const c = {
+      className: q,
+      onClick: () => navigate(path),
+    };
+
+    if (pathname === path) {
+      c.className = q + " btn-active";
+    }
+
+    return c;
+  };
+
+  const imgUrl = account?.profile_picture || origin + "/avatar.jpg";
+
+  return (
+    <div className="mx-12 h-full flex coll spbtw">
+      <div className="bg-primary flex coll p-2.5 gap-2.5 rounded-b-full">
+        <div
+          className={"w-full aspect-square " + size}
+          style={{ backgroundImage: `url('${origin + "/logo.svg"}')` }}
+        ></div>
+        <Tooltips text="Dashboard" className="tooltip-right">
+          <button {...bttClass("/")}>
+            <Icon name="dashboard" />
+          </button>
+        </Tooltips>
+        {account?.account_type === "patient"
+          ? [
+              <Tooltips text="Test results" className="tooltip-right">
+                <button {...bttClass("/tests")}>
+                  <Icon name="syringe" />
+                </button>
+              </Tooltips>,
+              <Tooltips text="Medicine" className="tooltip-right">
+                <button {...bttClass("/medicine")}>
+                  <Icon name="pill" />
+                </button>
+              </Tooltips>,
+            ]
+          : [
+              <Tooltips text="Tickets" className="tooltip-right">
+                <button {...bttClass("/tickets")}>
+                  <Icon name="confirmation_number" />
+                </button>
+              </Tooltips>,
+              <Tooltips text="Schedule" className="tooltip-right">
+                <button {...bttClass("/schedule")}>
+                  <Icon name="event" />
+                </button>
+              </Tooltips>,
+            ]}
+      </div>
+      <div className="bg-primary flex coll p-2.5 gap-2.5 rounded-t-full">
+        <Tooltips text="Profile" className="tooltip-right">
+          <button
+            className={"btn btn-circle btn-ghost w-full " + size}
+            style={{
+              backgroundImage: `url('${imgUrl}')`,
+              backgroundSize: "cover",
+            }}
+          ></button>
+        </Tooltips>
+        <Tooltips text="Settings" className="tooltip-right">
+          <button className={bttClass("").className}>
+            <Icon name="settings" />
+          </button>
+        </Tooltips>
+      </div>
+    </div>
+  );
+}

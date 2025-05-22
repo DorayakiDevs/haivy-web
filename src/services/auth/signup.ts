@@ -2,23 +2,22 @@ import { useCallback, useState } from "react";
 
 import {
   type AuthError,
-  type AuthTokenResponsePassword,
+  type AuthResponse,
   type Session,
   type User,
 } from "@supabase/supabase-js";
 
-import { useClient } from "@auth/client";
+import { useClient } from "services/client";
 
-type T_SignInState = {
+type T_SignUpState = {
   error: AuthError | null;
   session: Session | null;
   user: User | null;
   fetching: boolean;
 };
 
-type T_SignInOptions = {
+type T_SignUpOptions = {
   redirectTo?: string;
-  scope?: "global" | "local" | "others";
 };
 
 const initialState = {
@@ -29,32 +28,30 @@ const initialState = {
 };
 
 type T_RetVal = [
-  T_SignInState,
-  (email: string, password: string) => Promise<AuthTokenResponsePassword>
+  T_SignUpState,
+  (email: string, password: string) => Promise<AuthResponse>
 ];
 
-export function usePasswordSignIn(options: T_SignInOptions = {}): T_RetVal {
-  const client = useClient();
-  const [state, setState] = useState<T_SignInState>({ ...initialState });
+export function useSignUp(options: T_SignUpOptions = {}): T_RetVal {
+  const {supabase: client} = useClient();
+  const [state, setState] = useState<T_SignUpState>({ ...initialState });
 
-  async function authSignIn(email: string, password: string) {
+  async function executeFunc(email: string, password: string) {
     setState({ ...initialState, fetching: true });
 
     const opt = { email, password, ...options };
-    const res = await client.auth.signInWithPassword(opt);
+    const res = await client.auth.signUp(opt);
 
     setState({
       fetching: false,
-
       session: res.data.session,
       user: res.data.user,
-
       error: res.error || null,
     });
 
     return res;
   }
 
-  const execute = useCallback(authSignIn, [client, options]);
+  const execute = useCallback(executeFunc, [client, options]);
   return [state, execute];
 }

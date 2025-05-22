@@ -32,12 +32,12 @@ export function SubmitWithLoading({
           transition: "all 0.1s",
         }}
       >
-        <div
+        <button
           className="btn btn-primary"
           onClick={loading ? undefined : onClick}
         >
           {text}
-        </div>
+        </button>
         <LTRLoadingBar height={45} />
       </div>
     </div>
