@@ -1,37 +1,20 @@
-import { useEffect, useState } from "react";
-
-import { type User } from "@supabase/supabase-js";
-
-import { useClient } from "@auth/client";
+import { useClient } from "@services/client";
 
 import AuthenticationPage from "@pages/auth";
-import { DashboardPage } from "@pages/dashboard";
+import AuthorizedPage from "@pages/index";
+
+import { FullscreenLoading } from "@pages/others/loading";
 
 export default function App() {
-  const client = useClient();
+  const { session, loading } = useClient();
 
-  const [user, setUser] = useState<User | null>(null);
+  if (loading) {
+    return <FullscreenLoading />;
+  }
 
-  useEffect(() => {
-    const request = { valid: true };
-
-    async function fetch() {
-      const { data } = await client.auth.getUser();
-      if (!request.valid) return;
-
-      setUser(data.user);
-    }
-
-    fetch();
-
-    return () => {
-      request.valid = false;
-    };
-  }, [client]);
-
-  if (!user) {
+  if (!session?.user) {
     return <AuthenticationPage />;
   } else {
-    return <DashboardPage />;
+    return <AuthorizedPage />;
   }
 }

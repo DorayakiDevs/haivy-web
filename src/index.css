@@ -13,11 +13,11 @@
   color-scheme: light;
   --color-base-100: oklch(100% 0 0);
   --color-base-200: oklch(98% 0 0);
-  --color-base-300: oklch(95% 0 0);
+  --color-base-300: #f3f4f6;
   --color-base-content: oklch(21% 0.006 285.885);
   --color-primary: #212b00;
   --color-primary-content: oklch(98% 0.003 247.858);
-  --color-secondary: #c6e2e9;
+  --color-secondary: #dbff66;
   --color-secondary-content: #040404;
   --color-accent: #a7bed3;
   --color-accent-content: oklch(38% 0.063 188.416);
@@ -28,7 +28,7 @@
   --color-success: oklch(76% 0.177 163.223);
   --color-success-content: oklch(37% 0.077 168.94);
   --color-warning: oklch(82% 0.189 84.429);
-  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-warning-content: #1e1e2e;
   --color-error: oklch(71% 0.194 13.428);
   --color-error-content: oklch(27% 0.105 12.094);
   --radius-selector: 0.5rem;
@@ -39,6 +39,10 @@
   --border: 1px;
   --depth: 1;
   --noise: 0;
+}
+
+:root {
+  interpolate-size: allow-keywords;
 }
 
 html {
@@ -78,6 +82,10 @@ body {
   border-radius: var(--radius-4xl);
 
   overflow: hidden;
+}
+
+.app-wrapper:not(.disable-fade-in) {
+  animation: base-fade-in 0.3s;
 }
 
 .app-wrapper.auth-page {
@@ -191,4 +199,73 @@ body {
 
 .input {
   outline: none;
+}
+
+.card-horiz-list {
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+.card-horiz-list::-webkit-scrollbar {
+  display: none;
+}
+
+.card-expand.no-animated .actions {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.card-expand.no-animated:hover .actions {
+  opacity: 1;
+}
+
+.card-expand:not(.no-animated) {
+  position: relative;
+  transition: box-shadow 0.1s;
+
+  > .actions {
+    transition: margin-top 0.2s, opacity 0.1s;
+    margin-top: -40px;
+
+    pointer-events: none;
+  }
+}
+
+.card-expand:not(.no-animated):hover {
+  z-index: 4;
+  box-shadow: #0000000d 0px 19px 38px, #00000010 0px 15px 12px;
+
+  > .actions {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    pointer-events: all;
+
+    transition: margin-top 0.1s, opacity 0.1s 30ms;
+  }
+}
+
+.screen-overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: #0003;
+  z-index: 10;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.2s;
+}
+
+.screen-overlay.active {
+  opacity: 1;
+  pointer-events: all;
 }

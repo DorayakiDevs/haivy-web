@@ -30,7 +30,7 @@
       "@hooks/*": ["hooks/*"],
       "@context/*": ["context/*"],
       "@layouts/*": ["layouts/*"],
-      "@auth/*": ["auth/*"],
+      "@services/*": ["services/*"],
       "@utils/*": ["utils/*"],
       "@pages/*": ["page/*"]
     }

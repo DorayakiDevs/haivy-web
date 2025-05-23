@@ -1,6 +1,6 @@
 import { useContext, createContext, useRef, useState } from "react";
 
-import { Alert } from "@components/feedback/alert";
+import { Alert } from "@components/overlay/alert";
 
 type T_AlertProps = {
   type?: "info" | "base" | "success" | "error" | "warning";

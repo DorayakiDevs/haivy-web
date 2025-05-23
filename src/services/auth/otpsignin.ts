@@ -8,7 +8,7 @@ import {
   type User,
 } from "@supabase/supabase-js";
 
-import { useClient } from "@auth/client";
+import { useClient } from "services/client";
 
 type T_SignInState = {
   error: AuthError | null;
@@ -40,7 +40,7 @@ type T_RetVal = [
 ];
 
 export function useOTPSignIn(options: T_SignInOptions = {}): T_RetVal {
-  const client = useClient();
+  const {supabase: client} = useClient();
   const [state, setState] = useState<T_SignInState>({ ...initialState });
 
   async function authSignInOTP(phoneNumber: string) {

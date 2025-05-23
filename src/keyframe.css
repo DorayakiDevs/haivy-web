@@ -12,6 +12,20 @@
   }
 }
 
+.key-fade-out {
+  animation: base-fade-out 0.4s forwards;
+}
+
+@keyframes base-fade-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 .key-waving {
   animation: base-waving 0.2s 4 linear alternate forwards;
 }
@@ -51,5 +65,19 @@
   }
   100% {
     transform: rotate(90deg);
+  }
+}
+
+.key-slide-right-in {
+  animation: base-slide-right-in 0.3s forwards;
+}
+
+@keyframes base-slide-right-in {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0%);
   }
 }
