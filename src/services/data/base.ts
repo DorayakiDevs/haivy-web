@@ -11,15 +11,15 @@ type T_RPCHook<T> =
 const getTimestamp = () => new Date().toISOString();
 
 /**
- *
- * @param funcName Name of the RPC (Remote Procedural Call)
- * @param parameter Procedural prameters
+ * RPC (Remote Procedural Call) generic data hooks
+ * @param funcName Name of the RPC
+ * @param parameter Procedural call parameters
  * @param paused Run condition (Avoid unecessary calls)
- * @returns
+ * @returns Results of the RPC call
  */
 export function useRPC<T>(
   funcName: string,
-  parameter?: Record<string, string>,
+  parameter?: Record<string, string> | null,
   paused?: boolean
 ) {
   const { supabase } = useClient();

@@ -1,7 +1,6 @@
 import type { DatabaseColType } from "@services/global";
 
 import { useRPC } from "./base";
-import { useMemo } from "react";
 
 type Ticket = DatabaseColType<"ticket">;
 type History = DatabaseColType<"ticket_interaction_history">;
