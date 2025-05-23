@@ -3,13 +3,13 @@ import { useClient } from "@services/client";
 import AuthenticationPage from "@pages/auth";
 import AuthorizedPage from "@pages/index";
 
-import { FullscreenLoading } from "@pages/others/loading";
+import { AppWrapperLoading } from "@pages/others/loading";
 
 export default function App() {
   const { session, loading } = useClient();
 
   if (loading) {
-    return <FullscreenLoading />;
+    return <AppWrapperLoading />;
   }
 
   if (!session?.user) {

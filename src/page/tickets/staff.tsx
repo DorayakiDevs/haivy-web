@@ -1,61 +1,58 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
-import Badge from "@components/base/badge";
 import CustomTable from "@components/table";
+import MDEditor from "@components/mdeditor";
+import Badge from "@components/base/badge";
+
+import { SlideOverlayPanel } from "@components/overlay/slidepanel";
 import { ActionCard } from "@components/base/card";
+import { Tooltips } from "@components/base/others";
 import { Icon } from "@components/icons";
 
-import type { Database } from "db.types";
+import { useTicketData, useTickets } from "@services/data/ticket";
+import type { DatabaseColType } from "@services/global";
 
+import {
+  FullscreenLoading,
+  LoadingSkeletonParagraph,
+} from "@pages/others/loading";
+
+import { useUIContext } from "@context/ui";
+
+import { copyTextToClipboard } from "@utils/clipboard";
 import { formatDate } from "@utils/converter";
-import { useClient } from "services/client";
-import { Tooltips } from "@components/base/others";
-import { useTicketData } from "@services/data/ticket";
+import { repeat } from "@utils/generator";
 
-type Ticket = Database["public"]["Tables"]["ticket"]["Row"];
+type Ticket = DatabaseColType<"ticket">;
 
-type T_TicketContext = {
+const TicketPanelContext = createContext<{
   tickets: Ticket[];
   currentId: string;
-  setCurrentId: React.Dispatch<React.SetStateAction<string>>;
-};
-
-const TicketContext = createContext<T_TicketContext>({
+  setCurrentId(id: string): void;
+}>({
   tickets: [],
   currentId: "",
-  setCurrentId: () => {},
+  setCurrentId() {},
 });
 
 export default function StaffTickets() {
-  const { supabase: client } = useClient();
+  const ticketList = useTickets();
 
-  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [currentId, setCurrentId] = useState("");
-
   const [gridView, setGirdView] = useState(false);
 
-  useEffect(() => {
-    const request = { valid: true };
+  if (ticketList.status === "loading" || ticketList.status === "idle") {
+    return <FullscreenLoading />;
+  }
 
-    async function fetch() {
-      const tickets = await client
-        .from("ticket")
-        .select()
-        .overrideTypes<Ticket[]>();
-      if (!request.valid || !tickets.data) return;
+  if (ticketList.status !== "success") {
+    return "Failed to load data";
+  }
 
-      setTickets(tickets.data);
-    }
-
-    fetch();
-
-    return () => {
-      request.valid = false;
-    };
-  }, [client]);
+  const { tickets = [] } = ticketList.data || {};
 
   return (
-    <TicketContext.Provider value={{ tickets, currentId, setCurrentId }}>
+    <TicketPanelContext.Provider value={{ tickets, setCurrentId, currentId }}>
       <div className="h-full flex coll key-fade-in">
         <div className="pb-4 pt-8 flex aictr gap-3">
           <Icon name="article" size="3em" />
@@ -102,84 +99,119 @@ export default function StaffTickets() {
           <AllCaughtUp />
         )}
 
-        <TicketDetailsPanel />
+        <SlideOverlayPanel isOpen={!!currentId} close={() => setCurrentId("")}>
+          <TicketDetailsPanel />
+        </SlideOverlayPanel>
       </div>
-    </TicketContext.Provider>
+    </TicketPanelContext.Provider>
   );
 }
 
 function TicketDetailsPanel() {
-  const { currentId, tickets, setCurrentId } = useContext(TicketContext);
-  const data = useTicketData(currentId);
+  const { alert } = useUIContext();
+  const { currentId } = useContext(TicketPanelContext);
+  const res = useTicketData(currentId);
 
-  const ticket = tickets.filter((a) => a.ticket_id === currentId)[0];
+  if (res.status === "loading" || res.status === "idle")
+    return repeat(<LoadingSkeletonParagraph />, 3);
 
-  if (!ticket) {
-    return (
-      <div
-        className="fixed h-full w-full z-7 top-0 right-0 key-fade-out"
-        style={{ backgroundColor: "#0004", pointerEvents: "none" }}
-      ></div>
-    );
+  if (res.status === "error") return <TicketStatusError />;
+
+  const { data } = res;
+  const { ticket_id, title, content, created_by, date_created, ticket_type } =
+    data.ticket;
+  const history = data.history;
+
+  function refreshHistory() {
+    res.reload();
   }
 
-  const history = [];
+  function copyTicketUUID() {
+    const succ = () =>
+      alert.toggle({ text: "Copied UUID to clipboard", type: "success" });
+    const fail = () =>
+      alert.toggle({ text: "Failed to copy to clipboard", type: "error" });
 
-  if (data.status === "success") {
-    history.push(...data.data.history);
+    copyTextToClipboard(ticket_id).then(succ).catch(fail);
   }
-
-  const { title, content, created_by, date_created } = ticket;
 
   return (
-    <div
-      className="fixed h-full w-full z-7 top-0 right-0 flex jcend key-fade-in"
-      style={{ backgroundColor: "#0004" }}
-      onClick={() => setCurrentId("")}
-    >
-      <div
-        className="w-1/2 h-full bg-base-100 rounded-md p-4 pt-16 text-sm key-slide-right-in"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="my-8">
-          <div>Resolve tickets</div>
-          <div className="text-4xl font-bold">{title}</div>
-        </div>
-        <div className="content border-1 rounded-lg overflow-hidden">
-          <div className="bg-primary px-4 py-3 text-primary-content flex aictr spbtw">
-            <div className="flex aictr gap-1">
-              <Icon name="terminal" size="1.5em" />
-              {created_by || "System"}
-            </div>
-            <div>{date_created}</div>
+    <>
+      <div className="pb-4 pt-8 mt-12 sticky top-0 bg-base-100">
+        <div className="flex aictr spbtw">
+          <div>
+            Resolve tickets (Last refreshed: {formatDate(res.timestamp)})
           </div>
-          <div className="p-4 whitespace-pre-line">{content}</div>
+          <Badge className="capitalize badge-primary my-2">{ticket_type}</Badge>
         </div>
+        <div className="flex aictr spbtw">
+          <div className="text-3xl font-bold">{title}</div>
+          <div className="flex gap-2">
+            <Tooltips text="Refresh history" dir="left">
+              <button
+                className="btn btn-square btn-outline btn-primary"
+                onClick={refreshHistory}
+              >
+                <Icon name="refresh" />
+              </button>
+            </Tooltips>
+
+            <Tooltips text="Copy UUID" dir="left">
+              <button
+                className="btn btn-square btn-outline btn-primary"
+                onClick={copyTicketUUID}
+              >
+                <Icon name="content_copy" />
+              </button>
+            </Tooltips>
+          </div>
+        </div>
+      </div>
+
+      <div className="content border-1 rounded-lg overflow-hidden">
+        <div className="bg-primary px-4 py-3 text-primary-content flex aictr spbtw">
+          <div className="flex aictr gap-1">
+            <Icon name="terminal" size="1.5em" />
+            {created_by || "System"}
+          </div>
+          <div>{formatDate(date_created)}</div>
+        </div>
+        <div className="p-4 whitespace-pre-line">{content}</div>
+      </div>
+
+      <div className="interaction-history">
         {history.map((h) => {
           return (
-            <>
+            <div>
               <div className="border-l-3 h-8 mx-8"></div>
 
               <div className="content border-1 rounded-lg overflow-hidden">
                 <div className="bg-primary px-4 py-3 text-primary-content flex aictr spbtw">
                   <div className="flex aictr gap-1">
                     <Icon name="terminal" size="1.5em" />
-                    {"Update"}
+                    {h.by || "System"}
                   </div>
-                  <div>{date_created}</div>
+                  <div>{formatDate(h.time)}</div>
                 </div>
                 <div className="p-4 whitespace-pre-line">{h.note}</div>
               </div>
-            </>
+            </div>
           );
         })}
       </div>
-    </div>
+
+      <div className="py-8">
+        <div className="text-lg font-semibold my-2">Add a comment</div>
+        <MDEditor />
+
+        <div className="flex jcend"></div>
+      </div>
+    </>
   );
 }
 
 function GridList() {
-  const { tickets, setCurrentId } = useContext(TicketContext);
+  const { tickets, setCurrentId } = useContext(TicketPanelContext);
 
   return (
     <div className="grid grid-cols-4 overflow-y-auto gap-4 place-items-center pb-8">
@@ -214,7 +246,7 @@ function GridList() {
 }
 
 function TableList() {
-  const { tickets, setCurrentId } = useContext(TicketContext);
+  const { tickets, setCurrentId } = useContext(TicketPanelContext);
 
   return (
     <CustomTable
@@ -309,6 +341,15 @@ function AllCaughtUp() {
           Celebrate!
         </button>
       </div>
+    </div>
+  );
+}
+
+function TicketStatusError() {
+  return (
+    <div>
+      There was an error trying to fetch ticket data
+      <button className="btn btn-primary-btn-soft">Reload</button>
     </div>
   );
 }
