@@ -8,6 +8,8 @@ type T_RPCHook<T> =
   | { status: "success"; data: T }
   | { status: "error"; error: any };
 
+const getTimestamp = () => new Date().toISOString();
+
 /**
  *
  * @param funcName Name of the RPC (Remote Procedural Call)
@@ -21,11 +23,17 @@ export function useRPC<T>(
   paused?: boolean
 ) {
   const { supabase } = useClient();
+
+  const [timestamp, setTimestamp] = useState(getTimestamp());
   const [state, setState] = useState<T_RPCHook<T>>({ status: "idle" });
 
-  function parseThenSet(json: any) {
+  function parseThenSet(data: any) {
     try {
-      setState({ data: json, status: "success" });
+      if (data == null) {
+        setState({ status: "loading" });
+      } else {
+        setState({ data, status: "success" });
+      }
     } catch {
       setState({
         error: { message: "Cannot parse data sent from server" },
@@ -62,7 +70,13 @@ export function useRPC<T>(
     return () => {
       controller.abort();
     };
-  }, [funcName, req, paused]);
+  }, [funcName, req, paused, timestamp]);
 
-  return state;
+  return {
+    ...state,
+    reload() {
+      setTimestamp(getTimestamp());
+    },
+    timestamp,
+  };
 }
