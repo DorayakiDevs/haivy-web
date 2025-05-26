@@ -16,7 +16,10 @@ export function StaffDashboard() {
       <div className="py-6 flex aictr spbtw">
         <div className="">
           <div>Welcome back</div>
-          <div className="text-4xl font-bold">{displayName}</div>
+          <div className="text-4xl font-bold">
+            {" "}
+            {displayName.includes("null") ? "Have a great day" : displayName}
+          </div>
           <div className="text-sm">
             [<span className="capitalize">{account_type}</span>] Signed in with:{" "}
             {authAccount}
