@@ -11,7 +11,6 @@ import { useUIContext } from "@context/ui";
 import { useSignUp } from "services/index";
 
 import { validateEmail, validatePassword } from "@utils/validator";
-import { wait } from "@utils/timing";
 
 const formCardProps = {
   className: "card bg-base-100 p-8 pt-16 rounded-3xl w-full key-fade-in",
@@ -87,7 +86,7 @@ export function FormRegister() {
 
         {/* <ErrorableTextInput
           title="Full name"
-          placeholder="Thomas Jeffeson"
+          placeholder="appon"
           inputClass="w-full"
           icon="person"
           state={fullname.state}

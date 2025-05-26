@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ReactMardown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -17,11 +17,17 @@ type AvailableFormat =
   | "ol"
   | "mention";
 
-export default function MDEditor() {
+export default function MDEditor({
+  onChange,
+}: {
+  onChange?: (c: string) => void;
+}) {
   const textAreaRef = useRef<null | HTMLTextAreaElement>(null);
 
+  const [editorHeight, setEditorHeight] = useState(4);
+
   const [tab, setTab] = useState<"write" | "preview">("write");
-  const [content, setContent, undo, redo] = useHistoryState("");
+  const [content, setContent, undoContent, redoContent] = useHistoryState("");
 
   function switchEdit() {
     setTab("write");
@@ -31,11 +37,50 @@ export default function MDEditor() {
     setTab("preview");
   }
 
+  useEffect(() => {
+    if (onChange) onChange(content);
+
+    const newLineCount = content.split("\n").length;
+    setEditorHeight((a) => Math.max(a, newLineCount + 4));
+  }, [content, onChange]);
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    const isMac = navigator.platform.toUpperCase().includes("MAC");
+    const ctrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+
+    const keyArr = [];
+
+    if (ctrlOrCmd) {
+      keyArr.push("ctrl");
+    }
+
+    keyArr.push(e.key);
+
+    const key = keyArr.join("+");
+
+    switch (key) {
+      case "ctrl+z": {
+        undoContent();
+        break;
+      }
+
+      case "ctrl-y": {
+        redoContent();
+        break;
+      }
+
+      case "ctrl-b": {
+        format("bold");
+        break;
+      }
+    }
+  }
+
   const format = (type: AvailableFormat) => () =>
     applyFormatting(type, textAreaRef);
 
   return (
-    <div className="w-full border rounded-md overflow-hidden flex coll">
+    <div className="w-full border rounded-field overflow-hidden flex coll">
       <div className="flex border-b border-base-content spbtw">
         <div>
           <MDOption
@@ -74,6 +119,7 @@ export default function MDEditor() {
               title="Italic text"
               onClick={format("italic")}
             />
+
             <MDOption icon="link" title="Add link" onClick={format("link")} />
 
             <MDOption text="@" title="Mention" onClick={format("mention")} />
@@ -83,6 +129,7 @@ export default function MDEditor() {
               title="Add list"
               onClick={format("ol")}
             />
+
             <MDOption
               icon="format_list_bulleted"
               title="Add unordered list"
@@ -96,12 +143,15 @@ export default function MDEditor() {
         {tab === "write" ? (
           <textarea
             ref={textAreaRef}
-            className="w-full h-48 flex-1 border-none outline-none resize-none"
+            className="w-full flex-1 border-none outline-none resize-none"
             placeholder="Type your response here"
+            value={content}
             onChange={(e) => setContent(e.target.value)}
+            onKeyDown={handleKeyDown}
+            style={{ height: editorHeight * 1.5 + "em" }}
           />
         ) : (
-          <div className="prose prose-invert h-48">
+          <div className="prose prose-invert min-h-48">
             <ReactMardown remarkPlugins={[remarkGfm]}>
               {content || "*Nothing to preview*"}
             </ReactMardown>
@@ -164,10 +214,10 @@ function applyFormatting(
       selectOffset = selected ? 0 : 1;
       break;
     case "h2":
-      insert = `# ${selected || "Heading 1"}`;
+      insert = `## ${selected || "Heading 1"}`;
       break;
     case "h3":
-      insert = `## ${selected || "Heading 2"}`;
+      insert = `### ${selected || "Heading 2"}`;
       break;
     case "link":
       insert = `[${selected || "link text"}](https://example.com)`;
@@ -176,10 +226,10 @@ function applyFormatting(
       insert = `@${selected || "username"}`;
       break;
     case "ul":
-      insert = `- ${selected || "list item"}`;
+      insert = `- ${selected || "list item"}\n`;
       break;
     case "ol":
-      insert = `1. ${selected || "list item"}`;
+      insert = `1. ${selected || "list item"}\n`;
       break;
   }
 

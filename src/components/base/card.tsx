@@ -1,10 +1,9 @@
 import { Icon } from "@components/icons";
-import Badge from "./badge";
-import type { Database } from "db.types";
-import { formatDate } from "@utils/converter";
 
-type AppointmentStatus =
-  Database["public"]["Tables"]["appointment"]["Row"]["status"];
+import type { DatabaseColType } from "@services/global";
+import Badge from "./badge";
+
+import { formatDate } from "@utils/converter";
 
 type Props = {} & React.JSX.IntrinsicElements["div"];
 
@@ -91,30 +90,26 @@ export function ActionCard(props: ActtionCardProps) {
   );
 }
 
+type Appointment = DatabaseColType<"appointment">;
+
 type AppointmentCardProps = {
-  date: string;
-  status: AppointmentStatus;
-  doctor: string;
-  note: string;
+  data: Appointment;
 } & ActtionCardProps;
 
-export function AppointmentCard({
-  date,
-  doctor,
-  note,
-  status = "pending",
-  title = "Unnamed appointment",
-}: AppointmentCardProps) {
+export function AppointmentCard({ data, ...rest }: AppointmentCardProps) {
   return (
     <ActionCard
       subIcon="event"
-      title={title}
+      title={formatDate(data.meeting_date)}
       tag={
-        <Badge className="badge-primary badge-sm capitalize">{status}</Badge>
+        <Badge className="badge-primary badge-sm capitalize">
+          {data.status}
+        </Badge>
       }
-      subtitle={formatDate(date)}
-      description={!doctor || "by " + doctor}
-      content={note}
+      subtitle={formatDate(data.created_date)}
+      description={!data.staff_id || "by " + data.staff_id}
+      content={data.content || "No more info provided"}
+      {...rest}
     />
   );
 }

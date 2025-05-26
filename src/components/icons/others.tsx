@@ -1,7 +1,15 @@
-export function LoadingIcon() {
+export function LoadingIcon({ size }: { size?: string }) {
+  const clssArr = ["animate-spin text-base-content"];
+
+  if (size) {
+    clssArr.push(size);
+  } else {
+    clssArr.push("size-9");
+  }
+
   return (
     <svg
-      className="size-9 animate-spin text-base-content"
+      className={clssArr.join(" ")}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

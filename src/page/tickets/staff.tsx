@@ -1,44 +1,30 @@
-import { createContext, useContext, useState } from "react";
-
-import CustomTable from "@components/table";
-import MDEditor from "@components/mdeditor";
-import Badge from "@components/base/badge";
+import { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 
 import { SlideOverlayPanel } from "@components/overlay/slidepanel";
-import { ActionCard } from "@components/base/card";
-import { Tooltips } from "@components/base/others";
+
+import CustomTable from "@components/table";
 import { Icon } from "@components/icons";
 
-import { useTicketData, useTickets } from "@services/data/ticket";
-import type { DatabaseColType } from "@services/global";
+import Badge from "@components/base/badge";
+import { ActionCard } from "@components/base/card";
+import { Tooltips } from "@components/base/others";
 
-import {
-  FullscreenLoading,
-  LoadingSkeletonParagraph,
-} from "@pages/others/loading";
+import { useTickets } from "@services/data/ticket";
 
-import { useUIContext } from "@context/ui";
+import { FullscreenLoading } from "@pages/others/loading";
 
-import { copyTextToClipboard } from "@utils/clipboard";
 import { formatDate } from "@utils/converter";
-import { repeat } from "@utils/generator";
 
-type Ticket = DatabaseColType<"ticket">;
-
-const TicketPanelContext = createContext<{
-  tickets: Ticket[];
-  currentId: string;
-  setCurrentId(id: string): void;
-}>({
-  tickets: [],
-  currentId: "",
-  setCurrentId() {},
-});
+import { TicketDetailsPanel } from "./details";
+import { TicketPanelContext } from ".";
 
 export default function StaffTickets() {
+  const { id: currentId = "" } = useParams();
+  const navigate = useNavigate();
+
   const ticketList = useTickets();
 
-  const [currentId, setCurrentId] = useState("");
   const [gridView, setGirdView] = useState(false);
 
   if (ticketList.status === "loading" || ticketList.status === "idle") {
@@ -51,8 +37,13 @@ export default function StaffTickets() {
 
   const { tickets = [] } = ticketList.data || {};
 
+  function setCurrentId(id: string) {
+    if (!id) return navigate("/tickets");
+    navigate(`/tickets/${id}`);
+  }
+
   return (
-    <TicketPanelContext.Provider value={{ tickets, setCurrentId, currentId }}>
+    <TicketPanelContext.Provider value={{ tickets, currentId, setCurrentId }}>
       <div className="h-full flex coll key-fade-in">
         <div className="pb-4 pt-8 flex aictr gap-3">
           <Icon name="article" size="3em" />
@@ -99,114 +90,11 @@ export default function StaffTickets() {
           <AllCaughtUp />
         )}
 
-        <SlideOverlayPanel isOpen={!!currentId} close={() => setCurrentId("")}>
+        <SlideOverlayPanel close={() => setCurrentId("")} isOpen={!!currentId}>
           <TicketDetailsPanel />
         </SlideOverlayPanel>
       </div>
     </TicketPanelContext.Provider>
-  );
-}
-
-function TicketDetailsPanel() {
-  const { alert } = useUIContext();
-  const { currentId } = useContext(TicketPanelContext);
-  const res = useTicketData(currentId);
-
-  if (res.status === "loading" || res.status === "idle")
-    return repeat(<LoadingSkeletonParagraph />, 3);
-
-  if (res.status === "error") return <TicketStatusError />;
-
-  const { data } = res;
-  const { ticket_id, title, content, created_by, date_created, ticket_type } =
-    data.ticket;
-  const history = data.history;
-
-  function refreshHistory() {
-    res.reload();
-  }
-
-  function copyTicketUUID() {
-    const succ = () =>
-      alert.toggle({ text: "Copied UUID to clipboard", type: "success" });
-    const fail = () =>
-      alert.toggle({ text: "Failed to copy to clipboard", type: "error" });
-
-    copyTextToClipboard(ticket_id).then(succ).catch(fail);
-  }
-
-  return (
-    <>
-      <div className="pb-4 pt-8 mt-12 sticky top-0 bg-base-100">
-        <div className="flex aictr spbtw">
-          <div>
-            Resolve tickets (Last refreshed: {formatDate(res.timestamp)})
-          </div>
-          <Badge className="capitalize badge-primary my-2">{ticket_type}</Badge>
-        </div>
-        <div className="flex aictr spbtw">
-          <div className="text-3xl font-bold">{title}</div>
-          <div className="flex gap-2">
-            <Tooltips text="Refresh history" dir="left">
-              <button
-                className="btn btn-square btn-outline btn-primary"
-                onClick={refreshHistory}
-              >
-                <Icon name="refresh" />
-              </button>
-            </Tooltips>
-
-            <Tooltips text="Copy UUID" dir="left">
-              <button
-                className="btn btn-square btn-outline btn-primary"
-                onClick={copyTicketUUID}
-              >
-                <Icon name="content_copy" />
-              </button>
-            </Tooltips>
-          </div>
-        </div>
-      </div>
-
-      <div className="content border-1 rounded-lg overflow-hidden">
-        <div className="bg-primary px-4 py-3 text-primary-content flex aictr spbtw">
-          <div className="flex aictr gap-1">
-            <Icon name="terminal" size="1.5em" />
-            {created_by || "System"}
-          </div>
-          <div>{formatDate(date_created)}</div>
-        </div>
-        <div className="p-4 whitespace-pre-line">{content}</div>
-      </div>
-
-      <div className="interaction-history">
-        {history.map((h) => {
-          return (
-            <div>
-              <div className="border-l-3 h-8 mx-8"></div>
-
-              <div className="content border-1 rounded-lg overflow-hidden">
-                <div className="bg-primary px-4 py-3 text-primary-content flex aictr spbtw">
-                  <div className="flex aictr gap-1">
-                    <Icon name="terminal" size="1.5em" />
-                    {h.by || "System"}
-                  </div>
-                  <div>{formatDate(h.time)}</div>
-                </div>
-                <div className="p-4 whitespace-pre-line">{h.note}</div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="py-8">
-        <div className="text-lg font-semibold my-2">Add a comment</div>
-        <MDEditor />
-
-        <div className="flex jcend"></div>
-      </div>
-    </>
   );
 }
 
@@ -218,7 +106,7 @@ function GridList() {
       {tickets.map((ticket, i) => {
         return (
           <ActionCard
-            key={i}
+            key={ticket.ticket_id}
             subtitle={formatDate(ticket.date_created)}
             subIcon="confirmation_number"
             tag={
@@ -233,7 +121,6 @@ function GridList() {
                 title: "Resolve",
                 onClick: () => setCurrentId(ticket.ticket_id),
               },
-              { title: "Dissmiss" },
             ]}
             className="no-animated h-full key-fade-in"
             style={{ animationDuration: 0.2 * i + "s" }}
@@ -341,15 +228,6 @@ function AllCaughtUp() {
           Celebrate!
         </button>
       </div>
-    </div>
-  );
-}
-
-function TicketStatusError() {
-  return (
-    <div>
-      There was an error trying to fetch ticket data
-      <button className="btn btn-primary-btn-soft">Reload</button>
     </div>
   );
 }

@@ -37,9 +37,7 @@ export function SlideOverlayPanel({
     setRender(false);
   }
 
-  const clssArr = [
-    "w-1/2 h-full bg-base-100 rounded-md px-4 text-sm overflow-auto",
-  ];
+  const clssArr = ["h-full bg-base-100 rounded-md px-4 text-sm overflow-auto"];
 
   if (isOpen) {
     clssArr.push("key-slide-right-in");

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 //? Written by Ricciuti Paolo @ medium.com
 //? Reference link:
@@ -40,4 +40,5 @@ export const useHistoryState = (initialValue) => {
 
   return [state, setState, undo, redo, history, pointer];
 };
+
 export default useHistoryState;

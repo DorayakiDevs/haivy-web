@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useClient } from "@services/client";
 
@@ -22,6 +22,7 @@ export function useRPC<T>(
   parameter?: Record<string, string> | null,
   paused?: boolean
 ) {
+  const savePrevData = useRef(false);
   const { supabase } = useClient();
 
   const [timestamp, setTimestamp] = useState(getTimestamp());
@@ -46,10 +47,21 @@ export function useRPC<T>(
     setState({ error: err, status: "error" });
   }
 
+  function getStatusStateFunc(status: "idle" | "loading") {
+    const preserve = savePrevData.current;
+    return (state: T_RPCHook<T>) => {
+      if (state.status === "success" && !!state.data && preserve) {
+        return { status: status, data: state.data };
+      }
+
+      return { status: status };
+    };
+  }
+
   const req = JSON.stringify(parameter, null, 0);
 
   useEffect(() => {
-    setState({ status: "idle" });
+    setState(getStatusStateFunc("idle"));
 
     if (paused) return;
 
@@ -57,7 +69,7 @@ export function useRPC<T>(
 
     if (!funcName) return;
 
-    setState({ status: "loading" });
+    setState(getStatusStateFunc("loading"));
 
     supabase
       .rpc(funcName, parameter)
@@ -65,7 +77,9 @@ export function useRPC<T>(
       .then(
         (res) => parseThenSet(res.data),
         (err) => handleError(err)
-      );
+      )
+      //? Reset data preservation status
+      .then(() => (savePrevData.current = false));
 
     return () => {
       controller.abort();
@@ -74,8 +88,18 @@ export function useRPC<T>(
 
   return {
     ...state,
-    reload() {
+    reload(savePreviousData = false) {
       setTimestamp(getTimestamp());
+
+      if (state.status !== "success") {
+        return;
+      }
+
+      if (!state.data) {
+        return;
+      }
+
+      savePrevData.current = savePreviousData;
     },
     timestamp,
   };

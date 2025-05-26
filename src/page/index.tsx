@@ -23,6 +23,7 @@ export default function AuthorizedPage() {
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/tickets" element={<TicketsPage />} />
+          <Route path="/tickets/:id" element={<TicketsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
