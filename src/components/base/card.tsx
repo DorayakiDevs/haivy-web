@@ -19,7 +19,7 @@ export function Card(props: Props) {
   return <div className={clssArr.join(" ")} {...rest} />;
 }
 
-type ActtionCardProps = {
+type ActionCardProps = {
   subtitle?: string;
   subIcon?: string;
 
@@ -34,7 +34,7 @@ type ActtionCardProps = {
   }[];
 } & React.JSX.IntrinsicElements["div"];
 
-export function ActionCard(props: ActtionCardProps) {
+export function ActionCard(props: ActionCardProps) {
   const {
     subtitle,
     subIcon,
@@ -94,7 +94,7 @@ type Appointment = DatabaseColType<"appointment">;
 
 type AppointmentCardProps = {
   data: Appointment;
-} & ActtionCardProps;
+} & ActionCardProps;
 
 export function AppointmentCard({ data, ...rest }: AppointmentCardProps) {
   return (

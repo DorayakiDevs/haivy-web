@@ -25,7 +25,7 @@ export default function StaffTickets() {
 
   const ticketList = useTickets();
 
-  const [gridView, setGirdView] = useState(false);
+  const [gridView, setGridView] = useState(false);
 
   if (ticketList.status === "loading" || ticketList.status === "idle") {
     return <FullscreenLoading />;
@@ -60,7 +60,7 @@ export default function StaffTickets() {
                     "btn-primary btn btn-square btn-lg " +
                     (gridView ? "" : "btn-outline")
                   }
-                  onClick={() => setGirdView(true)}
+                  onClick={() => setGridView(true)}
                 >
                   <Icon name="grid_view" size="1.5em" />
                 </button>
@@ -71,7 +71,7 @@ export default function StaffTickets() {
                     "btn-primary btn btn-square btn-lg " +
                     (gridView ? "btn-outline" : "")
                   }
-                  onClick={() => setGirdView(false)}
+                  onClick={() => setGridView(false)}
                 >
                   <Icon name="view_list" size="1.5em" />
                 </button>
