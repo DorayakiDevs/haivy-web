@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 
 import { type AuthError } from "@supabase/supabase-js";
 
-import { useClient } from "@auth/client";
+import { useClient } from "services/client";
 
 type T_SignOutState = {
   error: AuthError | null;
@@ -24,7 +24,7 @@ type T_RetVal = [
 ];
 
 export function useSignOut(options: T_SignOutOptions = {}): T_RetVal {
-  const client = useClient();
+  const {supabase: client} = useClient();
   const [state, setState] = useState<T_SignOutState>({ ...initialState });
 
   async function executeFunc() {
