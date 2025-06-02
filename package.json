@@ -15,8 +15,6 @@
     "@uiw/react-md-editor": "^4.0.7",
     "daisyui": "^5.0.35",
     "date-fns": "^4.1.0",
-    "i": "^0.3.7",
-    "npm": "^11.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
@@ -31,7 +29,6 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
-    "@types/react-helmet-async": "^1.0.1",
     "@vitejs/plugin-react": "^4.4.1",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -40,5 +37,8 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
+  },
+  "resolutions": {
+    "rollup": "npm:@rollup/wasm-node@*"
   }
 }
