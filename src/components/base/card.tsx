@@ -4,6 +4,8 @@ import type { DatabaseColType } from "@services/global";
 import Badge from "./badge";
 
 import { formatDate } from "@utils/converter";
+import { useNavigate } from "react-router";
+import { format } from "date-fns";
 
 type Props = {} & React.JSX.IntrinsicElements["div"];
 
@@ -62,7 +64,6 @@ export function ActionCard(props: ActionCardProps) {
           <Icon name={subIcon || ""} size="1.5em" />
           {subtitle}
         </div>
-        <div>{tag}</div>
       </div>
       <div className="text-clip overflow-hidden">
         <div className="card-title text-md">{title}</div>
@@ -97,19 +98,32 @@ type AppointmentCardProps = {
 } & ActionCardProps;
 
 export function AppointmentCard({ data, ...rest }: AppointmentCardProps) {
+  const navigate = useNavigate();
+
+  const meetDate = new Date(data.created_date || "");
+  const date = format(meetDate, "yyyy-M-dd");
+
   return (
     <ActionCard
       subIcon="event"
-      title={formatDate(data.meeting_date)}
+      title={data.content || "Unnamed appointment"}
       tag={
         <Badge className="badge-primary badge-sm capitalize">
           {data.status}
         </Badge>
       }
-      subtitle={formatDate(data.created_date)}
+      subtitle={formatDate(data.meeting_date)}
       description={!data.staff_id || "by " + data.staff_id}
-      content={data.content || "No more info provided"}
+      content={"Created on: " + formatDate(data.created_date)}
       {...rest}
+      actions={[
+        {
+          title: "View in schedule",
+          onClick() {
+            navigate(`/schedule?view=day&date=${date}`);
+          },
+        },
+      ]}
     />
   );
 }

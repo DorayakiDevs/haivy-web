@@ -1,13 +1,9 @@
 import CustomTable from "@components/table";
-import { AppointmentCard } from "@components/base/card";
 import { Tooltips } from "@components/base/others";
-import { Icon } from "@components/icons";
 
 import { useClient } from "@services/client";
-import { useSignOut } from "@services/index";
 
 export function PatientDashboard() {
-  const [_, signOut] = useSignOut();
   const { session, account } = useClient();
 
   const { first_name = "", last_name = "" } = account || {};
@@ -25,10 +21,6 @@ export function PatientDashboard() {
           </div>
           <div>Signed in as: {authAccount}</div>
         </div>
-        <button className="btn btn-primary" onClick={signOut}>
-          <Icon name="logout" />
-          Sign out
-        </button>
       </div>
 
       <div className="flex column-something-something gap-12">

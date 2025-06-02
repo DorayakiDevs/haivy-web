@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import { SlideOverlayPanel } from "@components/overlay/slidepanel";
-
 import CustomTable from "@components/table";
-import { Icon } from "@components/icons";
+import { SlideOverlayPanel } from "@components/overlay/slidepanel";
+import { CelebrateButton } from "@components/base/button";
 
 import Badge from "@components/base/badge";
 import { ActionCard } from "@components/base/card";
 import { Tooltips } from "@components/base/others";
+import { Icon } from "@components/icons";
 
 import { useTickets } from "@services/data/ticket";
 
@@ -47,12 +47,16 @@ export default function StaffTickets() {
       <div className="h-full flex coll key-fade-in">
         <div className="pb-4 pt-8 flex aictr gap-3">
           <Icon name="article" size="3em" />
-          <div>
+          <div className="flex-1">
             <div className="text-4xl font-bold">Tickets</div>
             <div className="">{tickets.length} tickets</div>
           </div>
 
-          <div className="control flex-1 flex jcend">
+          <div className="control flex-1 flex aictr jcend gap-4">
+            <button className="btn btn-primary">
+              <Icon name="add" />
+              Open a ticket
+            </button>
             <div className="flex aictr gap-2">
               <Tooltips text="Grid View">
                 <button
@@ -123,7 +127,7 @@ function GridList() {
               },
             ]}
             className="no-animated h-full key-fade-in"
-            style={{ animationDuration: 0.2 * i + "s" }}
+            style={{ animationDuration: Math.min(1, i * 0.2) + "s" }}
             onDoubleClick={() => setCurrentId(ticket.ticket_id)}
           />
         );
@@ -172,7 +176,7 @@ function TableList() {
         },
 
         {
-          header: "",
+          header: "Created day",
           width: 200,
           render(a) {
             return <div>{formatDate(a.date_created)}</div>;
@@ -200,10 +204,10 @@ function TableList() {
       ]}
       arr={tickets}
       rowClassName={() => "text-sm key-fade-in"}
-      rowStyle={(_, i) => ({ animationDuration: i * 0.2 + "s" })}
+      rowStyle={(_, i) => ({ animationDuration: Math.min(1, i * 0.2) + "s" })}
       top={0}
       rowHeight={70}
-      className="h-full overscroll-y-auto"
+      className="h-full"
       children={<div className="text-sm tactr mt-4">End of the list</div>}
       onRowDoubleClick={(ticket) => setCurrentId(ticket.ticket_id)}
     />
@@ -224,9 +228,7 @@ function AllCaughtUp() {
         </div>
       </div>
       <div className="mb-22">
-        <button className="btn bg-gradient-to-r from-pink-200 to-secondary btn-lg via-yellow-100">
-          Celebrate!
-        </button>
+        <CelebrateButton />
       </div>
     </div>
   );

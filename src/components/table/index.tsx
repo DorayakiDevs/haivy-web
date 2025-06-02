@@ -99,7 +99,7 @@ export default function CustomTable<RenderElement>({
 
   return (
     <div
-      className="custom-table"
+      className={clssArr.join(" ")}
       onClick={(e) => {
         e.stopPropagation();
       }}
@@ -215,7 +215,6 @@ function TableItem<T>({
   className = "",
   onClick = () => {},
   onDoubleClick = () => {},
-  onContextMenu = () => {},
   onMouseDown = () => {},
   style = {},
   active,
@@ -283,7 +282,7 @@ function TableItem<T>({
             <div
               className={["flex col ellipsis", c.className ?? ""].join(" ")}
               style={{ width: "calc(100% - 10px)" }}
-              onMouseDown={(e) => {
+              onMouseDown={(_) => {
                 // if (c.disableRowActive) e.stopPropagation();
               }}
               onClick={(e) => {

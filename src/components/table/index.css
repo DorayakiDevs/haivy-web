@@ -2,7 +2,7 @@
   font-size: 1em;
   border: 2px solid #00000011;
   border-radius: var(--radius-box);
-  overflow: hidden;
+  overflow-y: auto;
   padding-bottom: 1em;
 }
 
@@ -21,6 +21,8 @@
 
   background-color: var(--color-primary);
   color: var(--color-primary-content);
+
+  z-index: 3;
 }
 
 /* .queue-mode .custom-table .table-header, */

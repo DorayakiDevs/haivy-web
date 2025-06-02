@@ -8,15 +8,12 @@ import { useClient } from "@services/client";
 import DashboardPage from "./dashboard";
 import TicketsPage from "./tickets";
 import SettingsPage from "./settings";
+import SchedulePage from "./schedules";
+import { useSignOut } from "@services/index";
 
 export default function AuthorizedPage() {
   return (
-    <div
-      className="app-wrapper flex aictr"
-      style={{
-        backgroundImage: "linear-gradient(240deg, #fff 20%, #f1ffc170 120%)",
-      }}
-    >
+    <div className="app-wrapper flex aictr">
       <VerticalNavigationBar />
 
       <div className="flex-1 h-full overflow-hidden pr-8">
@@ -24,6 +21,7 @@ export default function AuthorizedPage() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/tickets" element={<TicketsPage />} />
           <Route path="/tickets/:id" element={<TicketsPage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
@@ -32,6 +30,7 @@ export default function AuthorizedPage() {
 }
 
 function VerticalNavigationBar() {
+  const signOut = useSignOut();
   const { account } = useClient();
 
   const { pathname } = useLocation();
@@ -105,9 +104,9 @@ function VerticalNavigationBar() {
             }}
           ></button>
         </Tooltips>
-        <Tooltips text="Settings" className="tooltip-right">
+        <Tooltips text="Log out" className="tooltip-right">
           <button className={bttClass("").className}>
-            <Icon name="settings" />
+            <Icon name="logout" onClick={signOut[1]} />
           </button>
         </Tooltips>
       </div>

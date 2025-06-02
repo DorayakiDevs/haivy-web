@@ -1,9 +1,13 @@
+import { useState } from "react";
+
 import { ErrorableTextInput } from "@components/base/input";
 import { Icon } from "@components/icons";
+
 import { useValidatableState } from "@hooks/validator";
+
 import { useClient } from "@services/client";
+
 import { validateEmail } from "@utils/validator";
-import { useRef, useState } from "react";
 
 export default function SettingsPage() {
   const [page, setPage] = useState("account");
@@ -67,7 +71,7 @@ function AccountSettings() {
   const dateOfBirth = useValidatableState(account?.dob || "");
   const phoneNumber = useValidatableState("");
 
-  const profilePicture = useValidatableState(account?.profile_picture || "");
+  // const profilePicture = useValidatableState(account?.profile_picture || "");
 
   const imgUrl = account?.profile_picture || "";
 

@@ -1,3 +1,5 @@
+import { Helmet } from "react-helmet-async";
+
 import { useClient } from "@services/client";
 
 import { StaffDashboard } from "./staff";
@@ -8,16 +10,27 @@ export default function DashboardPage() {
 
   const type = account?.account_type || "";
 
-  switch (type) {
-    case "staff": {
-      return <StaffDashboard />;
-    }
-    case "patient": {
-      return <PatientDashboard />;
-    }
+  function Routing() {
+    switch (type) {
+      case "staff": {
+        return <StaffDashboard />;
+      }
+      case "patient": {
+        return <PatientDashboard />;
+      }
 
-    default: {
-      return "";
+      default: {
+        return "";
+      }
     }
   }
+
+  return (
+    <>
+      <Helmet>
+        <title>Haivy | Dashboard</title>
+      </Helmet>
+      <Routing />
+    </>
+  );
 }

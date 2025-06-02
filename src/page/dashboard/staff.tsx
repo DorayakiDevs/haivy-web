@@ -1,9 +1,6 @@
-import { Icon } from "@components/icons";
-import { useSignOut } from "services";
 import { useClient } from "services/client";
 
 export function StaffDashboard() {
-  const [_, signOut] = useSignOut();
   const { session, account } = useClient();
 
   const { first_name = "", last_name = "", account_type = "" } = account || {};
@@ -17,7 +14,6 @@ export function StaffDashboard() {
         <div className="">
           <div>Welcome back</div>
           <div className="text-4xl font-bold">
-            {" "}
             {displayName.includes("null") ? "Have a great day" : displayName}
           </div>
           <div className="text-sm">
@@ -25,10 +21,6 @@ export function StaffDashboard() {
             {authAccount}
           </div>
         </div>
-        <button className="btn btn-primary" onClick={signOut}>
-          <Icon name="logout" />
-          Sign out
-        </button>
       </div>
 
       <div className="flex coll flex-1">
