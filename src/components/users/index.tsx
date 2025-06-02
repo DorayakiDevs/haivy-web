@@ -23,7 +23,7 @@ export function UserAutoInfo({ id }: { id: string }) {
 }
 
 export function UserInfoInline(props: {
-  data: UserInfo;
+  data: UserInfo | null;
   hideAvatar?: boolean;
 }) {
   const { data, hideAvatar: _ } = props;
