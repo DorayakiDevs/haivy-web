@@ -33,7 +33,6 @@ export function SubmitWithLoading({
         }}
       >
         <button
-        
           className="btn btn-primary"
           onClick={loading ? undefined : onClick}
         >
@@ -42,5 +41,13 @@ export function SubmitWithLoading({
         <LTRLoadingBar height={45} />
       </div>
     </div>
+  );
+}
+
+export function CelebrateButton() {
+  return (
+    <button className="btn bg-gradient-to-r from-pink-200 to-secondary btn-lg via-yellow-100">
+      Celebrate!
+    </button>
   );
 }

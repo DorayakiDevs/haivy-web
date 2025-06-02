@@ -25,10 +25,6 @@ export function StaffDashboard() {
             {authAccount}
           </div>
         </div>
-        <button className="btn btn-primary" onClick={signOut}>
-          <Icon name="logout" />
-          Sign out
-        </button>
       </div>
 
       <div className="flex coll flex-1">

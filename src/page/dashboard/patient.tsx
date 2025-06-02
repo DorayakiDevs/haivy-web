@@ -25,10 +25,6 @@ export function PatientDashboard() {
           </div>
           <div>Signed in as: {authAccount}</div>
         </div>
-        <button className="btn btn-primary" onClick={signOut}>
-          <Icon name="logout" />
-          Sign out
-        </button>
       </div>
 
       <div className="flex column-something-something gap-12">

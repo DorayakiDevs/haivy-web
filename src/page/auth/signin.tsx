@@ -13,7 +13,6 @@ import { usePasswordSignIn } from "services/index";
 import { useOTPSignIn } from "services/index";
 
 import { validateBasicPassword, validateEmail } from "@utils/validator";
-import { wait } from "@utils/timing";
 
 const formCardProps = {
   className: "card bg-base-100 p-8 pt-16 rounded-3xl w-full key-fade-in",
@@ -60,8 +59,6 @@ export function FormLogin() {
 
     const newH = clientHeight > 0 ? c : "fit-content";
     setHeight(newH);
-
-    console.log(newH);
   });
 
   async function submitInformation() {

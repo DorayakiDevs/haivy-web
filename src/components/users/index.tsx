@@ -1,4 +1,5 @@
 import { Icon } from "@components/icons";
+import { useUserInfo } from "@services/data/info";
 import type { DatabaseColType } from "@services/global";
 
 type UserInfo = DatabaseColType<"accountdetails">;
@@ -7,8 +8,22 @@ export function UUIDTag({ uuid }: { uuid?: string }) {
   return <div>{uuid}</div>;
 }
 
+export function UserAutoInfo({ id }: { id: string }) {
+  const data = useUserInfo(id);
+
+  if (data.status === "loading" || data.status === "idle") {
+    return <div className="h-3 w-24 skeleton bg-[#0004]"></div>;
+  }
+
+  if (data.status === "error" || data.data === null) {
+    return <div className="badge badge-xs badge-error">Cannot get data</div>;
+  }
+
+  return <UserInfoInline data={data.data} />;
+}
+
 export function UserInfoInline(props: {
-  data: UserInfo | null;
+  data: UserInfo;
   hideAvatar?: boolean;
 }) {
   const { data, hideAvatar: _ } = props;
@@ -24,19 +39,10 @@ export function UserInfoInline(props: {
 
   return (
     <div className="inline-flex aictr gap-2">
-      {_ || (
-        <img
-          src={data.profile_picture || ""}
-          height={28}
-          width={28}
-          className="rounded-full"
-        />
-      )}
       <div className="flex aictr gap-2">
         <div className="link link-hover font-semibold">
           {data.first_name} {data.last_name}
         </div>
-        <div className="badge-xs capitalize badge">{data.account_type}</div>
       </div>
     </div>
   );

@@ -99,7 +99,7 @@ export default function CustomTable<RenderElement>({
 
   return (
     <div
-      className="custom-table"
+      className={clssArr.join(" ")}
       onClick={(e) => {
         e.stopPropagation();
       }}

@@ -168,9 +168,9 @@ export function TicketDetailsPanel() {
             <SelectOptions
               options={[
                 {
-                  value: "close",
-                  text: "❌ Close ticket",
-                  sub: "Close ticket with comments",
+                  value: "Dismiss",
+                  text: "❌ Dismiss ticket",
+                  sub: "Dismiss ticket with comments",
                 },
                 {
                   value: "forward",
@@ -193,15 +193,15 @@ export function TicketDetailsPanel() {
                   options={[
                     {
                       value: "James Waterson",
-                      sub: "maikpla205@gmail.com",
+                      sub: "watersonjames@gmail.com",
                     },
                     {
                       value: "Narlel Madam",
-                      sub: "maikpla205@gmail.com",
+                      sub: "madddaaaaadd@gmail.com",
                     },
                     {
                       value: "Paradam Google",
-                      sub: "maikpla205@gmail.com",
+                      sub: "google@gmail.com",
                     },
                   ]}
                   closeOnClick
