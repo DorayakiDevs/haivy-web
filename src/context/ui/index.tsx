@@ -1,10 +1,16 @@
 import { AlertProvider, useAlert } from "./alert";
+import { ExternalPanelProvider, useExternalPanel } from "./external";
 
 export function UIContextProvider({ children }: { children: React.ReactNode }) {
-  return <AlertProvider>{children}</AlertProvider>;
+  return (
+    <ExternalPanelProvider>
+      <AlertProvider>{children}</AlertProvider>
+    </ExternalPanelProvider>
+  );
 }
 
 export function useUIContext() {
   const alert = useAlert();
-  return { alert };
+  const extPanel = useExternalPanel();
+  return { alert, extPanel };
 }

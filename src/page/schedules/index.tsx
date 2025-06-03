@@ -20,6 +20,9 @@ import { FullscreenLoading } from "@pages/others/loading";
 
 import { formatMonthYearRanges, getWeekFromDate } from "@utils/date";
 
+import { ExternalPanelWrapper } from "@context/ui/external";
+import { useUIContext } from "@context/ui";
+
 import { ColumnView, GridView, ScheduleListView } from "./layouts";
 import type { Appointment } from "./type";
 
@@ -40,7 +43,9 @@ export function useSchedule() {
 }
 
 export default function SchedulePage() {
+  const { extPanel } = useUIContext();
   const [params, setSeachParam] = useSearchParams();
+
   const dateStrParam = params.get("date") || "";
   const viewType = params.get("view") || "day";
 
@@ -134,6 +139,10 @@ export default function SchedulePage() {
     }
   }
 
+  function openCreatePanel() {
+    extPanel.open("appt_create_panel");
+  }
+
   const value = {
     appointments,
     viewDate,
@@ -170,7 +179,7 @@ export default function SchedulePage() {
 
           <div className="text-2xl font-semibold flex-1">{getTitle()}</div>
 
-          <button className="btn btn-primary py-4">
+          <button className="btn btn-primary py-4" onClick={openCreatePanel}>
             <Icon name="add" />
             Create
           </button>
@@ -239,6 +248,8 @@ export default function SchedulePage() {
           }
         })()}
       </div>
+
+      <CreateAppointmentExternalPanel />
     </ScheduleContext.Provider>
   );
 }
@@ -266,4 +277,14 @@ function CalendarViewMonth() {
 
 function CalendarViewList() {
   return <ScheduleListView />;
+}
+
+function CreateAppointmentExternalPanel() {
+  return (
+    <ExternalPanelWrapper id="appt_create_panel">
+      <div className="p-4">
+        <div className="text-2xl font-semibold mt-8">Create an appointment</div>
+      </div>
+    </ExternalPanelWrapper>
+  );
 }

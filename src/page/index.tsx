@@ -4,12 +4,14 @@ import { Tooltips } from "@components/base/others";
 import { Icon } from "@components/icons";
 
 import { useClient } from "@services/client";
+import { useSignOut } from "@services/index";
+
+import { ExternalPanelDisplay } from "@context/ui/external";
 
 import DashboardPage from "./dashboard";
 import TicketsPage from "./tickets";
 import SettingsPage from "./settings";
 import SchedulePage from "./schedules";
-import { useSignOut } from "@services/index";
 
 export default function AuthorizedPage() {
   return (
@@ -25,6 +27,8 @@ export default function AuthorizedPage() {
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
+
+      <ExternalPanelDisplay />
     </div>
   );
 }

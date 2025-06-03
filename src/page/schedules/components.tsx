@@ -105,7 +105,7 @@ export function DetailCards({
 
   return (
     <div
-      className="card bg-base-200 shadow-xl w-[360px] border-t-12"
+      className="card bg-base-200 shadow-xl w-[360px] border-t-12 z-3"
       style={{
         borderColor: getStatusColor(details.status),
         ...oStyle,
@@ -113,7 +113,7 @@ export function DetailCards({
       {...oRest}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex spbtw h-15 z-3 p-2">
+      <div className="flex spbtw h-15 p-2">
         <div className="btn w-8 h-8 cursor-grab" onMouseDown={onMouseDown}>
           <Icon name="drag_handle" size="1.2em" />
         </div>

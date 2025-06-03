@@ -72,7 +72,10 @@ export function ColumnView({
           const today = isToday(day);
 
           return (
-            <div className="flex-1 flex coll aictr jcctr h-20 border-x-1 border-[#fff2] gap-1">
+            <div
+              className="flex-1 flex coll aictr jcctr h-20 border-x-1 border-[#fff2] gap-1"
+              key={day.toISOString()}
+            >
               <div className="uppercase text-xs">{format(day, "EEE")}</div>
               <div
                 onClick={handleBlockClick(day)}
@@ -100,10 +103,17 @@ export function ColumnView({
             });
 
             return (
-              <div className="flex-1 flex coll jcend relative">
+              <div
+                className="flex-1 flex coll jcend relative"
+                key={date.toISOString()}
+              >
                 <TimelineRunner b={baseHeight} day={date} />
                 {apps.map((app) => (
-                  <AppointmentDisplay app={app} baseHeight={baseHeight} />
+                  <AppointmentDisplay
+                    app={app}
+                    baseHeight={baseHeight}
+                    key={app.appointment_id}
+                  />
                 ))}
               </div>
             );
@@ -114,7 +124,11 @@ export function ColumnView({
             .fill(0)
             .map((_, i) => {
               return (
-                <div className="flex-1 flex" style={{ height: baseHeight }}>
+                <div
+                  className="flex-1 flex"
+                  style={{ height: baseHeight }}
+                  key={i}
+                >
                   <div
                     className="text-xs w-12 border-r-1"
                     style={{ lineHeight: 0, borderColor: "#0001" }}
@@ -125,10 +139,11 @@ export function ColumnView({
                     className="border-t-1 flex-1 flex"
                     style={{ borderColor: "#0001" }}
                   >
-                    {days.map(() => [
+                    {days.map((_, i) => [
                       <div
                         className="flex-1 border-r-1 flex coll pr-4"
                         style={{ borderColor: "#0001" }}
+                        key={i}
                       ></div>,
                     ])}
                   </div>
@@ -197,9 +212,12 @@ export function GridView({ date }: { date: Date }) {
       <Helmet>
         <title>Haivy | Schedule - {title}</title>
       </Helmet>
-      {days.slice(0, 7).map((d) => {
+      {days.slice(0, 7).map((d, i) => {
         return (
-          <div className="flex aictr jcctr bg-primary text-primary-content">
+          <div
+            className="flex aictr jcctr bg-primary text-primary-content"
+            key={i}
+          >
             <span className="text-xs uppercase"> {format(d, "EEE")}</span>
           </div>
         );
@@ -213,6 +231,7 @@ export function GridView({ date }: { date: Date }) {
               backgroundColor: "#fff",
               transition: "all 0.1s",
             }}
+            key={d.toISOString()}
           >
             <div className="absolute px-4 py-2 text-xs font-light cursor-pointer">
               {isToday(d) ? (
@@ -242,7 +261,12 @@ export function GridView({ date }: { date: Date }) {
                 })
                 .map((a) => {
                   return (
-                    <AppointmentDisplay displayAsLine app={a} baseHeight={0} />
+                    <AppointmentDisplay
+                      displayAsLine
+                      app={a}
+                      baseHeight={0}
+                      key={a.appointment_id}
+                    />
                   );
                 })}
             </div>

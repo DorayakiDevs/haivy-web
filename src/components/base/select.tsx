@@ -80,6 +80,7 @@ export function SelectOptions(props: SelectProps) {
                       if (document.activeElement instanceof HTMLElement)
                         document.activeElement.blur();
                   }}
+                  key={"opt-" + index}
                 >
                   <div className="flex flex-1 aiart coll">
                     <div>{text || value}</div>

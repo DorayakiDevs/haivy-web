@@ -247,7 +247,11 @@ export function TicketDetailsPanel() {
           </div>
           {appointments.length
             ? appointments.map((a) => (
-                <AppointmentCard data={a} className="no-animated" />
+                <AppointmentCard
+                  data={a}
+                  className="no-animated"
+                  key={a.appointment_id}
+                />
               ))
             : "No appointment"}
         </div>

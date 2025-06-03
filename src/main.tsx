@@ -5,10 +5,10 @@ import { HelmetProvider } from "react-helmet-async";
 
 import "./index.css";
 
-import App from "./App.tsx";
+import App from "./App";
 
-import { SupabaseProvider } from "services/index.tsx";
-import { UIContextProvider } from "@context/ui/index.tsx";
+import { SupabaseProvider } from "services/index";
+import { UIContextProvider } from "@context/ui/index";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

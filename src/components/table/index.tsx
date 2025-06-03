@@ -135,7 +135,12 @@ export default function CustomTable<RenderElement>({
         {arr.map((a, i) => {
           const rowClass = rowClassName(a, i);
           if (rowClass.includes("d-hide-it")) {
-            return <div style={{ padding: 10, height: rowHeight - 10 }}></div>;
+            return (
+              <div
+                key={i}
+                style={{ padding: 10, height: rowHeight - 10 }}
+              ></div>
+            );
           }
 
           return (
