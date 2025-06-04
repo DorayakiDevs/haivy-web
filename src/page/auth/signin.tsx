@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
-import { ErrorableTextInput, InputToggle } from "@components/base/input";
+import { InputTextErrorable, InputToggle } from "@components/base/input";
 import { SubmitWithLoading } from "@components/base/button";
 import { FormHeader } from ".";
 
@@ -173,8 +173,8 @@ export function FormLogin() {
 
         {useEmailLogin ? (
           <div className="my-[2rem] flex coll gap-[8px]">
-            <ErrorableTextInput
-              title="Email Address"
+            <InputTextErrorable
+              label="Email Address"
               placeholder="myemail@email.com"
               inputClass="w-full"
               icon="email"
@@ -183,8 +183,8 @@ export function FormLogin() {
               state={email.state}
             />
 
-            <ErrorableTextInput
-              title="Password"
+            <InputTextErrorable
+              label="Password"
               placeholder="Enter your password"
               inputClass="w-full"
               icon="key"
@@ -206,8 +206,8 @@ export function FormLogin() {
           </div>
         ) : (
           <div className="my-10">
-            <ErrorableTextInput
-              title="Phone number"
+            <InputTextErrorable
+              label="Phone number"
               placeholder="Enter your mobile phone number"
               inputClass="w-full"
               icon="phone"
@@ -222,11 +222,11 @@ export function FormLogin() {
               >
                 <option>Vietnam (+84)</option>
               </select>
-            </ErrorableTextInput>
+            </InputTextErrorable>
             {!OTPPassedStageOne || (
               <>
-                <ErrorableTextInput
-                  title="Confirm OTP (6 digits)"
+                <InputTextErrorable
+                  label="Confirm OTP (6 digits)"
                   placeholder="Please confirm your OTP (Expires in 60 seconds)"
                   inputClass="w-full"
                   icon="password"

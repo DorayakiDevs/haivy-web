@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { addMinutes, format } from "date-fns";
+import { addMinutes, format, getHours, getMinutes, isToday } from "date-fns";
+import "./components.styles.css";
 
 import { Tooltips } from "@components/base/others";
+import { UserAutoInfo } from "@components/users";
 import { Icon } from "@components/icons";
 
 import { useDraggable } from "@hooks/helper";
 
 import { getBestPosition } from "./test";
-import type { Appointment, AppointmentStatus } from "./type";
-import { UserAutoInfo } from "@components/users";
+import type { Appointment } from "./type";
+import { SelectOptions } from "@components/base/select";
 
-export function getStatusColor(status: AppointmentStatus): string {
+export function getStatusColor(status: string | null): string {
   switch (status) {
     case "pending":
       return "#d97706";
@@ -29,7 +31,7 @@ export function getStatusColor(status: AppointmentStatus): string {
   }
 }
 
-function StatusBadge({ s }: { s: AppointmentStatus }) {
+function StatusBadge({ s }: { s: string | null }) {
   return (
     <div
       className="badge badge-ghost badge-sm capitalize"
@@ -41,8 +43,12 @@ function StatusBadge({ s }: { s: AppointmentStatus }) {
 }
 
 function ReadonlyContent({ details }: { details: Appointment }) {
+  const statusState = useState(details.status || "");
+
   const date = new Date(details.meeting_date || "");
   const endDate = addMinutes(date, details.duration);
+
+  function updateStatus() {}
 
   return (
     <>
@@ -68,8 +74,22 @@ function ReadonlyContent({ details }: { details: Appointment }) {
 
         <div className="flex gap-3 mb-4">
           <Icon name="info" size="1.5em" />
-          <div className="flex aictr gap-2">
-            Status: <StatusBadge s={details.status} />
+          <div className="flex aictr spbtw flex-1">
+            Status:
+            <SelectOptions
+              options={[
+                "pending",
+                "scheduled",
+                "in_progress",
+                "completed",
+                "canceled",
+                "no_show",
+              ].map((s) => ({
+                text: <StatusBadge s={s} />,
+                value: s,
+              }))}
+              state={statusState}
+            />
           </div>
         </div>
 
@@ -105,7 +125,7 @@ export function DetailCards({
 
   return (
     <div
-      className="card bg-base-200 shadow-xl w-[360px] border-t-12 z-3"
+      className="card bg-base-200 shadow-xl w-[360px] border-t-12"
       style={{
         borderColor: getStatusColor(details.status),
         ...oStyle,
@@ -192,78 +212,113 @@ export function AppointmentDisplay({
   }, [render]);
 
   const endTime = addMinutes(time, app.duration);
+  const status = app.status?.split("_").join(" ");
+
+  const LineDisplay = () => (
+    <div
+      className="line-apt-display"
+      style={{ height: baseHeight, boxShadow: render ? "var(--shadow)" : "" }}
+      onClick={open}
+    >
+      <Tooltips text={"Status: " + status}>
+        <div
+          className="w-4 aspect-square rounded-full"
+          style={{ backgroundColor: getStatusColor(app.status) }}
+        ></div>
+      </Tooltips>
+      <div className="overflow-hidden whitespace-nowrap flex aictr gap-3">
+        <div>
+          <span>{format(time, "kk:mm")}</span>
+          <span className="extra"> - </span>
+          <span className="extra">
+            {format(addMinutes(time, app.duration), "kk:mm")}
+          </span>
+        </div>
+        <div className="font-semibold"> {app.content}</div>
+      </div>
+    </div>
+  );
+
+  const BoxDisplay = () => (
+    <div
+      className="pl-2 p-1 text-white rounded-md overflow-hidden cursor-pointer hover:shadow-xl"
+      style={{
+        width: "calc(100% - 8px)",
+        height: pos.o ? "fit-content" : dur,
+
+        top: `calc(100% + ${hour * baseHeight}px)`,
+        position: "absolute",
+        zIndex: render ? 1 : 0,
+
+        backgroundColor: getStatusColor(app.status),
+        fontSize: 11,
+
+        transition: "all 0.1s",
+      }}
+      tabIndex={0}
+      onClick={open}
+    >
+      <div>
+        <div
+          className="font-semibold"
+          style={{
+            whiteSpace:
+              dur <= 0.5 * baseHeight && !render ? "nowrap" : "pre-wrap",
+          }}
+        >
+          {app.content || "Unnamed appointment"}
+        </div>
+        <span>
+          {format(time, "k:mm")} - {format(endTime, "k:mm")}
+        </span>
+      </div>
+    </div>
+  );
+
+  const DetailBoxWrapper = () => (
+    <div className="fixed z-5 top-0 left-0 w-full h-full" onClick={close}>
+      <div
+        className="absolute transition-opacity"
+        style={{
+          top: pos.y,
+          left: pos.x,
+          opacity: pos.o,
+        }}
+        ref={ref}
+      >
+        <DetailCards details={app} close={close} />
+      </div>
+    </div>
+  );
 
   return (
     <>
-      {displayAsLine ? (
-        <div
-          className="text-sm px-2 py-0.5 hover:shadow m-1 cursor-pointer border-l-5"
-          style={{
-            borderColor: getStatusColor(app.status),
-            boxShadow: render ? "0px 0px 6px #0004" : "",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-
-            borderRadius: 4,
-          }}
-          onClick={open}
-        >
-          <div className="overflow-hidden">
-            <span>[{format(time, "kk:mm")}]</span>
-            <span className="font-semibold"> {app.content}</span>
-          </div>
-        </div>
-      ) : (
-        <div
-          className="pl-2 p-1 text-white rounded-md overflow-hidden cursor-pointer hover:shadow-xl"
-          style={{
-            width: "calc(100% - 8px)",
-            height: pos.o ? "fit-content" : dur,
-
-            top: `calc(100% + ${hour * baseHeight}px)`,
-            position: "absolute",
-            zIndex: render ? 1 : 0,
-
-            backgroundColor: getStatusColor(app.status),
-            fontSize: 11,
-
-            transition: "all 0.1s",
-          }}
-          tabIndex={0}
-          onClick={open}
-        >
-          <div>
-            <div
-              className="font-semibold"
-              style={{
-                whiteSpace:
-                  dur <= 0.5 * baseHeight && !render ? "nowrap" : "pre-wrap",
-              }}
-            >
-              {app.content || "Unnamed appointment"}
-            </div>
-            <span>
-              {format(time, "k:mm")} - {format(endTime, "k:mm")}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {!render || (
-        <div className="fixed z-3 top-0 left-0 w-full h-full" onClick={close}>
-          <div
-            className="absolute transition-opacity"
-            style={{
-              top: pos.y,
-              left: pos.x,
-              opacity: pos.o,
-            }}
-            ref={ref}
-          >
-            <DetailCards details={app} close={close} />
-          </div>
-        </div>
-      )}
+      {displayAsLine ? <LineDisplay /> : <BoxDisplay />}
+      {!render || <DetailBoxWrapper />}
     </>
+  );
+}
+
+export function TimelineRunner({ b, date }: { b: number; date: Date }) {
+  if (!isToday(date)) return "";
+
+  const cur = new Date();
+
+  const h = getHours(cur);
+  const m = getMinutes(cur);
+
+  const timePassed = h + m / 60;
+
+  return (
+    <div
+      className="border-t-1 h-0 border-red-600 z-2 flex aictr"
+      style={{
+        transform: `translateY(calc(100% + ${timePassed * b}px))`,
+      }}
+    >
+      <Tooltips text={format(new Date(), "H:mm:ss")}>
+        <div className="w-3 h-3 bg-red-600 rounded-xl -ml-3"></div>
+      </Tooltips>
+    </div>
   );
 }

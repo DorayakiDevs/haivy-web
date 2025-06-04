@@ -6,7 +6,7 @@ import { Icon } from "@components/icons";
 import { useClient } from "@services/client";
 import { useSignOut } from "@services/index";
 
-import { ExternalPanelDisplay } from "@context/ui/external";
+import { ExternalPanelDisplay } from "@context/ui/extpanel";
 
 import DashboardPage from "./dashboard";
 import TicketsPage from "./tickets";
@@ -18,7 +18,7 @@ export default function AuthorizedPage() {
     <div className="app-wrapper flex aictr">
       <VerticalNavigationBar />
 
-      <div className="flex-1 h-full overflow-hidden pr-8">
+      <div className="relative z-1 flex-1 h-full overflow-hidden pr-8">
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/tickets" element={<TicketsPage />} />

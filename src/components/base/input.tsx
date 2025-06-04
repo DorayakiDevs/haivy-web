@@ -5,7 +5,7 @@ import { Icon } from "../icons";
 
 type InputTextProps = {
   icon?: string;
-  title?: string;
+  label?: string;
   placeholder?: string;
 
   inputClass?: string;
@@ -25,7 +25,7 @@ export function InputText(props: InputTextProps) {
     notice,
     icon,
 
-    title,
+    label: title,
     placeholder,
     inputClass,
     className = "",
@@ -115,7 +115,7 @@ export function InputText(props: InputTextProps) {
   );
 }
 
-export function ErrorableTextInput(props: InputTextProps & { error?: string }) {
+export function InputTextErrorable(props: InputTextProps & { error?: string }) {
   const { error, inputClass, ...rest } = props;
 
   const clssArr = [inputClass];

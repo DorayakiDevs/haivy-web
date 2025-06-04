@@ -1,5 +1,5 @@
 import { AlertProvider, useAlert } from "./alert";
-import { ExternalPanelProvider, useExternalPanel } from "./external";
+import { ExternalPanelProvider, useExternalPanel } from "./extpanel";
 
 export function UIContextProvider({ children }: { children: React.ReactNode }) {
   return (

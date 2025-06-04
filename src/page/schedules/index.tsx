@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 import { useSearchParams } from "react-router";
 import { Helmet } from "react-helmet-async";
-
 import {
   addDays,
   addMonths,
@@ -20,10 +19,10 @@ import { FullscreenLoading } from "@pages/others/loading";
 
 import { formatMonthYearRanges, getWeekFromDate } from "@utils/date";
 
-import { ExternalPanelWrapper } from "@context/ui/external";
 import { useUIContext } from "@context/ui";
 
 import { ColumnView, GridView, ScheduleListView } from "./layouts";
+import { CreateAppointmentExternalPanel } from "./panels";
 import type { Appointment } from "./type";
 
 type T_ScheduleContext = {
@@ -32,6 +31,7 @@ type T_ScheduleContext = {
 
   setViewType: (a: string) => void;
   setParamDate: (d: Date) => void;
+  setViewDateParams(v: string | null, d: Date | null): void;
 };
 
 const ScheduleContext = createContext<T_ScheduleContext | null>(null);
@@ -39,6 +39,7 @@ const ScheduleContext = createContext<T_ScheduleContext | null>(null);
 export function useSchedule() {
   const data = useContext(ScheduleContext);
   if (data) return data;
+
   throw new Error("Missng context");
 }
 
@@ -49,26 +50,29 @@ export default function SchedulePage() {
   const dateStrParam = params.get("date") || "";
   const viewType = params.get("view") || "day";
 
-  function setViewType(a: string) {
-    if (viewType === a) {
-      return;
-    }
-
-    setSeachParam((prev) => {
-      prev.set("view", a);
-      return prev;
-    });
+  function setViewType(v: string) {
+    setViewDateParams(v, null);
   }
 
   function setParamDate(d: Date) {
-    const str = format(d, "yyyy-M-dd");
+    setViewDateParams(null, d);
+  }
 
-    if (dateStrParam === str) {
-      return;
+  function setViewDateParams(view: string | null, d: Date | null) {
+    let newView = viewType;
+    let newDate = dateStrParam;
+
+    if (view !== null && view !== newView) {
+      newView = view;
+    }
+
+    if (d !== null && format(d, "yyyy-M-dd") !== newDate) {
+      newDate = format(d, "yyyy-M-dd");
     }
 
     setSeachParam((prev) => {
-      prev.set("date", str);
+      prev.set("date", newDate);
+      prev.set("view", newView);
       return prev;
     });
   }
@@ -136,6 +140,20 @@ export default function SchedulePage() {
       case "week": {
         return formatMonthYearRanges(getWeekFromDate(viewDate));
       }
+
+      case "schedule": {
+        return formatMonthYearRanges(
+          Array(14)
+            .fill(0)
+            .map((_, i) => {
+              return addDays(viewDate, i);
+            })
+        );
+      }
+
+      default: {
+        return "Agenda";
+      }
     }
   }
 
@@ -149,6 +167,7 @@ export default function SchedulePage() {
 
     setViewType,
     setParamDate,
+    setViewDateParams,
   };
 
   return (
@@ -218,7 +237,7 @@ export default function SchedulePage() {
                 text: (
                   <div className="flex aictr gap-2">
                     <Icon name="view_agenda" />
-                    Schedule
+                    <div>Schedule</div>
                   </div>
                 ),
               },
@@ -256,9 +275,9 @@ export default function SchedulePage() {
 
 function CalendarViewWeek() {
   const { viewDate } = useSchedule();
-  const days = getWeekFromDate(viewDate);
+  const dates = getWeekFromDate(viewDate);
 
-  return <ColumnView days={days} baseHeight={60} />;
+  return <ColumnView dates={dates} baseHeight={60} />;
 }
 
 function CalendarViewDay() {
@@ -266,7 +285,7 @@ function CalendarViewDay() {
 
   const days = [viewDate];
 
-  return <ColumnView days={days} baseHeight={100} />;
+  return <ColumnView dates={days} baseHeight={100} />;
 }
 
 function CalendarViewMonth() {
@@ -277,14 +296,4 @@ function CalendarViewMonth() {
 
 function CalendarViewList() {
   return <ScheduleListView />;
-}
-
-function CreateAppointmentExternalPanel() {
-  return (
-    <ExternalPanelWrapper id="appt_create_panel">
-      <div className="p-4">
-        <div className="text-2xl font-semibold mt-8">Create an appointment</div>
-      </div>
-    </ExternalPanelWrapper>
-  );
 }

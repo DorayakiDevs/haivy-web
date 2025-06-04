@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-import { ErrorableTextInput } from "@components/base/input";
+import { InputTextErrorable } from "@components/base/input";
 import { SubmitWithLoading } from "@components/base/button";
 import { FormHeader } from ".";
 
@@ -75,8 +75,8 @@ export function FormRegister() {
       <FormHeader title="Hello there!" type="Register" />
 
       <div className="my-[2rem] flex coll gap-[8px]">
-        <ErrorableTextInput
-          title="Email address"
+        <InputTextErrorable
+          label="Email address"
           placeholder="abrahamlincoln@kennedy.com"
           inputClass="w-full"
           icon="email"
@@ -97,8 +97,8 @@ export function FormRegister() {
           </button>
         </ErrorableTextInput> */}
 
-        <ErrorableTextInput
-          title="Password"
+        <InputTextErrorable
+          label="Password"
           placeholder="Enter a secure password"
           inputClass="w-full"
           icon="password"
@@ -107,13 +107,13 @@ export function FormRegister() {
           error={password.error}
         />
 
-        <ErrorableTextInput
+        <InputTextErrorable
           placeholder="Re-enter your password"
           inputClass="w-full"
           type="password"
           state={repassword.state}
           error={repassword.error}
-          title="Retype your password"
+          label="Retype your password"
           icon="password"
         />
 

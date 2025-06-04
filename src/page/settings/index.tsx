@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { ErrorableTextInput } from "@components/base/input";
+import { InputTextErrorable } from "@components/base/input";
 import { Icon } from "@components/icons";
 
 import { useValidatableState } from "@hooks/validator";
@@ -119,19 +119,19 @@ function AccountSettings() {
             <div className="flex-1">
               <div className="text-xl font-bold mb-2">Edit Information</div>
               <div className="flex aictr gap-4">
-                <ErrorableTextInput
-                  title="First name"
+                <InputTextErrorable
+                  label="First name"
                   state={firstName.state}
                 />
-                <ErrorableTextInput title="Last name" state={lastName.state} />
+                <InputTextErrorable label="Last name" state={lastName.state} />
               </div>
-              <ErrorableTextInput title="Email address" state={email.state} />
-              <ErrorableTextInput
-                title="Phone number"
+              <InputTextErrorable label="Email address" state={email.state} />
+              <InputTextErrorable
+                label="Phone number"
                 state={phoneNumber.state}
               />
-              <ErrorableTextInput
-                title="Date of birth"
+              <InputTextErrorable
+                label="Date of birth"
                 state={dateOfBirth.state}
               />
             </div>
