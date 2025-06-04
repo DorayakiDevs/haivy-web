@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import isEqual from "react-fast-compare";
 import { useSearchParams } from "react-router";
 
 type T_Panel = {
@@ -115,7 +123,7 @@ export function ExternalPanelProvider({
   const value = {
     registerPanel,
     unregisterPanel,
-    panels: PanelRegisRef.current,
+    panels: { ...PanelRegisRef.current },
     panelId,
   };
 
@@ -139,8 +147,11 @@ export function ExternalPanelDisplay() {
   const panel = panels[panelId]?.children || <></>;
 
   return (
-    <div className="w-[30vw] h-full transition-width overflow-hidden whitespace-nowrap relative z-0">
-      <div className="shadow-xl w-full h-full rounded-l-xl key-fade-in relative">
+    <div className="w-[30vw] h-full transition-width overflow-hidden whitespace-nowrap">
+      <div
+        className="shadow-xl w-full h-full rounded-l-xl key-fade-in relative"
+        key={panelId}
+      >
         <span className="link link-hover absolute text-sm p-4" onClick={close}>
           Close
         </span>
@@ -151,17 +162,30 @@ export function ExternalPanelDisplay() {
 }
 
 export function ExternalPanelWrapper(props: T_Panel) {
+  const oldChildren = useRef<React.ReactNode>();
+
   const { registerPanel, unregisterPanel } = useIntExtPanel();
 
   const { children, id, display } = props;
 
-  useEffect(() => {
+  function EffectHandler() {
     registerPanel(id, children, display);
 
     return () => {
       unregisterPanel(id);
     };
-  }, [id, display]);
+  }
+
+  useEffect(EffectHandler, [id, display]);
+
+  useEffect(() => {
+    if (isEqual(oldChildren.current, children)) {
+      return;
+    }
+
+    oldChildren.current = children;
+    return EffectHandler();
+  }, [children]);
 
   return null;
 }
