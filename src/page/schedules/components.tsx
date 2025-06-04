@@ -48,8 +48,6 @@ function ReadonlyContent({ details }: { details: Appointment }) {
   const date = new Date(details.meeting_date || "");
   const endDate = addMinutes(date, details.duration);
 
-  function updateStatus() {}
-
   return (
     <>
       <div className="text-xl font-semibold mb-4 link link-hover px-4">
