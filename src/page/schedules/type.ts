@@ -31,4 +31,5 @@ export type AppointmentStatus =
   | "completed"
   | "canceled"
   | "no_show"
+  | "ghost"
   | null;

@@ -2,22 +2,31 @@ import { useState } from "react";
 
 import { Icon } from "@components/icons";
 
-type Options<T extends string> = {
+type Options<T> = {
   value: T;
   text?: React.ReactNode;
   sub?: string;
   closeOnClick?: boolean;
 };
 
-type SelectProps<T extends string> = {
+type SelectProps<T> = {
   options?: Options<T>[];
   state?: [T, (s: T) => void];
   closeOnClick?: boolean;
   direction?: string;
+  label?: string;
+  width?: string;
 };
 
 export function SelectOptions<T extends string>(props: SelectProps<T>) {
-  const { options = [], state, closeOnClick, direction = "top end" } = props;
+  const {
+    options = [],
+    state,
+    closeOnClick,
+    direction = "top left",
+    label,
+    width,
+  } = props;
 
   const local = useState("");
 
@@ -38,16 +47,21 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
     clssArr.push("dropdown-bottom");
   }
 
-  if (direction.includes("start")) {
+  if (direction.includes("left")) {
     clssArr.push("dropdown-start");
-  } else if (direction.includes("end")) {
+  } else if (direction.includes("right")) {
     clssArr.push("dropdown-end");
+  }
+
+  if (width) {
+    clssArr.push(width);
   }
 
   return (
     <div className={clssArr.join(" ")}>
-      <div tabIndex={0} role="button" className="btn bg-base-300 m-1">
-        <div className="px-2">
+      {!label || <div className="my-2 font-semibold text-sm">{label}</div>}
+      <div tabIndex={0} role="button" className="btn bg-base-100 w-full">
+        <div className="flex-1 text-left">
           {options[curIndex]?.text ||
             options[curIndex]?.value ||
             "Select an option"}
@@ -57,7 +71,7 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
 
       <div
         tabIndex={0}
-        className="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-lg"
+        className="dropdown-content menu bg-base-100 rounded-box z-2 p-2 shadow-lg mt-2"
       >
         {options.map(({ value, text, sub, closeOnClick: oClose }, index) => {
           const clssArr = ["btn btn-ghost p-2 gap-0 w-70 rounded-sm"];
@@ -83,11 +97,11 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
               >
                 <div className="flex flex-1 aiart coll">
                   <div>{text || value}</div>
-                  {!sub || <div style={{ fontSize: 8 }}>{sub}</div>}
+                  {!sub || <div className="text-gray-600">{sub}</div>}
                 </div>
                 {!isSelected || (
                   <div>
-                    <Icon name="check" size="1em" />
+                    <Icon name="check" size="1.25em" />
                   </div>
                 )}
               </div>

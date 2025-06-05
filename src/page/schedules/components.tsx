@@ -26,6 +26,8 @@ export function getStatusColor(status: string | null): string {
       return "#9f1239";
     case "no_show":
       return "#374151";
+    case "ghost":
+      return "#888888";
     default:
       return "var(--color-primary)";
   }
@@ -51,7 +53,7 @@ function ReadonlyContent({ details }: { details: Appointment }) {
   return (
     <>
       <div className="text-xl font-semibold mb-4 link link-hover px-4">
-        {details.content || "Unnamed appointment"}
+        {details.content.trim() || "Unnamed appointment"}
       </div>
 
       <div className="text-sm px-4 w-full">
@@ -67,7 +69,7 @@ function ReadonlyContent({ details }: { details: Appointment }) {
 
         <div className="flex gap-3 mb-4">
           <Icon name="subject" size="1.5em" />
-          <div>{details.content || "No information provided"}</div>
+          <div>{details.content.trim() || "No information provided"}</div>
         </div>
 
         <div className="flex gap-3 mb-4">
@@ -165,7 +167,8 @@ export function AppointmentDisplay({
   baseHeight: number;
   displayAsLine?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const detailBoxRef = useRef<HTMLDivElement | null>(null);
+  const selfRef = useRef<HTMLDivElement | null>(null);
 
   const [pos, setPos] = useState<{ x: number; y: number; o: number }>({
     x: 0,
@@ -175,10 +178,18 @@ export function AppointmentDisplay({
 
   const [render, setRender] = useState(false);
 
-  const time = new Date(app.meeting_date || "");
-  const hour = time.getHours();
+  const { status, duration, meeting_date, content } = app;
 
-  const dur = (app.duration / 60) * baseHeight;
+  const time = new Date(meeting_date || "");
+  const hour = time.getHours();
+  const minute = time.getMinutes();
+
+  const endTime = addMinutes(time, duration);
+  const displayStatus = status?.split("_").join(" ");
+
+  const dur = (duration / 60) * baseHeight;
+
+  const offsetHour = hour + minute / 60;
 
   function close() {
     setPos((a) => ({ ...a, o: 0 }));
@@ -186,6 +197,10 @@ export function AppointmentDisplay({
   }
 
   function open(e: React.MouseEvent) {
+    if (status === "ghost") {
+      return;
+    }
+
     if (render) {
       return close();
     }
@@ -199,7 +214,7 @@ export function AppointmentDisplay({
 
     const timeout = setTimeout(() => {
       setPos((a) => {
-        const b = getBestPosition(a.y, a.x, ref.current);
+        const b = getBestPosition(a.y, a.x, detailBoxRef.current);
         return { x: b.left, y: b.top, o: 1 };
       });
     }, 50);
@@ -209,8 +224,17 @@ export function AppointmentDisplay({
     };
   }, [render]);
 
-  const endTime = addMinutes(time, app.duration);
-  const status = app.status?.split("_").join(" ");
+  useEffect(() => {
+    if (status !== "ghost") {
+      return;
+    }
+
+    selfRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "start",
+    });
+  }, [status, meeting_date]);
 
   const LineDisplay = () => (
     <div
@@ -218,10 +242,10 @@ export function AppointmentDisplay({
       style={{ height: baseHeight, boxShadow: render ? "var(--shadow)" : "" }}
       onClick={open}
     >
-      <Tooltips text={"Status: " + status}>
+      <Tooltips text={"Status: " + displayStatus}>
         <div
           className="w-4 aspect-square rounded-full"
-          style={{ backgroundColor: getStatusColor(app.status) }}
+          style={{ backgroundColor: getStatusColor(status) }}
         ></div>
       </Tooltips>
       <div className="overflow-hidden whitespace-nowrap flex aictr gap-3">
@@ -229,10 +253,10 @@ export function AppointmentDisplay({
           <span>{format(time, "kk:mm")}</span>
           <span className="extra"> - </span>
           <span className="extra">
-            {format(addMinutes(time, app.duration), "kk:mm")}
+            {format(addMinutes(time, duration), "kk:mm")}
           </span>
         </div>
-        <div className="font-semibold"> {app.content}</div>
+        <div className="font-semibold"> {content || "Unnamed appointment"}</div>
       </div>
     </div>
   );
@@ -240,15 +264,16 @@ export function AppointmentDisplay({
   const BoxDisplay = () => (
     <div
       className="pl-2 p-1 text-white rounded-md overflow-hidden cursor-pointer hover:shadow-xl"
+      ref={selfRef}
       style={{
         width: "calc(100% - 8px)",
         height: pos.o ? "fit-content" : dur,
 
-        top: `calc(100% + ${hour * baseHeight}px)`,
+        top: `calc(100% + ${offsetHour * baseHeight}px)`,
         position: "absolute",
         zIndex: render ? 1 : 0,
 
-        backgroundColor: getStatusColor(app.status),
+        backgroundColor: getStatusColor(status),
         fontSize: 11,
 
         transition: "all 0.1s",
@@ -264,7 +289,7 @@ export function AppointmentDisplay({
               dur <= 0.5 * baseHeight && !render ? "nowrap" : "pre-wrap",
           }}
         >
-          {app.content || "Unnamed appointment"}
+          {content.trim() || "Unnamed appointment"}
         </div>
         <span>
           {format(time, "k:mm")} - {format(endTime, "k:mm")}
@@ -282,7 +307,7 @@ export function AppointmentDisplay({
           left: pos.x,
           opacity: pos.o,
         }}
-        ref={ref}
+        ref={detailBoxRef}
       >
         <DetailCards details={app} close={close} />
       </div>

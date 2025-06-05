@@ -16,7 +16,7 @@ import { formatMonthYearRanges } from "@utils/date";
 import { AppointmentDisplay } from "./components";
 import { TimelineRunner } from "./components";
 
-import { useSchedule } from ".";
+import { useSchedulePanel } from ".";
 
 export function ColumnView({
   dates,
@@ -25,7 +25,7 @@ export function ColumnView({
   dates: Date[];
   baseHeight: number;
 }) {
-  const { appointments, setViewDateParams } = useSchedule();
+  const { appointments, setViewDateParams } = useSchedulePanel();
 
   function handleBlockClick(d: Date) {
     return () => {
@@ -36,7 +36,7 @@ export function ColumnView({
   const title = formatMonthYearRanges(dates);
 
   return (
-    <div className="w-full h-full overflow-auto relative key-fade-in">
+    <div className="w-full h-full overflow-auto relative key-fade-in scroll-p-40">
       <Helmet>
         <title>Haivy | Schedule - {title}</title>
       </Helmet>
@@ -131,7 +131,7 @@ export function ColumnView({
 }
 
 export function ScheduleListView() {
-  const { appointments, viewDate, setViewDateParams } = useSchedule();
+  const { appointments, viewDate, setViewDateParams } = useSchedulePanel();
 
   if (!appointments.length) {
     return (
@@ -178,7 +178,7 @@ export function ScheduleListView() {
                 {format(date, "MMM, E")}
               </div>
             </div>
-            <div className="min-h-6 flex-1">
+            <div className="pb-6 flex-1">
               {appointments
                 .filter((a) => {
                   if (!a.meeting_date) return false;
@@ -205,7 +205,7 @@ export function ScheduleListView() {
 }
 
 export function GridView({ date }: { date: Date }) {
-  const { setViewDateParams, appointments } = useSchedule();
+  const { setViewDateParams, appointments } = useSchedulePanel();
 
   const month = getMonth(date);
   const year = getYear(date);

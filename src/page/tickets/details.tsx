@@ -39,12 +39,20 @@ export function TicketDetailsPanel() {
 
   if (res.status === "idle")
     return (
-      <div className="w-[50vw]">{repeat(<LoadingSkeletonParagraph />, 3)}</div>
+      <div className="w-[50vw]">
+        <LoadingSkeletonParagraph />
+        <LoadingSkeletonParagraph />
+        <LoadingSkeletonParagraph />
+      </div>
     );
 
   if (res.status === "loading")
     return (
-      <div className="w-[50vw]">{repeat(<LoadingSkeletonParagraph />, 3)}</div>
+      <div className="w-[50vw]">
+        <LoadingSkeletonParagraph />
+        <LoadingSkeletonParagraph />
+        <LoadingSkeletonParagraph />
+      </div>
     );
 
   if (res.status === "error") return <TicketStatusError />;

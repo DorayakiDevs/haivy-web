@@ -6,19 +6,19 @@ import { Icon } from "@components/icons";
 import { useClient } from "@services/client";
 import { useSignOut } from "@services/index";
 
-import { ExternalPanelDisplay } from "@context/ui/extpanel";
-
 import DashboardPage from "./dashboard";
 import TicketsPage from "./tickets";
 import SettingsPage from "./settings";
 import SchedulePage from "./schedules";
 
 export default function AuthorizedPage() {
+  // return <TestPanel />;
+
   return (
     <div className="app-wrapper flex aictr">
       <VerticalNavigationBar />
 
-      <div className="relative z-1 flex-1 h-full overflow-hidden pr-8">
+      <div className="relative z-1 flex-1 h-full overflow-hidden">
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/tickets" element={<TicketsPage />} />
@@ -27,8 +27,6 @@ export default function AuthorizedPage() {
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
-
-      <ExternalPanelDisplay />
     </div>
   );
 }

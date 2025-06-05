@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Helmet } from "react-helmet-async";
 import {
@@ -13,13 +13,13 @@ import {
 import { SelectOptions } from "@components/base/select";
 import { Icon } from "@components/icons";
 
+import { SidePanelProvider, useSidePanel } from "@context/ui/sidepanel";
+
 import { useAppointmentList } from "@services/data/appointments";
 
 import { FullscreenLoading } from "@pages/others/loading";
 
 import { formatMonthYearRanges, getWeekFromDate } from "@utils/date";
-
-import { useUIContext } from "@context/ui";
 
 import { ColumnView, GridView, ScheduleListView } from "./layouts";
 import { CreateAppointmentExternalPanel } from "./panels";
@@ -31,12 +31,14 @@ type T_ScheduleContext = {
 
   setViewType: (a: string) => void;
   setParamDate: (d: Date) => void;
-  setViewDateParams(v: string | null, d: Date | null): void;
+  setViewDateParams(v: string | null, d: Date | null, replace?: boolean): void;
+
+  setGhostAppointment(a: Partial<Appointment> | null): void;
 };
 
 const ScheduleContext = createContext<T_ScheduleContext | null>(null);
 
-export function useSchedule() {
+export function useSchedulePanel() {
   const data = useContext(ScheduleContext);
   if (data) return data;
 
@@ -44,8 +46,18 @@ export function useSchedule() {
 }
 
 export default function SchedulePage() {
-  const { extPanel } = useUIContext();
+  return (
+    <SidePanelProvider>
+      <SchedulePageButWithoutProvider />
+    </SidePanelProvider>
+  );
+}
+
+function SchedulePageButWithoutProvider() {
+  const sPanel = useSidePanel();
   const [params, setSeachParam] = useSearchParams();
+
+  const [ghostApt, setGhostApt] = useState<Appointment | null>(null);
 
   const dateStrParam = params.get("date") || "";
   const viewType = params.get("view") || "day";
@@ -58,7 +70,11 @@ export default function SchedulePage() {
     setViewDateParams(null, d);
   }
 
-  function setViewDateParams(view: string | null, d: Date | null) {
+  function setViewDateParams(
+    view: string | null,
+    d: Date | null,
+    replace = false
+  ) {
     let newView = viewType;
     let newDate = dateStrParam;
 
@@ -70,11 +86,14 @@ export default function SchedulePage() {
       newDate = format(d, "yyyy-M-dd");
     }
 
-    setSeachParam((prev) => {
-      prev.set("date", newDate);
-      prev.set("view", newView);
-      return prev;
-    });
+    setSeachParam(
+      (prev) => {
+        prev.set("date", newDate);
+        prev.set("view", newView);
+        return prev;
+      },
+      { replace: replace }
+    );
   }
 
   // * Fetching date from parameter
@@ -89,8 +108,6 @@ export default function SchedulePage() {
   if (data.status !== "success") {
     return <FullscreenLoading />;
   }
-
-  const appointments = data.data;
 
   function goToday() {
     setParamDate(new Date());
@@ -157,8 +174,17 @@ export default function SchedulePage() {
     }
   }
 
+  function setGhostAppointment(apt: Partial<Appointment> | null) {
+    setGhostApt(apt as Appointment);
+  }
+
   function openCreatePanel() {
-    extPanel.open("appt_create_panel");
+    sPanel.open("create_apt");
+  }
+
+  const appointments = [...data.data];
+  if (ghostApt) {
+    appointments.push(ghostApt);
   }
 
   const value = {
@@ -168,6 +194,8 @@ export default function SchedulePage() {
     setViewType,
     setParamDate,
     setViewDateParams,
+
+    setGhostAppointment,
   };
 
   return (
@@ -175,113 +203,115 @@ export default function SchedulePage() {
       <Helmet>
         <title>Haivy | Schedule</title>
       </Helmet>
-      <div className="content-wrapper flex coll">
-        <div className="py-4 flex aictr gap-6">
-          <button
-            className={[
-              "btn btn-outline btn-primary px-8 py-6 rounded-full",
-              isToday(viewDate) ? "btn-disabled" : "",
-            ].join(" ")}
-            onClick={goToday}
-          >
-            Today
-          </button>
+      <div className="content-wrapper flex">
+        <div className="flex coll h-full flex-1">
+          <div className="py-4 flex aictr gap-6 pr-8">
+            <button
+              className={[
+                "btn btn-outline btn-primary px-8 py-6 rounded-full",
+                isToday(viewDate) ? "btn-disabled" : "",
+              ].join(" ")}
+              onClick={goToday}
+            >
+              Today
+            </button>
 
-          <div className="flex gap-2">
-            <button className="btn btn-ghost" onClick={navigatePrev}>
-              <Icon name="chevron_left" />
+            <div className="flex gap-2">
+              <button className="btn btn-ghost" onClick={navigatePrev}>
+                <Icon name="chevron_left" />
+              </button>
+              <button className="btn btn-ghost" onClick={navigateNext}>
+                <Icon name="chevron_right" />
+              </button>
+            </div>
+
+            <div className="text-2xl font-semibold flex-1">{getTitle()}</div>
+
+            <button className="btn btn-primary py-4" onClick={openCreatePanel}>
+              <Icon name="add" />
+              Create
             </button>
-            <button className="btn btn-ghost" onClick={navigateNext}>
-              <Icon name="chevron_right" />
-            </button>
+
+            <SelectOptions
+              options={[
+                {
+                  value: "day",
+                  text: (
+                    <div className="flex aictr gap-2">
+                      <Icon name="calendar_view_day" />
+                      Day
+                    </div>
+                  ),
+                },
+                {
+                  value: "week",
+                  text: (
+                    <div className="flex aictr gap-2">
+                      <Icon name="calendar_view_week" />
+                      Week
+                    </div>
+                  ),
+                },
+                {
+                  value: "month",
+                  text: (
+                    <div className="flex aictr gap-2">
+                      <Icon name="calendar_view_month" />
+                      Month
+                    </div>
+                  ),
+                },
+                {
+                  value: "schedule",
+                  text: (
+                    <div className="flex aictr gap-2">
+                      <Icon name="view_agenda" />
+                      <div>Schedule</div>
+                    </div>
+                  ),
+                },
+              ]}
+              direction="bottom right"
+              closeOnClick
+              state={[viewType, setViewType]}
+            />
           </div>
 
-          <div className="text-2xl font-semibold flex-1">{getTitle()}</div>
+          {(() => {
+            switch (viewType) {
+              case "day":
+                return <CalendarViewDay />;
 
-          <button className="btn btn-primary py-4" onClick={openCreatePanel}>
-            <Icon name="add" />
-            Create
-          </button>
+              case "month":
+                return <CalendarViewMonth />;
 
-          <SelectOptions
-            options={[
-              {
-                value: "day",
-                text: (
-                  <div className="flex aictr gap-2">
-                    <Icon name="calendar_view_day" />
-                    Day
-                  </div>
-                ),
-              },
-              {
-                value: "week",
-                text: (
-                  <div className="flex aictr gap-2">
-                    <Icon name="calendar_view_week" />
-                    Week
-                  </div>
-                ),
-              },
-              {
-                value: "month",
-                text: (
-                  <div className="flex aictr gap-2">
-                    <Icon name="calendar_view_month" />
-                    Month
-                  </div>
-                ),
-              },
-              {
-                value: "schedule",
-                text: (
-                  <div className="flex aictr gap-2">
-                    <Icon name="view_agenda" />
-                    <div>Schedule</div>
-                  </div>
-                ),
-              },
-            ]}
-            direction="bottom end"
-            closeOnClick
-            state={[viewType, setViewType]}
-          />
+              case "schedule":
+                return <CalendarViewList />;
+
+              case "week":
+                return <CalendarViewWeek />;
+
+              default:
+                return <CalendarViewDay />;
+            }
+          })()}
         </div>
 
-        {(() => {
-          switch (viewType) {
-            case "day":
-              return <CalendarViewDay />;
-
-            case "month":
-              return <CalendarViewMonth />;
-
-            case "schedule":
-              return <CalendarViewList />;
-
-            case "week":
-              return <CalendarViewWeek />;
-
-            default:
-              return <CalendarViewDay />;
-          }
-        })()}
+        <CreateAppointmentExternalPanel />
       </div>
-
-      <CreateAppointmentExternalPanel />
     </ScheduleContext.Provider>
   );
 }
 
 function CalendarViewWeek() {
-  const { viewDate } = useSchedule();
+  const { viewDate } = useSchedulePanel();
   const dates = getWeekFromDate(viewDate);
 
   return <ColumnView dates={dates} baseHeight={60} />;
 }
 
 function CalendarViewDay() {
-  const { viewDate } = useSchedule();
+  const { viewDate } = useSchedulePanel();
 
   const days = [viewDate];
 
@@ -289,7 +319,7 @@ function CalendarViewDay() {
 }
 
 function CalendarViewMonth() {
-  const { viewDate } = useSchedule();
+  const { viewDate } = useSchedulePanel();
 
   return <GridView date={viewDate} />;
 }

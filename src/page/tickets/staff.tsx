@@ -45,7 +45,7 @@ export default function StaffTickets() {
   return (
     <TicketPanelContext.Provider value={{ tickets, currentId, setCurrentId }}>
       <div className="h-full flex coll key-fade-in">
-        <div className="pb-4 pt-8 flex aictr gap-3">
+        <div className="pb-4 pt-8 flex aictr gap-3 pr-8">
           <Icon name="article" size="3em" />
           <div className="flex-1">
             <div className="text-4xl font-bold">Tickets</div>
