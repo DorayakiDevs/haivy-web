@@ -215,10 +215,9 @@ export function AppointmentDisplay({
   }, [render]);
 
   useEffect(() => {
-    if (!status) return;
+    if (status) return;
 
     selfRef.current?.scrollIntoView({
-      behavior: "smooth",
       block: "start",
       inline: "start",
     });
@@ -237,7 +236,7 @@ export function AppointmentDisplay({
         ></div>
       </Tooltips>
       <div className="overflow-hidden whitespace-nowrap flex aictr gap-3">
-        <div>
+        <div className="font-mono">
           <span>{format(time, "kk:mm")}</span>
           <span className="extra"> - </span>
           <span className="extra">

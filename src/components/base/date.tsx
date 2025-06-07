@@ -7,6 +7,7 @@ type DatePickerProps = {
   max?: string;
   width?: string;
   disabled?: boolean;
+  readOnly?: boolean;
 
   state?: [Date, React.Dispatch<React.SetStateAction<Date>>];
 };
@@ -25,6 +26,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   max,
   width = "w-full",
   disabled = false,
+  readOnly = false,
   state,
 }) => {
   const local = useState(new Date());
@@ -48,12 +50,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       </div>
       <input
         type="datetime-local"
-        className="input input-bordered w-full"
+        className="input input-bordered w-full read-only:pointer-events-none"
         min={min}
         max={max}
         value={format(value)}
         disabled={disabled}
         onChange={handleChange}
+        readOnly={readOnly}
       />
     </div>
   );

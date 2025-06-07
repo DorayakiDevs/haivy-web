@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useSearchParams } from "react-router";
 
 const PARAM_NAME = "ext_panel";
@@ -57,11 +57,13 @@ export function useSidePanel() {
 export function SidePanelWrapper({
   children,
   onClose = () => {},
+  className,
   id,
 }: {
   children: React.ReactNode;
   onClose?: () => void;
   id?: string;
+  className?: string;
 }) {
   const { panelId, close } = useSidePanel();
 
@@ -90,7 +92,13 @@ export function SidePanelWrapper({
           </span>
         </div>
 
-        <div className="key-fade-in">{children}</div>
+        <div
+          className={["h-full key-fade-in overflow-x-hidden", className].join(
+            " "
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -33,6 +33,7 @@ type T_ScheduleContext = {
   setViewDateParams(v: string | null, d: Date | null, replace?: boolean): void;
 
   setGhostAppointment(a: Partial<Haivy.Appointment> | null): void;
+  reload(): void;
 };
 
 const ScheduleContext = createContext<T_ScheduleContext | null>(null);
@@ -195,6 +196,9 @@ function SchedulePageButWithoutProvider() {
     setViewDateParams,
 
     setGhostAppointment,
+    reload() {
+      data.reload();
+    },
   };
 
   return (
@@ -202,7 +206,9 @@ function SchedulePageButWithoutProvider() {
       <Helmet>
         <title>Haivy | Schedule</title>
       </Helmet>
-      <div className="content-wrapper flex">
+      <div className="content-wrapper flex flex-row-reverse">
+        <CreateAppointmentExternalPanel />
+
         <div className="flex coll h-full flex-1">
           <div className="py-4 flex aictr gap-6 pr-8">
             <button
@@ -295,8 +301,6 @@ function SchedulePageButWithoutProvider() {
             }
           })()}
         </div>
-
-        <CreateAppointmentExternalPanel />
       </div>
     </ScheduleContext.Provider>
   );

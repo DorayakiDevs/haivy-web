@@ -16,6 +16,7 @@ type SelectProps<T> = {
   direction?: string;
   label?: string;
   width?: string;
+  readOnly?: boolean;
 };
 
 export function SelectOptions<T extends string>(props: SelectProps<T>) {
@@ -26,6 +27,7 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
     direction = "top left",
     label,
     width,
+    readOnly = false,
   } = props;
 
   const local = useState("");
@@ -60,7 +62,7 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
   return (
     <div className={clssArr.join(" ")}>
       {!label || <div className="my-2 font-semibold text-sm">{label}</div>}
-      <div tabIndex={0} role="button" className="btn bg-base-100 w-full">
+      <div tabIndex={0} role="button" className={"btn bg-base-100 w-full"}>
         <div className="flex-1 text-left">
           {options[curIndex]?.text ||
             options[curIndex]?.value ||

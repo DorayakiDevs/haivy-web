@@ -1,9 +1,8 @@
 @import url("./keyframe.css");
+@import url("https://fonts.googleapis.com/css2?family=Chivo+Mono&display=swap");
 
 @import "tailwindcss";
-
 @plugin "@tailwindcss/typography";
-
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
 }
@@ -55,6 +54,8 @@ html {
 body {
   margin: 0px;
   padding: 0px;
+
+  --font-mono: "Chivo Mono", monospace;
 
   font-family: "Lexend";
   font-size: 18px;

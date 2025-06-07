@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import supabaseClient from "./create";
+import SuperClient from "./create";
 
 import { usePasswordSignIn } from "./auth/signin";
 import { useSignOut } from "./auth/signout";
@@ -21,8 +21,7 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function loadAccountDetails(id?: string) {
-      const { data } = await supabaseClient
-        .from("user_details")
+      const { data } = await SuperClient.from("user_details")
         .select()
         .eq("user_id", id)
         .maybeSingle();
@@ -49,12 +48,12 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
 
-    const { data } = supabaseClient.auth.onAuthStateChange(handleAuthChange);
+    const { data } = SuperClient.auth.onAuthStateChange(handleAuthChange);
     return data.subscription.unsubscribe;
   }, [uuid]);
 
   const value = {
-    supabase: supabaseClient,
+    supabase: SuperClient,
     session: session,
     loading: loading,
     account,

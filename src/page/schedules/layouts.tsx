@@ -213,7 +213,7 @@ export function GridView({ date }: { date: Date }) {
     return addDays(firstDate, offset);
   });
 
-  const title = formatMonthYearRanges(dates.slice(dayCount));
+  const title = formatMonthYearRanges(dates.slice(0, dayCount - 1));
 
   function handleDateClick(d: Date) {
     return () => {
@@ -249,11 +249,13 @@ export function GridView({ date }: { date: Date }) {
       {dates.map((date) => {
         return (
           <div
-            className="w-full h-full relative overflow-hidden"
+            className="w-full h-full relative hover:shadow-lg"
             style={{
               filter: getMonth(date) === month ? "" : "brightness(0.95)",
               backgroundColor: "#fff",
               transition: "all 0.1s",
+
+              pointerEvents: date.getMonth() === month ? "all" : "none",
             }}
             key={date.toISOString()}
           >

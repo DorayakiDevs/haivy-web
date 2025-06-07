@@ -12,7 +12,7 @@ import { AppointmentCard } from "@components/base/card";
 import { SelectOptions } from "@components/base/select";
 import { Tooltips } from "@components/base/others";
 
-import { useTicketData } from "@services/rpc/ticket";
+import { getTicketData } from "@services/rpc/ticket";
 import { useClient } from "@services/client";
 
 import { LoadingSkeletonParagraph } from "@pages/others/loading";
@@ -21,7 +21,6 @@ import { useUIContext } from "@context/ui";
 
 import { copyTextToClipboard } from "@utils/clipboard";
 import { formatDate } from "@utils/converter";
-import { repeat } from "@utils/generator";
 
 import { TicketPanelContext } from ".";
 
@@ -35,7 +34,7 @@ export function TicketDetailsPanel() {
   const [message, setMessage] = useState("");
   const ticketAction = useState("comment");
 
-  const res = useTicketData(currentId);
+  const res = getTicketData(currentId);
 
   if (res.status === "idle")
     return (
