@@ -14,3 +14,7 @@ export function formatDate(isoDateString?: string | null): string {
 
   return `${day}/${month}/${year} - ${hours}:${minutes}`;
 }
+
+export function capitalize(s: string) {
+  return s[0].toUpperCase() + s.slice(1);
+}

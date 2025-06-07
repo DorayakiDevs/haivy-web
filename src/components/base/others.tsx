@@ -29,7 +29,7 @@ export function Tooltips({
   children: React.ReactNode;
   dir?: "top" | "left" | "bottom" | "right";
 }) {
-  const clssArr = ["tooltip"];
+  const clssArr = ["tooltip z-2"];
 
   if (className) clssArr.push(className);
 

@@ -1,11 +1,11 @@
 import { useClient } from "@services/client";
 
-import AuthenticationPage from "@pages/auth";
-import AuthorizedPage from "@pages/index";
+import AuthenticationRouter from "@pages/auth";
+import AuthorizedRouter from "@pages";
 
 import { AppWrapperLoading } from "@pages/others/loading";
 
-export default function App() {
+export default function RoutedApplication() {
   const { session, loading } = useClient();
 
   if (loading) {
@@ -13,8 +13,8 @@ export default function App() {
   }
 
   if (!session?.user) {
-    return <AuthenticationPage />;
+    return <AuthenticationRouter />;
   } else {
-    return <AuthorizedPage />;
+    return <AuthorizedRouter />;
   }
 }

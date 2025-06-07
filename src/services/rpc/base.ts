@@ -19,7 +19,7 @@ const getTimestamp = () => new Date().toISOString();
  */
 export function useRPC<T>(
   funcName: string,
-  parameter?: Record<string, string> | null,
+  parameter?: Record<string, any> | null,
   paused?: boolean
 ) {
   const savePrevData = useRef(false);

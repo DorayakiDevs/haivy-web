@@ -15,7 +15,7 @@ import { Icon } from "@components/icons";
 
 import { SidePanelProvider, useSidePanel } from "@context/ui/sidepanel";
 
-import { useAppointmentList } from "@services/data/appointments";
+import { useAppointmentList } from "@services/rpc/appointments";
 
 import { FullscreenLoading } from "@pages/others/loading";
 
@@ -23,17 +23,16 @@ import { formatMonthYearRanges, getWeekFromDate } from "@utils/date";
 
 import { ColumnView, GridView, ScheduleListView } from "./layouts";
 import { CreateAppointmentExternalPanel } from "./panels";
-import type { Appointment } from "./type";
 
 type T_ScheduleContext = {
-  appointments: Appointment[];
+  appointments: Haivy.Appointment[];
   viewDate: Date;
 
   setViewType: (a: string) => void;
   setParamDate: (d: Date) => void;
   setViewDateParams(v: string | null, d: Date | null, replace?: boolean): void;
 
-  setGhostAppointment(a: Partial<Appointment> | null): void;
+  setGhostAppointment(a: Partial<Haivy.Appointment> | null): void;
 };
 
 const ScheduleContext = createContext<T_ScheduleContext | null>(null);
@@ -57,7 +56,7 @@ function SchedulePageButWithoutProvider() {
   const sPanel = useSidePanel();
   const [params, setSeachParam] = useSearchParams();
 
-  const [ghostApt, setGhostApt] = useState<Appointment | null>(null);
+  const [ghostApt, setGhostApt] = useState<Haivy.Appointment | null>(null);
 
   const dateStrParam = params.get("date") || "";
   const viewType = params.get("view") || "day";
@@ -174,8 +173,8 @@ function SchedulePageButWithoutProvider() {
     }
   }
 
-  function setGhostAppointment(apt: Partial<Appointment> | null) {
-    setGhostApt(apt as Appointment);
+  function setGhostAppointment(apt: Partial<Haivy.Appointment> | null) {
+    setGhostApt(apt as Haivy.Appointment);
   }
 
   function openCreatePanel() {
@@ -307,7 +306,7 @@ function CalendarViewWeek() {
   const { viewDate } = useSchedulePanel();
   const dates = getWeekFromDate(viewDate);
 
-  return <ColumnView dates={dates} baseHeight={60} />;
+  return <ColumnView dates={dates} baseHeight={124} />;
 }
 
 function CalendarViewDay() {

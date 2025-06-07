@@ -8,21 +8,16 @@ import { PatientDashboard } from "./patient";
 export default function DashboardPage() {
   const { account } = useClient();
 
-  const type = account?.account_type || "";
-
   function Routing() {
-    switch (type) {
-      case "staff": {
-        return <StaffDashboard />;
-      }
-      case "patient": {
-        return <PatientDashboard />;
-      }
+    if (!account) return null;
 
-      default: {
-        return "";
-      }
+    const r = account.roles;
+
+    if (r.includes("staff")) {
+      return <StaffDashboard />;
     }
+
+    return <PatientDashboard />;
   }
 
   return (

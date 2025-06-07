@@ -4,15 +4,17 @@ import { addMinutes, format, isValid, set } from "date-fns";
 
 import { InputTextErrorable } from "@components/base/input";
 import { SelectOptions } from "@components/base/select";
+import { LoadingIcon } from "@components/icons/others";
 import { TextArea } from "@components/base/textarea";
 import { DatePicker } from "@components/base/date";
+import { UserInfo } from "@components/users";
 import { Icon } from "@components/icons";
 
 import { SidePanelWrapper, useSidePanel } from "@context/ui/sidepanel";
 
+import { useUserList } from "@services/rpc/user";
+
 import { useSchedulePanel } from ".";
-import { UserAutoInfo } from "@components/users";
-import { useUserList } from "@services/data/user";
 
 const DUR_TEMP = [
   { value: "15", text: "15 minutes" },
@@ -38,8 +40,8 @@ export function CreateAppointmentExternalPanel() {
 
   const stateDetails = useState("");
 
-  const stateDoctor = useState("");
-  const statePatient = useState("");
+  const stateDoctor = useState<Haivy.User | null>(null);
+  const statePatient = useState<Haivy.User | null>(null);
   const statePhone = useState("");
 
   const aptDate = stateDate[0];
@@ -47,10 +49,8 @@ export function CreateAppointmentExternalPanel() {
   const aptDur = parseInt(stateDur[0]);
   const aptDoctor = stateDoctor[0];
   const aptPatient = statePatient[0];
-  const aptPhone = statePhone[0];
 
-  const [userQuery, setUserQuery] = useState("");
-  const list = useUserList(userQuery);
+  // const aptPhone = statePhone[0];
 
   useEffect(() => {
     if (!isValid(aptDate)) {
@@ -89,9 +89,9 @@ export function CreateAppointmentExternalPanel() {
     setGhostAppointment({
       meeting_date: aptDate.toISOString(),
       duration: aptDur,
-      status: "ghost",
-      staff_id: aptDoctor,
-      patient_id: aptPatient,
+      status: null,
+      staff_id: aptDoctor?.user_id,
+      patient_id: aptPatient?.user_id,
       content: aptDetails,
     });
   }, [aptDate, aptDur, aptDetails, panelId]);
@@ -104,8 +104,7 @@ export function CreateAppointmentExternalPanel() {
           <Icon name="event" size="2rem" />
         </div>
 
-        <div className="h-4 border-t-1"></div>
-        <div className="h-4"></div>
+        <div className="my-4 border-t-1"></div>
 
         <div className="flex aiend gap-4">
           <DatePicker label="Date" state={stateDate} />
@@ -124,36 +123,13 @@ export function CreateAppointmentExternalPanel() {
           />
         </div>
 
-        <div className="h-4"></div>
-
-        <div className="dropdown dropdown-end w-full">
-          <InputTextErrorable
-            className="w-full"
-            label="Assigned doctor"
-            state={[userQuery, setUserQuery]}
-            icon="badge"
-          />
-          {list.status !== "success" ||
-            list.data.users.map((u) => {
-              return (
-                <li key={u.id}>
-                  <UserAutoInfo id={u.id} />
-                </li>
-              );
-            })}
+        <div className="my-4">
+          <UserSearchInput label="Assigned doctor" state={stateDoctor} />
+          <UserSearchInput label="Patient" state={statePatient} />
         </div>
 
         <InputTextErrorable
-          label="Patient"
-          maxLength={32}
-          state={statePatient}
-          icon="person"
-        />
-
-        <div className="h-4"></div>
-
-        <InputTextErrorable
-          label="Contact phone number"
+          label="Patient phone number"
           maxLength={32}
           state={statePhone}
           icon="phone"
@@ -164,6 +140,7 @@ export function CreateAppointmentExternalPanel() {
           height="h-16"
           state={stateDetails}
           placeholder="Insert appointment details here . . . "
+          maxLength={64}
         />
 
         <button className="btn btn-primary btn-outline w-full my-8">
@@ -171,5 +148,111 @@ export function CreateAppointmentExternalPanel() {
         </button>
       </div>
     </SidePanelWrapper>
+  );
+}
+
+type T_UserSearchProps = {
+  label?: string;
+  state: [
+    Haivy.User | null,
+    React.Dispatch<React.SetStateAction<Haivy.User | null>>
+  ];
+};
+
+function UserSearchInput(props: T_UserSearchProps) {
+  const { label = "Search user" } = props;
+
+  const local = useState<Haivy.User | null>(null);
+  const [userQuery, setUserQuery] = useState("");
+  const [curIndex, setCurIndex] = useState(0);
+
+  const list = useUserList(userQuery);
+
+  const [user, setUser] = props.state || local;
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    const { key } = e;
+
+    if (list.status !== "success") return;
+
+    const l = list.data;
+
+    switch (key) {
+      case "ArrowDown": {
+        setCurIndex((i) => (i + 1 >= l.length ? 0 : i + 1));
+        break;
+      }
+
+      case "ArrowUp": {
+        setCurIndex((i) => (i - 1 < 0 ? l.length - 1 : i - 1));
+        break;
+      }
+
+      case "Enter": {
+        setUser(l[curIndex]);
+        return;
+      }
+    }
+  }
+
+  return (
+    <div className="dropdown dropdown-end w-full block">
+      {user ? (
+        <InputTextErrorable
+          className="w-full"
+          label={label}
+          state={[user.full_name, () => setUser(null)]}
+          icon="person"
+        />
+      ) : (
+        <>
+          <InputTextErrorable
+            className="w-full"
+            label={label}
+            state={[userQuery, setUserQuery]}
+            placeholder="Type to search"
+            icon="person"
+            onKeyDown={handleKeyDown}
+          />
+          <div className="menu dropdown-content w-full bg-base-100 shadow-xl rounded-lg">
+            {(() => {
+              if (user) {
+                return "";
+              }
+
+              if (list.status === "loading") {
+                return (
+                  <div className="w-full flex jcctr">
+                    <LoadingIcon />
+                  </div>
+                );
+              }
+
+              if (list.status !== "success") {
+                return "";
+              }
+
+              if (!list.data?.length) {
+                return (
+                  <i className="tactr my-4">Cannot find any suitable user</i>
+                );
+              }
+
+              return list.data.map((u, i) => {
+                return (
+                  <li
+                    key={u.user_id + "i"}
+                    onMouseDown={() => setUser(u)}
+                    className={i === curIndex ? "bg-base-300 rounded-md" : ""}
+                  >
+                    <UserInfo data={u} />
+                  </li>
+                );
+              });
+            })()}
+          </div>
+        </>
+      )}
+    </div>
   );
 }

@@ -3,8 +3,10 @@ import { useClient } from "services/client";
 export function StaffDashboard() {
   const { session, account } = useClient();
 
-  const { first_name = "", last_name = "", account_type = "" } = account || {};
-  const displayName = `${first_name} ${last_name}`.trim() || "Unnamed idiot";
+  if (!account || !session) return null;
+
+  const { full_name, roles } = account;
+  const displayName = full_name.trim() || "Unnamed idiot";
 
   const authAccount = session?.user.email || "+" + session?.user.phone;
 
@@ -17,8 +19,8 @@ export function StaffDashboard() {
             {displayName.includes("null") ? "Have a great day" : displayName}
           </div>
           <div className="text-sm">
-            [<span className="capitalize">{account_type}</span>] Signed in with:{" "}
-            {authAccount}
+            [<span className="capitalize">{roles.join(", ")}</span>] Signed in
+            with: {authAccount}
           </div>
         </div>
       </div>

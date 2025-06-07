@@ -65,15 +65,14 @@ function AccountSettings() {
   const [showDialog, setShowDialog] = useState(false);
   const { account, session } = useClient();
 
-  const firstName = useValidatableState(account?.first_name || "");
-  const lastName = useValidatableState(account?.last_name || "");
+  const fullName = useValidatableState(account?.full_name || "");
   const email = useValidatableState(session?.user.email || "", validateEmail);
-  const dateOfBirth = useValidatableState(account?.dob || "");
+  const dateOfBirth = useValidatableState(account?.birth_date || "");
   const phoneNumber = useValidatableState("");
 
   // const profilePicture = useValidatableState(account?.profile_picture || "");
 
-  const imgUrl = account?.profile_picture || "";
+  const imgUrl = account?.profile_image_url || "";
 
   function openDialog() {
     setShowDialog(true);
@@ -118,13 +117,7 @@ function AccountSettings() {
 
             <div className="flex-1">
               <div className="text-xl font-bold mb-2">Edit Information</div>
-              <div className="flex aictr gap-4">
-                <InputTextErrorable
-                  label="First name"
-                  state={firstName.state}
-                />
-                <InputTextErrorable label="Last name" state={lastName.state} />
-              </div>
+              <InputTextErrorable label="Full name" state={fullName.state} />
               <InputTextErrorable label="Email address" state={email.state} />
               <InputTextErrorable
                 label="Phone number"

@@ -18,6 +18,15 @@ import { TimelineRunner } from "./components";
 
 import { useSchedulePanel } from ".";
 
+function FilterAppt(dd: Date) {
+  return (a: Haivy.Appointment) => {
+    if (!a.meeting_date) return false;
+
+    const d = new Date(a.meeting_date);
+    return d.toLocaleDateString() === dd.toLocaleDateString();
+  };
+}
+
 export function ColumnView({
   dates,
   baseHeight,
@@ -67,14 +76,7 @@ export function ColumnView({
       <div className="col">
         <div className="h-60 flex pl-12 -mt-50">
           {dates.map((date) => {
-            const currentDate = date.toLocaleDateString();
-
-            const apps = appointments.filter((a) => {
-              if (!a.meeting_date) return false;
-
-              const d = new Date(a.meeting_date);
-              return d.toLocaleDateString() === currentDate;
-            });
+            const apps = appointments.filter(FilterAppt(date));
 
             return (
               <div
@@ -179,23 +181,16 @@ export function ScheduleListView() {
               </div>
             </div>
             <div className="pb-6 flex-1">
-              {appointments
-                .filter((a) => {
-                  if (!a.meeting_date) return false;
-
-                  const md = new Date(a.meeting_date);
-                  return date.toLocaleDateString() === md.toLocaleDateString();
-                })
-                .map((a) => {
-                  return (
-                    <AppointmentDisplay
-                      displayAsLine
-                      app={a}
-                      baseHeight={32}
-                      key={a.appointment_id}
-                    />
-                  );
-                })}
+              {appointments.filter(FilterAppt(date)).map((a) => {
+                return (
+                  <AppointmentDisplay
+                    displayAsLine
+                    app={a}
+                    baseHeight={32}
+                    key={a.appointment_id}
+                  />
+                );
+              })}
             </div>
           </div>
         );
@@ -281,23 +276,16 @@ export function GridView({ date }: { date: Date }) {
             </div>
 
             <div className="mt-9">
-              {appointments
-                .filter((a) => {
-                  if (!a.meeting_date) return false;
-
-                  const md = new Date(a.meeting_date);
-                  return date.toLocaleDateString() === md.toLocaleDateString();
-                })
-                .map((a) => {
-                  return (
-                    <AppointmentDisplay
-                      displayAsLine
-                      app={a}
-                      baseHeight={26}
-                      key={a.appointment_id}
-                    />
-                  );
-                })}
+              {appointments.filter(FilterAppt(date)).map((a) => {
+                return (
+                  <AppointmentDisplay
+                    displayAsLine
+                    app={a}
+                    baseHeight={26}
+                    key={a.appointment_id}
+                  />
+                );
+              })}
             </div>
           </div>
         );

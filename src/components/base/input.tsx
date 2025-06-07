@@ -17,7 +17,8 @@ type InputTextProps = {
 
   type?: "text" | "email" | "password" | "tel" | "number";
   state?: [string, React.Dispatch<React.SetStateAction<string>>];
-};
+  readOnly?: boolean;
+} & React.JSX.IntrinsicElements["input"];
 
 export function InputText(props: InputTextProps) {
   const {
@@ -32,8 +33,10 @@ export function InputText(props: InputTextProps) {
     type = "text",
 
     maxLength,
+    readOnly,
 
     state,
+    ...restInp
   } = props;
 
   const [hidden, setHidden] = useState(true);
@@ -81,7 +84,7 @@ export function InputText(props: InputTextProps) {
       )}
       <div className="flex gap-2">
         {children}
-        <label className={["input flex-1", inputClass].join(" ")}>
+        <label className={["input flex-1 ", inputClass].join(" ")}>
           {!icon || <Icon name={icon} size="1rem" />}
           <input
             type={isPassword ? (hidden ? "password" : "text") : type}
@@ -90,6 +93,8 @@ export function InputText(props: InputTextProps) {
             onChange={handleInput}
             value={value}
             maxLength={maxLength}
+            readOnly={readOnly}
+            {...restInp}
           />
           {!value ||
             (isPassword ? (

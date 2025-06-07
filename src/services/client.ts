@@ -1,17 +1,16 @@
 import { createContext, useContext } from "react";
 
 import { type Session, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "db.types";
+import type { Database } from "types/db.types";
 
-export type AccountType = Database["public"]["Tables"]["accountdetails"]["Row"];
-
+export type AccountType = Database["public"]["Tables"]["user_details"]["Row"];
 
 type T_ServiceClient = {
   supabase: SupabaseClient;
   session: Session | null;
   loading: boolean;
   account: AccountType | null;
-}
+};
 
 export const ClientContext = createContext<T_ServiceClient | null>(null);
 export const ClientProvider = ClientContext.Provider;

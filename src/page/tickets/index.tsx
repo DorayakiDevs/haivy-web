@@ -1,14 +1,10 @@
 import { createContext } from "react";
 
-import type { DatabaseColType } from "@services/global";
-
 import StaffTickets from "./staff";
 import { Helmet } from "react-helmet-async";
 
-type Ticket = DatabaseColType<"ticket">;
-
 export const TicketPanelContext = createContext<{
-  tickets: Ticket[];
+  tickets: Haivy.Ticket[];
   currentId: string;
   setCurrentId(id: string): void;
 }>({

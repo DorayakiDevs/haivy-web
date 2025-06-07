@@ -22,9 +22,9 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function loadAccountDetails(id?: string) {
       const { data } = await supabaseClient
-        .from("accountdetails")
+        .from("user_details")
         .select()
-        .eq("account_uid", id)
+        .eq("user_id", id)
         .maybeSingle();
 
       setAccount(data);

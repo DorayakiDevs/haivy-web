@@ -9,7 +9,6 @@ import { Icon } from "@components/icons";
 import { useDraggable } from "@hooks/helper";
 
 import { getBestPosition } from "./test";
-import type { Appointment } from "./type";
 import { SelectOptions } from "@components/base/select";
 
 export function getStatusColor(status: string | null): string {
@@ -44,90 +43,30 @@ function StatusBadge({ s }: { s: string | null }) {
   );
 }
 
-function ReadonlyContent({ details }: { details: Appointment }) {
-  const statusState = useState(details.status || "");
-
-  const date = new Date(details.meeting_date || "");
-  const endDate = addMinutes(date, details.duration);
-
-  return (
-    <>
-      <div className="text-xl font-semibold mb-4 link link-hover px-4">
-        {details.content.trim() || "Unnamed appointment"}
-      </div>
-
-      <div className="text-sm px-4 w-full">
-        <div className="flex aictr gap-3 mb-2">
-          <Icon name="schedule" size="1.5em" />
-          <div>
-            <div>{format(date, "PPPP")}</div>
-            <div>
-              {format(date, "K:mm")} - {format(endDate, "K:mm")}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex gap-3 mb-4">
-          <Icon name="subject" size="1.5em" />
-          <div>{details.content.trim() || "No information provided"}</div>
-        </div>
-
-        <div className="flex gap-3 mb-4">
-          <Icon name="info" size="1.5em" />
-          <div className="flex aictr spbtw flex-1">
-            Status:
-            <SelectOptions
-              options={[
-                "pending",
-                "scheduled",
-                "in_progress",
-                "completed",
-                "canceled",
-                "no_show",
-              ].map((s) => ({
-                text: <StatusBadge s={s} />,
-                value: s,
-              }))}
-              state={statusState}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-3 mb-4 flex-1">
-          <Icon name="person" size="1.5em" />
-          <div className="flex-1">
-            <div className="flex aictr spbtw my-1">
-              <div>Patient: </div>
-              <UserAutoInfo id={details.patient_id} />
-            </div>
-            <div className="flex aictr spbtw my-1">
-              <div>Assigned to: </div>
-              <UserAutoInfo id={details.staff_id} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
 export function DetailCards({
   details,
   close,
 }: {
-  details: Appointment;
+  details: Haivy.Appointment;
   close: () => void;
 }) {
   const { props, onMouseDown } = useDraggable("forward");
   const { style: oStyle, ...oRest } = props;
 
+  const statusState = useState(details.status || "");
+
+  const date = new Date(details.meeting_date || "");
+  const endDate = addMinutes(date, details.duration);
+
+  const status = statusState[0];
+
   function toggleEditMode() {}
 
   return (
     <div
-      className="card bg-base-200 shadow-xl w-[360px] border-t-12"
+      className="card bg-base-200 shadow-xl min-w-[360px] border-t-12"
       style={{
-        borderColor: getStatusColor(details.status),
+        borderColor: getStatusColor(status),
         ...oStyle,
       }}
       {...oRest}
@@ -153,7 +92,63 @@ export function DetailCards({
         </div>
       </div>
 
-      <ReadonlyContent details={details} />
+      <div className="text-xl font-semibold mb-4 link link-hover px-4">
+        {details.content?.trim() || "Unnamed appointment"}
+      </div>
+
+      <div className="text-sm px-4 w-full">
+        <div className="flex aictr gap-3 mb-2">
+          <Icon name="schedule" size="1.5em" />
+          <div>
+            <div>{format(date, "PPPP")}</div>
+            <div>
+              {format(date, "K:mm")} - {format(endDate, "K:mm")}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3 mb-4">
+          <Icon name="subject" size="1.5em" />
+          <div>{details.content?.trim() || "No information provided"}</div>
+        </div>
+
+        <div className="flex gap-3 mb-4">
+          <Icon name="info" size="1.5em" />
+          <div className="flex aictr spbtw flex-1">
+            Status:
+            <SelectOptions
+              options={[
+                "pending",
+                "scheduled",
+                "in_progress",
+                "completed",
+                "canceled",
+                "no_show",
+              ].map((s) => ({
+                text: <StatusBadge s={s} />,
+                value: s,
+              }))}
+              state={statusState}
+              closeOnClick
+              direction="bottom right"
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-3 mb-4 flex-1">
+          <Icon name="person" size="1.5em" />
+          <div className="flex-1">
+            <div className="flex aictr spbtw gap-4 my-1">
+              <div>Patient: </div>
+              <UserAutoInfo id={details.patient_id} hideAvatar roleCount={0} />
+            </div>
+            <div className="flex aictr spbtw gap-4 my-1">
+              <div>Assigned to: </div>
+              <UserAutoInfo id={details.staff_id} hideAvatar roleCount={0} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -163,7 +158,7 @@ export function AppointmentDisplay({
   baseHeight,
   displayAsLine,
 }: {
-  app: Appointment;
+  app: Haivy.Appointment;
   baseHeight: number;
   displayAsLine?: boolean;
 }) {
@@ -197,13 +192,8 @@ export function AppointmentDisplay({
   }
 
   function open(e: React.MouseEvent) {
-    if (status === "ghost") {
-      return;
-    }
-
-    if (render) {
-      return close();
-    }
+    if (!status) return;
+    if (render) return close();
 
     setPos({ x: e.clientX, y: e.clientY, o: 0 });
     setRender(true);
@@ -225,9 +215,7 @@ export function AppointmentDisplay({
   }, [render]);
 
   useEffect(() => {
-    if (status !== "ghost") {
-      return;
-    }
+    if (!status) return;
 
     selfRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -289,7 +277,7 @@ export function AppointmentDisplay({
               dur <= 0.5 * baseHeight && !render ? "nowrap" : "pre-wrap",
           }}
         >
-          {content.trim() || "Unnamed appointment"}
+          {content?.trim() || "Unnamed appointment"}
         </div>
         <span>
           {format(time, "k:mm")} - {format(endTime, "k:mm")}

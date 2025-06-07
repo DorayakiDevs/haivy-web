@@ -1,6 +1,5 @@
 import { Icon } from "@components/icons";
 
-import type { DatabaseColType } from "@services/global";
 import Badge from "./badge";
 
 import { formatDate } from "@utils/converter";
@@ -27,7 +26,7 @@ type ActionCardProps = {
 
   tag?: React.ReactNode;
   description?: React.ReactNode;
-  content?: React.ReactNode;
+  details?: React.ReactNode;
 
   title?: string;
   actions?: {
@@ -42,7 +41,7 @@ export function ActionCard(props: ActionCardProps) {
     subIcon,
     tag,
     description,
-    content,
+    details,
     title,
     actions = [],
     className,
@@ -60,17 +59,18 @@ export function ActionCard(props: ActionCardProps) {
       {...rest}
     >
       <div className="subhead flex aictr spbtw gap-1 text-xs">
-        <div className="flex aictr gap-2 font-bold">
+        <div className="flex aictr gap-2 text-xs">
           <Icon name={subIcon || ""} size="1.5em" />
           {subtitle}
         </div>
+        {tag}
       </div>
       <div className="text-clip overflow-hidden">
         <div className="card-title text-md">{title}</div>
         <div className="text-sm font-semibold">{description}</div>
       </div>
       <div className="content text-sm my-3 overflow-hidden flex-1">
-        {content}
+        {details}
       </div>
       {!title || (
         <div className="actions flex aictr gap-2">
@@ -91,10 +91,8 @@ export function ActionCard(props: ActionCardProps) {
   );
 }
 
-type Appointment = DatabaseColType<"appointment">;
-
 type AppointmentCardProps = {
-  data: Appointment;
+  data: Haivy.Appointment;
 } & ActionCardProps;
 
 export function AppointmentCard({ data, ...rest }: AppointmentCardProps) {
@@ -114,7 +112,7 @@ export function AppointmentCard({ data, ...rest }: AppointmentCardProps) {
       }
       subtitle={formatDate(data.meeting_date)}
       description={!data.staff_id || "by " + data.staff_id}
-      content={"Created on: " + formatDate(data.created_date)}
+      details={"Created on: " + formatDate(data.created_date)}
       {...rest}
       actions={[
         {

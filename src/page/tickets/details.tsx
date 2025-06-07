@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 
 import MDEditor from "@components/mdeditor";
 import { LoadingIcon } from "@components/icons/others";
-import { UserInfoInline } from "@components/users";
+import { UserInfo } from "@components/users";
 import { Icon } from "@components/icons";
 
 import Badge from "@components/base/badge";
@@ -12,7 +12,7 @@ import { AppointmentCard } from "@components/base/card";
 import { SelectOptions } from "@components/base/select";
 import { Tooltips } from "@components/base/others";
 
-import { useTicketData } from "@services/data/ticket";
+import { useTicketData } from "@services/rpc/ticket";
 import { useClient } from "@services/client";
 
 import { LoadingSkeletonParagraph } from "@pages/others/loading";
@@ -142,7 +142,7 @@ export function TicketDetailsPanel() {
 
         <div className="content border-1 rounded-lg overflow-hidden">
           <div className="bg-primary py-2 px-4 text-primary-content flex aictr spbtw">
-            <UserInfoInline data={created_by} />
+            <UserInfo data={created_by} />
             <div>{formatDate(date_created)}</div>
           </div>
           <div className="p-4 whitespace-pre-line">{content}</div>
@@ -156,7 +156,7 @@ export function TicketDetailsPanel() {
 
                 <div className="content border-1 rounded-lg overflow-hidden">
                   <div className="bg-primary py-2 px-4 text-primary-content flex aictr spbtw">
-                    <UserInfoInline data={h.by} />
+                    <UserInfo data={h.by} />
                     <div>{formatDate(h.time)}</div>
                   </div>
                   <div className="p-4 prose prose-invert">
@@ -245,7 +245,7 @@ export function TicketDetailsPanel() {
             <Icon name="person" size="1.4em" />
             Created by
           </div>
-          <UserInfoInline data={created_by} />
+          <UserInfo data={created_by} />
         </div>
         <hr />
         <div className="py-4">

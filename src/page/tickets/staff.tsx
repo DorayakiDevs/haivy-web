@@ -10,14 +10,35 @@ import { ActionCard } from "@components/base/card";
 import { Tooltips } from "@components/base/others";
 import { Icon } from "@components/icons";
 
-import { useTickets } from "@services/data/ticket";
+import { useTickets } from "@services/rpc/ticket";
 
 import { FullscreenLoading } from "@pages/others/loading";
 
-import { formatDate } from "@utils/converter";
+import { capitalize, formatDate } from "@utils/converter";
 
 import { TicketDetailsPanel } from "./details";
 import { TicketPanelContext } from ".";
+import { format } from "date-fns";
+
+function CircleIndicator({ s }: { s: string }) {
+  const color: { [n: string]: string } = {
+    pending: "#FACC15",
+    cancelled: "#EF4444",
+    approved: "#10B981",
+  };
+
+  const st = capitalize(s);
+
+  return (
+    <Tooltips text={st} dir="left">
+      <div
+        className="w-4 h-4 rounded-full"
+        title={st}
+        style={{ background: color[s] || "#676767" }}
+      ></div>
+    </Tooltips>
+  );
+}
 
 export default function StaffTickets() {
   const { id: currentId = "" } = useParams();
@@ -35,7 +56,7 @@ export default function StaffTickets() {
     return "Failed to load data";
   }
 
-  const { tickets = [] } = ticketList.data || {};
+  const tickets = ticketList.data || [];
 
   function setCurrentId(id: string) {
     if (!id) return navigate("/tickets");
@@ -45,7 +66,7 @@ export default function StaffTickets() {
   return (
     <TicketPanelContext.Provider value={{ tickets, currentId, setCurrentId }}>
       <div className="h-full flex coll key-fade-in">
-        <div className="pb-4 pt-8 flex aictr gap-3 pr-8">
+        <div className="flex aictr pb-4 pt-8 pr-8 gap-3">
           <Icon name="article" size="3em" />
           <div className="flex-1">
             <div className="text-4xl font-bold">Tickets</div>
@@ -53,11 +74,11 @@ export default function StaffTickets() {
           </div>
 
           <div className="control flex-1 flex aictr jcend gap-4">
-            <button className="btn btn-primary">
+            <button className="btn btn-primary h-12">
               <Icon name="add" />
-              Open a ticket
+              Create a ticket
             </button>
-            <div className="flex aictr gap-2">
+            <div className="flex aictr gap-2 h-full">
               <Tooltips text="Grid View">
                 <button
                   className={
@@ -106,29 +127,38 @@ function GridList() {
   const { tickets, setCurrentId } = useContext(TicketPanelContext);
 
   return (
-    <div className="grid grid-cols-4 overflow-y-auto gap-4 place-items-center pb-8">
+    <div className="grid grid-cols-4 overflow-y-auto gap-4 place-items-center py-8">
       {tickets.map((ticket, i) => {
+        const { ticket_id, status, date_created, content, title, ticket_type } =
+          ticket;
+
+        const created = format(
+          new Date(date_created || ""),
+          "eeee, MMM io, yyyy"
+        );
+
         return (
           <ActionCard
-            key={ticket.ticket_id}
-            subtitle={formatDate(ticket.date_created)}
+            key={ticket_id}
+            subtitle={capitalize(ticket_type)}
             subIcon="confirmation_number"
-            tag={
-              <Badge className="capitalize badge-primary">
-                {ticket.ticket_type}
-              </Badge>
+            tag={<CircleIndicator s={status} />}
+            details={
+              <div>
+                <div>{content}</div>
+                <div className="font-semibold text-xs">{created}</div>
+              </div>
             }
-            content={ticket.content || ""}
-            title={ticket.title || "No title"}
+            title={title || "No title"}
+            className="h-60 key-fade-in"
+            style={{ animationDuration: Math.min(1, i * 0.2) + "s" }}
+            onDoubleClick={() => setCurrentId(ticket_id)}
             actions={[
               {
                 title: "Resolve",
-                onClick: () => setCurrentId(ticket.ticket_id),
+                onClick: () => setCurrentId(ticket_id),
               },
             ]}
-            className="no-animated h-full key-fade-in"
-            style={{ animationDuration: Math.min(1, i * 0.2) + "s" }}
-            onDoubleClick={() => setCurrentId(ticket.ticket_id)}
           />
         );
       })}
@@ -145,8 +175,8 @@ function TableList() {
         {
           className: "jcctr",
           header: <div className="pr-2">#</div>,
-          render(_, i) {
-            return <div className="pr-2">{i + 1}</div>;
+          render(_) {
+            return <CircleIndicator s={_.status} />;
           },
           width: 60,
         },

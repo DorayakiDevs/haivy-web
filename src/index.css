@@ -165,10 +165,6 @@ body {
   text-align: right;
 }
 
-.transition-width {
-  transition: width;
-}
-
 *:not(.selectable),
 .usn {
   user-select: none;

@@ -6,9 +6,9 @@ import { useClient } from "@services/client";
 export function PatientDashboard() {
   const { session, account } = useClient();
 
-  const { first_name = "", last_name = "" } = account || {};
-  const displayName = `${first_name} ${last_name}`.trim();
+  if (!account || !session) return null;
 
+  const displayName = account.full_name.trim();
   const authAccount = session?.user.email || "+" + session?.user.phone;
 
   return (
