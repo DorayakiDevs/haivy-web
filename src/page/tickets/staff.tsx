@@ -1,0 +1,265 @@
+import { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+
+import CustomTable from "@components/table";
+import { SlideOverlayPanel } from "@components/overlay/slidepanel";
+import { CelebrateButton } from "@components/base/button";
+
+import Badge from "@components/base/badge";
+import { ActionCard } from "@components/base/card";
+import { Tooltips } from "@components/base/others";
+import { Icon } from "@components/icons";
+
+import { useTickets } from "@services/rpc/ticket";
+
+import { FullscreenLoading } from "@pages/others/loading";
+
+import { capitalize, formatDate } from "@utils/converter";
+
+import { TicketDetailsPanel } from "./details";
+import { TicketPanelContext } from ".";
+import { format } from "date-fns";
+
+function CircleIndicator({ s }: { s: string }) {
+  const color: { [n: string]: string } = {
+    pending: "#FACC15",
+    cancelled: "#EF4444",
+    approved: "#10B981",
+  };
+
+  const st = capitalize(s);
+
+  return (
+    <Tooltips text={st} dir="left">
+      <div
+        className="w-4 h-4 rounded-full"
+        title={st}
+        style={{ background: color[s] || "#676767" }}
+      ></div>
+    </Tooltips>
+  );
+}
+
+export default function StaffTickets() {
+  const { id: currentId = "" } = useParams();
+  const navigate = useNavigate();
+
+  const ticketList = useTickets();
+
+  const [gridView, setGridView] = useState(false);
+
+  if (ticketList.status === "loading" || ticketList.status === "idle") {
+    return <FullscreenLoading />;
+  }
+
+  if (ticketList.status !== "success") {
+    return "Failed to load data";
+  }
+
+  const tickets = ticketList.data || [];
+
+  function setCurrentId(id: string) {
+    if (!id) return navigate("/tickets");
+    navigate(`/tickets/${id}`);
+  }
+
+  return (
+    <TicketPanelContext.Provider value={{ tickets, currentId, setCurrentId }}>
+      <div className="h-full flex coll key-fade-in">
+        <div className="flex aictr pb-4 pt-8 pr-8 gap-3">
+          <Icon name="article" size="3em" />
+          <div className="flex-1">
+            <div className="text-4xl font-bold">Tickets</div>
+            <div className="">{tickets.length} tickets</div>
+          </div>
+
+          <div className="control flex-1 flex aictr jcend gap-4">
+            <button className="btn btn-primary h-12">
+              <Icon name="add" />
+              Create a ticket
+            </button>
+            <div className="flex aictr gap-2 h-full">
+              <Tooltips text="Grid View">
+                <button
+                  className={
+                    "btn-primary btn btn-square btn-lg " +
+                    (gridView ? "" : "btn-outline")
+                  }
+                  onClick={() => setGridView(true)}
+                >
+                  <Icon name="grid_view" size="1.5em" />
+                </button>
+              </Tooltips>
+              <Tooltips text="Table View">
+                <button
+                  className={
+                    "btn-primary btn btn-square btn-lg " +
+                    (gridView ? "btn-outline" : "")
+                  }
+                  onClick={() => setGridView(false)}
+                >
+                  <Icon name="view_list" size="1.5em" />
+                </button>
+              </Tooltips>
+            </div>
+          </div>
+        </div>
+
+        {tickets.length ? (
+          gridView ? (
+            <GridList />
+          ) : (
+            <TableList />
+          )
+        ) : (
+          <AllCaughtUp />
+        )}
+
+        <SlideOverlayPanel close={() => setCurrentId("")} isOpen={!!currentId}>
+          <TicketDetailsPanel />
+        </SlideOverlayPanel>
+      </div>
+    </TicketPanelContext.Provider>
+  );
+}
+
+function GridList() {
+  const { tickets, setCurrentId } = useContext(TicketPanelContext);
+
+  return (
+    <div className="grid grid-cols-4 overflow-y-auto gap-4 place-items-center py-8">
+      {tickets.map((ticket, i) => {
+        const { ticket_id, status, date_created, content, title, ticket_type } =
+          ticket;
+
+        const created = format(
+          new Date(date_created || ""),
+          "eeee, MMM io, yyyy"
+        );
+
+        return (
+          <ActionCard
+            key={ticket_id}
+            subtitle={capitalize(ticket_type)}
+            subIcon="confirmation_number"
+            tag={<CircleIndicator s={status} />}
+            details={
+              <div>
+                <div>{content}</div>
+                <div className="font-semibold text-xs">{created}</div>
+              </div>
+            }
+            title={title || "No title"}
+            className="h-60 key-fade-in"
+            style={{ animationDuration: Math.min(1, i * 0.2) + "s" }}
+            onDoubleClick={() => setCurrentId(ticket_id)}
+            actions={[
+              {
+                title: "Resolve",
+                onClick: () => setCurrentId(ticket_id),
+              },
+            ]}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function TableList() {
+  const { tickets, setCurrentId } = useContext(TicketPanelContext);
+
+  return (
+    <CustomTable
+      cols={[
+        {
+          className: "jcctr",
+          header: <div className="pr-2">#</div>,
+          render(_) {
+            return <CircleIndicator s={_.status} />;
+          },
+          width: 60,
+        },
+        {
+          header: "Request",
+          width: "calc(60%)",
+          render(a) {
+            return (
+              <div>
+                <div className="font-bold">{a.title}</div>
+                <div>┗ {a.content} </div>
+              </div>
+            );
+          },
+        },
+
+        {
+          header: "Type",
+          width: "calc(40% - 300px)",
+          render(a) {
+            return (
+              <Badge className="badge-secondary capitalize">
+                {a.ticket_type}
+              </Badge>
+            );
+          },
+        },
+
+        {
+          header: "Created day",
+          width: 200,
+          render(a) {
+            return <div>{formatDate(a.date_created)}</div>;
+          },
+        },
+
+        {
+          render(a) {
+            return (
+              <button
+                className="btn"
+                onClick={() => {
+                  setCurrentId(a.ticket_id);
+                }}
+              >
+                Resolve
+              </button>
+            );
+          },
+
+          header: "Action",
+          className: "jcctr",
+          width: 100,
+        },
+      ]}
+      arr={tickets}
+      rowClassName={() => "text-sm key-fade-in"}
+      rowStyle={(_, i) => ({ animationDuration: Math.min(1, i * 0.2) + "s" })}
+      top={0}
+      rowHeight={70}
+      className="h-full"
+      children={<div className="text-sm tactr mt-4">End of the list</div>}
+      onRowDoubleClick={(ticket) => setCurrentId(ticket.ticket_id)}
+    />
+  );
+}
+
+function AllCaughtUp() {
+  return (
+    <div className="flex aictr jcctr h-full coll gap-8">
+      <div className="flex aictr jcctr gap-8">
+        <Icon name="celebration" size="8rem" />
+        <div className="h-8 border-1"></div>
+        <div>
+          <h1 className="text-4xl font-bold">
+            Nice job! You are all caught up
+          </h1>
+          <div>Go grab a coffee or some snacks... cause you deserve it</div>
+        </div>
+      </div>
+      <div className="mb-22">
+        <CelebrateButton />
+      </div>
+    </div>
+  );
+}
