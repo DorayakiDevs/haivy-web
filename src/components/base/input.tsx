@@ -5,7 +5,7 @@ import { Icon } from "../icons";
 
 type InputTextProps = {
   icon?: string;
-  title?: string;
+  label?: string;
   placeholder?: string;
 
   inputClass?: string;
@@ -17,7 +17,8 @@ type InputTextProps = {
 
   type?: "text" | "email" | "password" | "tel" | "number";
   state?: [string, React.Dispatch<React.SetStateAction<string>>];
-};
+  readOnly?: boolean;
+} & React.JSXProps<"input">;
 
 export function InputText(props: InputTextProps) {
   const {
@@ -25,15 +26,17 @@ export function InputText(props: InputTextProps) {
     notice,
     icon,
 
-    title,
+    label: title,
     placeholder,
     inputClass,
     className = "",
     type = "text",
 
     maxLength,
+    readOnly = false,
 
     state,
+    ...restInp
   } = props;
 
   const [hidden, setHidden] = useState(true);
@@ -73,12 +76,19 @@ export function InputText(props: InputTextProps) {
 
   return (
     <fieldset className={["fieldset text-1", className].join(" ")}>
-      {!title || (
-        <legend className="fieldset-legend flex aiend spbtw">
-          {title}
-          <div className="label float-right">{notice}</div>
-        </legend>
-      )}
+      <legend className="fieldset-legend flex aiend spbtw w-full pr-2">
+        <div>{title || ""}</div>
+        <div className="label">
+          {maxLength ? (
+            <div className="text-xs">
+              {value.length}/{maxLength}
+            </div>
+          ) : (
+            ""
+          )}
+          {notice}
+        </div>
+      </legend>
       <div className="flex gap-2">
         {children}
         <label className={["input flex-1", inputClass].join(" ")}>
@@ -90,6 +100,8 @@ export function InputText(props: InputTextProps) {
             onChange={handleInput}
             value={value}
             maxLength={maxLength}
+            readOnly={readOnly}
+            {...restInp}
           />
           {!value ||
             (isPassword ? (
@@ -115,7 +127,7 @@ export function InputText(props: InputTextProps) {
   );
 }
 
-export function ErrorableTextInput(props: InputTextProps & { error?: string }) {
+export function InputTextErrorable(props: InputTextProps & { error?: string }) {
   const { error, inputClass, ...rest } = props;
 
   const clssArr = [inputClass];

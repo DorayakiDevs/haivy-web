@@ -1,0 +1,28 @@
+.dft-table {
+  overflow-y: auto;
+  position: relative;
+}
+
+.dft-table .t-row {
+  display: flex;
+  padding: 0.25rem 0;
+  align-items: center;
+  z-index: 0;
+}
+
+.dft-table .t-row .t-col {
+  padding: 0.25rem 0.5rem;
+}
+
+.dft-table .t-header {
+  position: sticky;
+  top: 0px;
+
+  z-index: 5;
+}
+
+.dft-table .t-header .t-row {
+  font-weight: 700;
+  color: var(--color-primary-content);
+  background-color: var(--color-primary);
+}

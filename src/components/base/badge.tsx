@@ -1,9 +1,9 @@
-type Props = React.JSX.IntrinsicElements["span"];
+type Props = React.JSXProps<"span">;
 
 export default function Badge(props: Props) {
   const { className, ...rest } = props;
 
-  const clssArr = ["badge"];
+  const clssArr = ["badge mr-1"];
 
   if (className) {
     clssArr.push(className);

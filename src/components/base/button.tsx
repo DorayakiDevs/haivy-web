@@ -1,6 +1,7 @@
+import type { ReactJSXProps } from "react";
 import { LTRLoadingBar } from "./others";
 
-type BttProps = React.JSX.IntrinsicElements["button"];
+type BttProps = ReactJSXProps<"button">;
 
 export function Button(props: BttProps) {
   const { className, ...rest } = props;
@@ -32,14 +33,22 @@ export function SubmitWithLoading({
           transition: "all 0.1s",
         }}
       >
-        <div
+        <button
           className="btn btn-primary"
           onClick={loading ? undefined : onClick}
         >
           {text}
-        </div>
+        </button>
         <LTRLoadingBar height={45} />
       </div>
     </div>
+  );
+}
+
+export function CelebrateButton() {
+  return (
+    <button className="btn bg-gradient-to-r from-pink-200 to-secondary btn-lg via-yellow-100">
+      Celebrate!
+    </button>
   );
 }
