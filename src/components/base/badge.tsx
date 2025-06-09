@@ -1,4 +1,4 @@
-type Props = React.JSX.IntrinsicElements["span"];
+type Props = React.JSXProps<"span">;
 
 export default function Badge(props: Props) {
   const { className, ...rest } = props;

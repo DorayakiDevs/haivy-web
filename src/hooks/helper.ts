@@ -3,9 +3,7 @@ import { useEffect, useRef, useState } from "react";
 type T_DraggableRetVal = {
   onMouseDown: React.MouseEventHandler;
 
-  props: { style: React.CSSProperties } & Partial<
-    React.JSX.IntrinsicElements["div"]
-  >;
+  props: { style: React.CSSProperties } & Partial<React.JSXProps<"div">>;
 
   offsetX: number;
   offsetY: number;

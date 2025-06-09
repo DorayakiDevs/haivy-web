@@ -1,4 +1,4 @@
-import CustomTable from "@components/table";
+import { Table } from "@components/table";
 import { Tooltips } from "@components/base/others";
 
 import { useClient } from "@services/client";
@@ -27,7 +27,7 @@ export function PatientDashboard() {
         <div className="h-full flex-1">
           <div className="text-2xl font-bold my-3">Medicine information</div>
 
-          <CustomTable
+          <Table
             cols={[
               {
                 header: (

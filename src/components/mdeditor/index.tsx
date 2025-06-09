@@ -163,7 +163,7 @@ export default function MDEditor({
 }
 
 function MDOption(
-  p: React.JSX.IntrinsicElements["button"] &
+  p: React.JSXProps<"button"> &
     ({ icon: string; text?: never } | { icon?: never; text: string }) & {
       active?: boolean;
     }

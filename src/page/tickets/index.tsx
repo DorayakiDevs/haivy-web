@@ -17,7 +17,6 @@ export default function TicketsPage() {
   return (
     <>
       <Helmet>
-        UNSAFE_componentWillMount
         <title>Haivy | Tickets</title>
       </Helmet>
       <StaffTickets />

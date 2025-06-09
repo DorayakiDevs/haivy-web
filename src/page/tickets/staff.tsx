@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import CustomTable from "@components/table";
 import { SlideOverlayPanel } from "@components/overlay/slidepanel";
 import { CelebrateButton } from "@components/base/button";
 
@@ -19,6 +18,9 @@ import { capitalize, formatDate } from "@utils/converter";
 import { TicketDetailsPanel } from "./details";
 import { TicketPanelContext } from ".";
 import { format } from "date-fns";
+import { useUIContext } from "@context/ui";
+import { TicketCreationPanel } from "./panels";
+import { Table } from "@components/table";
 
 function CircleIndicator({ s }: { s: string }) {
   const color: { [n: string]: string } = {
@@ -41,6 +43,8 @@ function CircleIndicator({ s }: { s: string }) {
 }
 
 export default function StaffTickets() {
+  const { sidepanel } = useUIContext();
+
   const { id: currentId = "" } = useParams();
   const navigate = useNavigate();
 
@@ -63,62 +67,69 @@ export default function StaffTickets() {
     navigate(`/tickets/${id}`);
   }
 
+  function openNewTicket() {
+    sidepanel.open("create_ticket");
+  }
+
   return (
     <TicketPanelContext.Provider value={{ tickets, currentId, setCurrentId }}>
-      <div className="h-full flex coll key-fade-in">
-        <div className="flex aictr pb-4 pt-8 pr-8 gap-3">
-          <Icon name="article" size="3em" />
-          <div className="flex-1">
-            <div className="text-4xl font-bold">Tickets</div>
-            <div className="">{tickets.length} tickets</div>
-          </div>
+      <div className="content-wrapper flex">
+        <div className="h-full flex coll key-fade-in flex-1">
+          <div className="flex aictr pb-4 pt-8 pr-8 gap-3">
+            <Icon name="article" size="3em" />
+            <div className="flex-1">
+              <div className="text-4xl font-bold">Tickets</div>
+              <div className="">{tickets.length} tickets</div>
+            </div>
 
-          <div className="control flex-1 flex aictr jcend gap-4">
-            <button className="btn btn-primary h-12">
-              <Icon name="add" />
-              Create a ticket
-            </button>
-            <div className="flex aictr gap-2 h-full">
-              <Tooltips text="Grid View">
-                <button
-                  className={
-                    "btn-primary btn btn-square btn-lg " +
-                    (gridView ? "" : "btn-outline")
-                  }
-                  onClick={() => setGridView(true)}
-                >
-                  <Icon name="grid_view" size="1.5em" />
-                </button>
-              </Tooltips>
-              <Tooltips text="Table View">
-                <button
-                  className={
-                    "btn-primary btn btn-square btn-lg " +
-                    (gridView ? "btn-outline" : "")
-                  }
-                  onClick={() => setGridView(false)}
-                >
-                  <Icon name="view_list" size="1.5em" />
-                </button>
-              </Tooltips>
+            <div className="control flex-1 flex aictr jcend gap-4">
+              <button className="btn btn-primary h-12" onClick={openNewTicket}>
+                <Icon name="add" />
+                Create a ticket
+              </button>
+              <div className="flex aictr gap-2 h-full">
+                <Tooltips text="Grid View">
+                  <button
+                    className={
+                      "btn-primary btn btn-square btn-lg " +
+                      (gridView ? "" : "btn-outline")
+                    }
+                    onClick={() => setGridView(true)}
+                  >
+                    <Icon name="grid_view" size="1.5em" />
+                  </button>
+                </Tooltips>
+                <Tooltips text="Table View">
+                  <button
+                    className={
+                      "btn-primary btn btn-square btn-lg " +
+                      (gridView ? "btn-outline" : "")
+                    }
+                    onClick={() => setGridView(false)}
+                  >
+                    <Icon name="view_list" size="1.5em" />
+                  </button>
+                </Tooltips>
+              </div>
             </div>
           </div>
-        </div>
 
-        {tickets.length ? (
-          gridView ? (
-            <GridList />
+          {tickets.length ? (
+            gridView ? (
+              <GridList />
+            ) : (
+              <TableList />
+            )
           ) : (
-            <TableList />
-          )
-        ) : (
-          <AllCaughtUp />
-        )}
-
-        <SlideOverlayPanel close={() => setCurrentId("")} isOpen={!!currentId}>
-          <TicketDetailsPanel />
-        </SlideOverlayPanel>
+            <AllCaughtUp />
+          )}
+        </div>
+        <TicketCreationPanel />
       </div>
+
+      <SlideOverlayPanel close={() => setCurrentId("")} isOpen={!!currentId}>
+        <TicketDetailsPanel />
+      </SlideOverlayPanel>
     </TicketPanelContext.Provider>
   );
 }
@@ -170,19 +181,17 @@ function TableList() {
   const { tickets, setCurrentId } = useContext(TicketPanelContext);
 
   return (
-    <CustomTable
-      cols={[
+    <Table
+      columns={[
         {
-          className: "jcctr",
-          header: <div className="pr-2">#</div>,
+          header: <div className="tactr">#</div>,
           render(_) {
             return <CircleIndicator s={_.status} />;
           },
-          width: 60,
+          width: 40,
         },
         {
           header: "Request",
-          width: "calc(60%)",
           render(a) {
             return (
               <div>
@@ -195,7 +204,7 @@ function TableList() {
 
         {
           header: "Type",
-          width: "calc(40% - 300px)",
+          width: 200,
           render(a) {
             return (
               <Badge className="badge-secondary capitalize">
@@ -228,18 +237,13 @@ function TableList() {
           },
 
           header: "Action",
-          className: "jcctr",
           width: 100,
         },
       ]}
-      arr={tickets}
-      rowClassName={() => "text-sm key-fade-in"}
-      rowStyle={(_, i) => ({ animationDuration: Math.min(1, i * 0.2) + "s" })}
-      top={0}
-      rowHeight={70}
-      className="h-full"
-      children={<div className="text-sm tactr mt-4">End of the list</div>}
-      onRowDoubleClick={(ticket) => setCurrentId(ticket.ticket_id)}
+      list={tickets}
+      tableProps={{
+        className: "text-sm mr-8 h-full",
+      }}
     />
   );
 }

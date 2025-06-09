@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { addMinutes, format, getHours, getMinutes, isToday } from "date-fns";
 import "./components.styles.css";
 
+import { SelectOptions } from "@components/base/select";
 import { Tooltips } from "@components/base/others";
 import { UserAutoInfo } from "@components/users";
 import { Icon } from "@components/icons";
@@ -9,7 +10,8 @@ import { Icon } from "@components/icons";
 import { useDraggable } from "@hooks/helper";
 
 import { getBestPosition } from "./test";
-import { SelectOptions } from "@components/base/select";
+import { useUIContext } from "@context/ui";
+import { capitalize } from "@utils/converter";
 
 export function getStatusColor(status: string | null): string {
   switch (status) {
@@ -64,7 +66,7 @@ export function DetailCards({
 
   return (
     <div
-      className="card bg-base-200 shadow-xl min-w-[360px] border-t-12"
+      className="card bg-base-200 shadow-xl min-w-[360px] border-t-12 max-w-[40vw]"
       style={{
         borderColor: getStatusColor(status),
         ...oStyle,
@@ -164,6 +166,8 @@ export function AppointmentDisplay({
 }) {
   const detailBoxRef = useRef<HTMLDivElement | null>(null);
   const selfRef = useRef<HTMLDivElement | null>(null);
+
+  const { ctxMenu } = useUIContext();
 
   const [pos, setPos] = useState<{ x: number; y: number; o: number }>({
     x: 0,
@@ -303,7 +307,34 @@ export function AppointmentDisplay({
 
   return (
     <>
-      {displayAsLine ? <LineDisplay /> : <BoxDisplay />}
+      <div
+        onContextMenu={(e) => {
+          ctxMenu.toggleMenu(
+            [
+              { text: "View details" },
+              { text: "Edit appointment" },
+              {
+                text: "Mark appointment as",
+                submenu: [
+                  "pending",
+                  "scheduled",
+                  "in_progress",
+                  "completed",
+                  "canceled",
+                  "no_show",
+                ].map((c) => {
+                  return {
+                    text: capitalize(c.split("_").join(" ")),
+                  };
+                }),
+              },
+            ],
+            e
+          );
+        }}
+      >
+        {displayAsLine ? <LineDisplay /> : <BoxDisplay />}
+      </div>
       {!render || <DetailBoxWrapper />}
     </>
   );

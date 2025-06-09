@@ -18,7 +18,7 @@ type InputTextProps = {
   type?: "text" | "email" | "password" | "tel" | "number";
   state?: [string, React.Dispatch<React.SetStateAction<string>>];
   readOnly?: boolean;
-} & React.JSX.IntrinsicElements["input"];
+} & React.JSXProps<"input">;
 
 export function InputText(props: InputTextProps) {
   const {

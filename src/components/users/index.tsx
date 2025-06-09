@@ -91,7 +91,7 @@ export function UserInfo(props: T_UserInfoProps) {
 
 type T_UserSearchProps = {
   label?: string;
-  state: [
+  state?: [
     Haivy.User | null,
     React.Dispatch<React.SetStateAction<Haivy.User | null>>
   ];

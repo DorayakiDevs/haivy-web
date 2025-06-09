@@ -8,7 +8,7 @@ type Props = {
   fill?: boolean;
   clickable?: boolean;
   cursor?: CSSProperties["cursor"];
-} & React.JSX.IntrinsicElements["span"];
+} & React.JSXProps<"span">;
 
 export function Icon({
   name,

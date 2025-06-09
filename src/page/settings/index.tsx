@@ -153,7 +153,7 @@ function ColumnButton({
   ...props
 }: {
   active?: boolean;
-} & React.JSX.IntrinsicElements["button"]) {
+} & React.JSXProps<"button">) {
   return (
     <button
       className={[

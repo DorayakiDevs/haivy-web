@@ -1,6 +1,7 @@
+import type { ReactJSXProps } from "react";
 import { LTRLoadingBar } from "./others";
 
-type BttProps = React.JSX.IntrinsicElements["button"];
+type BttProps = ReactJSXProps<"button">;
 
 export function Button(props: BttProps) {
   const { className, ...rest } = props;

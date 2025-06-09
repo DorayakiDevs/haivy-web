@@ -6,7 +6,7 @@ import { formatDate } from "@utils/converter";
 import { useNavigate } from "react-router";
 import { format } from "date-fns";
 
-type Props = {} & React.JSX.IntrinsicElements["div"];
+type Props = React.ReactJS["div"];
 
 export function Card(props: Props) {
   const { className, ...rest } = props;
@@ -33,7 +33,7 @@ type ActionCardProps = {
     title: string;
     onClick?: React.MouseEventHandler;
   }[];
-} & React.JSX.IntrinsicElements["div"];
+} & React.JSXProps<"div">;
 
 export function ActionCard(props: ActionCardProps) {
   const {

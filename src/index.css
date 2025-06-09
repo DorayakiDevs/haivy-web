@@ -205,6 +205,14 @@ body {
   transform: scale(0.9);
 }
 
+.context-menu .submenu {
+  display: none;
+}
+
+.context-menu li:hover > .submenu {
+  display: unset;
+}
+
 .input {
   outline: none;
 }

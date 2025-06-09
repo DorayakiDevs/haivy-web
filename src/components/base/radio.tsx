@@ -14,7 +14,7 @@ type Props = {
   state?: ReactState<string>;
   size?: number;
   onInput?: (value: string) => void;
-} & React.JSX.IntrinsicElements["div"];
+} & React.JSXProps<"div">;
 
 export function InputRadio(props: Props) {
   const localState = useState<string>("");

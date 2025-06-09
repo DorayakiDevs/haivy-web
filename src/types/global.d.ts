@@ -12,6 +12,8 @@ declare global {
   }
 
   namespace React {
-    type ReactState<T> = [T, React.Dispatch<React.SetStateAction<T>>];
+    type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
+    type JSXProps<T extends keyof React.JSX.IntrinsicElements> =
+      React.JSX.IntrinsicElements[T];
   }
 }
