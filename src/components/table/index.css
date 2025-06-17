@@ -8,10 +8,26 @@
   padding: 0.25rem 0;
   align-items: center;
   z-index: 0;
+
+  transition: all 85ms;
+  margin: 4px 0;
+  border-radius: 8px;
+
+  max-width: 100%;
+}
+
+.dft-table .t-row:hover {
+  background-color: #00000006;
+}
+
+.dft-table .t-row.active {
+  background-color: #00000012;
+  transform: translateY(-4px);
 }
 
 .dft-table .t-row .t-col {
   padding: 0.25rem 0.5rem;
+  overflow: hidden;
 }
 
 .dft-table .t-header {

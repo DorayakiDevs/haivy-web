@@ -6,7 +6,16 @@ import { formatDate } from "@utils/converter";
 import { useNavigate } from "react-router";
 import { format } from "date-fns";
 
-type Props = React.ReactJS["div"];
+type Props = React.JSXProps<"div">;
+
+type Action = {
+  title: string;
+  onClick?: React.MouseEventHandler;
+};
+
+type CardContent = React.ReactNode;
+type CardTitle = React.ReactNode;
+type CardSize = "xs" | "sm" | "md" | "lg" | "xs";
 
 export function Card(props: Props) {
   const { className, ...rest } = props;
@@ -26,13 +35,10 @@ type ActionCardProps = {
 
   tag?: React.ReactNode;
   description?: React.ReactNode;
-  details?: React.ReactNode;
+  details?: CardContent;
 
-  title?: string;
-  actions?: {
-    title: string;
-    onClick?: React.MouseEventHandler;
-  }[];
+  title?: CardTitle;
+  actions?: Action[];
 } & React.JSXProps<"div">;
 
 export function ActionCard(props: ActionCardProps) {
@@ -151,6 +157,99 @@ export function MedicineCard() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function ImageCard({
+  content,
+  title,
+  url,
+  size = "md",
+  actions = [],
+  className,
+  active,
+  ...props
+}: {
+  content?: CardContent;
+  title: CardTitle;
+  url: string;
+  size?: CardSize;
+  active?: boolean;
+  actions?: Action[];
+} & React.JSXProps<"div">) {
+  const clssArr = ["card shadow-sm card-sm hover-wrapper"];
+
+  switch (size) {
+    case "xs": {
+      clssArr.push("card-xs");
+      break;
+    }
+    case "sm": {
+      clssArr.push("card-sm");
+      break;
+    }
+    case "md": {
+      clssArr.push("card-md");
+      break;
+    }
+    case "lg": {
+      clssArr.push("card-lg");
+      break;
+    }
+
+    default: {
+      clssArr.push("card-md");
+    }
+  }
+
+  if (className) {
+    clssArr.push(className);
+  }
+
+  if (active) {
+    clssArr.push("active bg-primary text-primary-content");
+  }
+
+  return (
+    <div
+      className={clssArr.join(" ")}
+      style={{ transition: "all 0.1s" }}
+      {...props}
+    >
+      <div
+        style={{
+          height: 180,
+          width: "100%",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundColor: "#fff",
+          backgroundImage: `linear-gradient(to top, ${
+            active ? "#0000" : "#fffa"
+          } 30px, #0001) ,url('${url}')`,
+        }}
+      ></div>
+      <div className="card-body selectable-text">
+        <h2 className="card-title">{title}</h2>
+        <p className="card-content">{content}</p>
+      </div>
+      {!actions || (
+        <div className="card-actions p-2 show-on-hover">
+          {actions.map((action, index) => {
+            const className = "btn btn-primary w-full btn-sm btn-outline";
+
+            return (
+              <button
+                key={index}
+                className={className}
+                onClick={action.onClick}
+              >
+                {action.title}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

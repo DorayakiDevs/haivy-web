@@ -75,12 +75,12 @@ export function InputText(props: InputTextProps) {
   }, [type]);
 
   return (
-    <fieldset className={["fieldset text-1", className].join(" ")}>
+    <fieldset className={["fieldset text-1 p-0", className].join(" ")}>
       <legend className="fieldset-legend flex aiend spbtw w-full pr-2">
         <div>{title || ""}</div>
         <div className="label">
           {maxLength ? (
-            <div className="text-xs">
+            <div className="text-sm">
               {value.length}/{maxLength}
             </div>
           ) : (
@@ -104,6 +104,7 @@ export function InputText(props: InputTextProps) {
             {...restInp}
           />
           {!value ||
+            readOnly ||
             (isPassword ? (
               <Icon
                 name={hidden ? "visibility" : "visibility_off"}

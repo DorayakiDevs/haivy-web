@@ -13,13 +13,13 @@ export function TicketCreationPanel() {
 
   return (
     <SidePanelWrapper id="create_ticket">
-      <div className="p-4">
-        <div className="text-2xl font-semibold mt-8 mb-2 flex spbtw aiend">
+      <div>
+        <div className="text-2xl font-semibold mb-2 flex spbtw aiend">
           <div className="pl-2 border-l-8">Open new ticket</div>
           <Icon name="event" size="2rem" />
         </div>
       </div>
-      <div className={loading ? "px-4 pointer-events-none opacity-50" : "px-4"}>
+      <div className={loading ? "ppointer-events-none opacity-50" : ""}>
         <div className="my-2 border-t-1"></div>
 
         <div className="my-2">
@@ -50,7 +50,7 @@ export function TicketCreationPanel() {
           <UserSearchInput label="Assigned doctor" roleFilter={["doctor"]} />
         </div>
       </div>
-      <div className="p-4">
+      <div>
         <SubmitWithLoading text="Create appointment" loading={loading} />
       </div>
     </SidePanelWrapper>

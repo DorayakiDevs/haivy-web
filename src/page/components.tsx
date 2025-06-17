@@ -45,36 +45,38 @@ export function VerticalNavigationBar() {
             <Icon name="dashboard" />
           </button>
         </Tooltips>
-        {account?.roles.includes("customer")
-          ? [
-              <Tooltips text="Test results" className="tooltip-right">
-                <button {...bttClass("/tests")}>
-                  <Icon name="syringe" />
-                </button>
-              </Tooltips>,
-              <Tooltips text="Medicine" className="tooltip-right">
-                <button {...bttClass("/medicine")}>
-                  <Icon name="pill" />
-                </button>
-              </Tooltips>,
-            ]
-          : [
-              <Tooltips text="Tickets" className="tooltip-right">
-                <button {...bttClass("/tickets")}>
-                  <Icon name="confirmation_number" />
-                </button>
-              </Tooltips>,
-              <Tooltips text="Schedule" className="tooltip-right">
-                <button {...bttClass("/schedule")}>
-                  <Icon name="event" />
-                </button>
-              </Tooltips>,
-              <Tooltips text="Medication" className="tooltip-right">
-                <button {...bttClass("/medication")}>
-                  <Icon name="medication" size="1.625rem" />
-                </button>
-              </Tooltips>,
-            ]}
+        {account?.roles.includes("customer") ? (
+          <>
+            <Tooltips text="Test results" className="tooltip-right">
+              <button {...bttClass("/tests")}>
+                <Icon name="syringe" />
+              </button>
+            </Tooltips>
+            <Tooltips text="Medicine" className="tooltip-right">
+              <button {...bttClass("/medicine")}>
+                <Icon name="pill" />
+              </button>
+            </Tooltips>
+          </>
+        ) : (
+          <>
+            <Tooltips text="Tickets" className="tooltip-right">
+              <button {...bttClass("/tickets")}>
+                <Icon name="confirmation_number" />
+              </button>
+            </Tooltips>
+            <Tooltips text="Schedule" className="tooltip-right">
+              <button {...bttClass("/schedule")}>
+                <Icon name="event" />
+              </button>
+            </Tooltips>
+            <Tooltips text="Medication" className="tooltip-right">
+              <button {...bttClass("/medication")}>
+                <Icon name="medication" size="1.625rem" />
+              </button>
+            </Tooltips>
+          </>
+        )}
       </div>
       <div className="bg-primary flex coll p-2.5 gap-2.5 rounded-t-full">
         <Tooltips text="Profile" className="tooltip-right">

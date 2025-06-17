@@ -9,6 +9,7 @@ declare global {
     type Appointment = DBCol<"appointment">;
     type Ticket = DBCol<"ticket">;
     type TicketInteractions = DBCol<"ticket_interaction_history">;
+    type Medicine = DBCol<"medicines">;
   }
 
   namespace React {
@@ -16,4 +17,12 @@ declare global {
     type JSXProps<T extends keyof React.JSX.IntrinsicElements> =
       React.JSX.IntrinsicElements[T];
   }
+
+  interface Stringifiable {
+    toString(): string;
+  }
+
+  const Constant = {
+    IMG_PLACEHOLDER_URL: "https://placehold.co/600x400?text=No+preview+image",
+  };
 }

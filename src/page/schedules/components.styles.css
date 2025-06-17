@@ -20,8 +20,11 @@
   container-type: inline-size;
 }
 
+.active > .line-apt-display,
 .line-apt-display:hover {
   box-shadow: var(--shadow);
+  background-color: var(--color-primary);
+  color: var(--color-primary-content);
 }
 
 .line-apt-display .extra {
@@ -29,7 +32,19 @@
 }
 
 @container (min-width: 200px) {
-  .line-apt-display .extra {
-    display: inline;
+  .line-apt-display {
+    font-size: 1em;
+
+    .extra {
+      display: inline;
+    }
+  }
+}
+
+@container (max-width: 100px) {
+  .line-apt-display {
+    .font-mono {
+      display: none;
+    }
   }
 }

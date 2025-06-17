@@ -59,7 +59,7 @@ export function ColumnView({
               className="flex-1 flex coll aictr jcctr h-20 border-x-1 border-[#fff2] gap-1"
               key={date.toISOString()}
             >
-              <div className="uppercase text-xs">{format(date, "EEE")}</div>
+              <div className="uppercase text-sm">{format(date, "EEE")}</div>
               <div
                 onClick={handleBlockClick(date)}
                 className={[
@@ -106,7 +106,7 @@ export function ColumnView({
                   key={i}
                 >
                   <div
-                    className="text-xs w-12 border-r-1"
+                    className="text-sm w-12 border-r-1"
                     style={{ lineHeight: 0, borderColor: "#0001" }}
                   >
                     {i.toString().padStart(2, "0")}:00
@@ -176,7 +176,7 @@ export function ScheduleListView() {
               >
                 <div> {date.getDate()}</div>
               </div>
-              <div className="uppercase text-xs font-semibold">
+              <div className="uppercase text-sm font-semibold">
                 {format(date, "MMM, E")}
               </div>
             </div>
@@ -184,10 +184,10 @@ export function ScheduleListView() {
               {appointments.filter(FilterAppt(date)).map((a) => {
                 return (
                   <AppointmentDisplay
-                    displayAsLine
                     app={a}
                     baseHeight={32}
                     key={a.appointment_id}
+                    displayAsLine
                   />
                 );
               })}
@@ -242,7 +242,7 @@ export function GridView({ date }: { date: Date }) {
             className="flex aictr jcctr bg-primary text-primary-content"
             key={i}
           >
-            <span className="text-xs uppercase"> {format(d, "EEE")}</span>
+            <span className="text-sm uppercase"> {format(d, "EEE")}</span>
           </div>
         );
       })}
@@ -259,7 +259,7 @@ export function GridView({ date }: { date: Date }) {
             }}
             key={date.toISOString()}
           >
-            <div className="absolute px-4 py-2 text-xs font-light cursor-pointer">
+            <div className="absolute px-4 py-2 text-sm font-light cursor-pointer">
               {isToday(date) ? (
                 <div
                   className="w-7 h-7 btn btn-circle btn-primary btn-active"

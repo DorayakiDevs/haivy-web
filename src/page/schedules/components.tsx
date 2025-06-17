@@ -98,7 +98,7 @@ export function DetailCards({
         {details.content?.trim() || "Unnamed appointment"}
       </div>
 
-      <div className="text-sm px-4 w-full">
+      <div className="text-md px-4 w-full">
         <div className="flex aictr gap-3 mb-2">
           <Icon name="schedule" size="1.5em" />
           <div>
@@ -175,7 +175,7 @@ export function AppointmentDisplay({
     o: 0,
   });
 
-  const [render, setRender] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const { status, duration, meeting_date, content } = app;
 
@@ -192,19 +192,19 @@ export function AppointmentDisplay({
 
   function close() {
     setPos((a) => ({ ...a, o: 0 }));
-    setTimeout(() => setRender(false), 100);
+    setTimeout(() => setShowDetails(false), 100);
   }
 
   function open(e: React.MouseEvent) {
     if (!status) return;
-    if (render) return close();
+    if (showDetails) return close();
 
     setPos({ x: e.clientX, y: e.clientY, o: 0 });
-    setRender(true);
+    setShowDetails(true);
   }
 
   useEffect(() => {
-    if (!render) return;
+    if (!showDetails) return;
 
     const timeout = setTimeout(() => {
       setPos((a) => {
@@ -216,7 +216,7 @@ export function AppointmentDisplay({
     return () => {
       clearTimeout(timeout);
     };
-  }, [render]);
+  }, [showDetails]);
 
   useEffect(() => {
     if (status) return;
@@ -230,7 +230,10 @@ export function AppointmentDisplay({
   const LineDisplay = () => (
     <div
       className="line-apt-display"
-      style={{ height: baseHeight, boxShadow: render ? "var(--shadow)" : "" }}
+      style={{
+        height: baseHeight,
+        boxShadow: showDetails ? "var(--shadow)" : "",
+      }}
       onClick={open}
     >
       <Tooltips text={"Status: " + displayStatus}>
@@ -254,7 +257,7 @@ export function AppointmentDisplay({
 
   const BoxDisplay = () => (
     <div
-      className="pl-2 p-1 text-white rounded-md overflow-hidden cursor-pointer hover:shadow-xl"
+      className="pl-2 p-1 text-white rounded-md overflow-hidden cursor-pointer text-md"
       ref={selfRef}
       style={{
         width: "calc(100% - 8px)",
@@ -262,7 +265,7 @@ export function AppointmentDisplay({
 
         top: `calc(100% + ${offsetHour * baseHeight}px)`,
         position: "absolute",
-        zIndex: render ? 1 : 0,
+        zIndex: showDetails ? 1 : 0,
 
         backgroundColor: getStatusColor(status),
         fontSize: 11,
@@ -277,7 +280,7 @@ export function AppointmentDisplay({
           className="font-semibold"
           style={{
             whiteSpace:
-              dur <= 0.5 * baseHeight && !render ? "nowrap" : "pre-wrap",
+              dur <= 0.5 * baseHeight && !showDetails ? "nowrap" : "pre-wrap",
           }}
         >
           {content?.trim() || "Unnamed appointment"}
@@ -308,6 +311,7 @@ export function AppointmentDisplay({
   return (
     <>
       <div
+        className={showDetails ? "active" : ""}
         onContextMenu={(e) => {
           ctxMenu.toggleMenu(
             [
@@ -335,7 +339,7 @@ export function AppointmentDisplay({
       >
         {displayAsLine ? <LineDisplay /> : <BoxDisplay />}
       </div>
-      {!render || <DetailBoxWrapper />}
+      {!showDetails || <DetailBoxWrapper />}
     </>
   );
 }

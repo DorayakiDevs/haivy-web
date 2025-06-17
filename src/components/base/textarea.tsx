@@ -9,6 +9,7 @@ type TextareaProps = {
   width?: string;
   height?: string;
   disabled?: boolean;
+  readOnly?: boolean;
 
   state?: [string, React.Dispatch<React.SetStateAction<string>>];
 };
@@ -23,6 +24,7 @@ export function TextArea({
   height = "h-32",
   disabled = false,
   state,
+  readOnly,
 }: TextareaProps) {
   const local = useState("");
 
@@ -47,6 +49,7 @@ export function TextArea({
         </span>
       </div>
       <textarea
+        readOnly={readOnly}
         id={id}
         className={`textarea textarea-bordered resize-none w-full ${height}`}
         placeholder={placeholder}

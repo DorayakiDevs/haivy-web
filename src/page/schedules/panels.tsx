@@ -143,13 +143,13 @@ export function CreateAppointmentExternalPanel() {
 
   return (
     <SidePanelWrapper id={PANEL_ID} className="overflow-y-scroll">
-      <div className="p-4">
-        <div className="text-2xl font-semibold mt-8 mb-2 flex spbtw aiend">
+      <div>
+        <div className="text-2xl font-semibold mb-2 flex spbtw aiend">
           <div className="pl-2 border-l-8">Create an appointment</div>
           <Icon name="event" size="2rem" />
         </div>
       </div>
-      <div className={loading ? "px-4 pointer-events-none opacity-50" : "px-4"}>
+      <div className={loading ? "pointer-events-none opacity-50" : ""}>
         <div className="my-2 border-t-1"></div>
 
         <div className="my-2">
@@ -208,7 +208,7 @@ export function CreateAppointmentExternalPanel() {
           icon="phone"
         />
       </div>
-      <div className="p-4">
+      <div>
         <SubmitWithLoading
           text="Create appointment"
           onClick={submitData}

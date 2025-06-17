@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import { useUIContext } from "@context/ui";
 import { TicketCreationPanel } from "./panels";
 import { Table } from "@components/table";
+import { TabSelector } from "@components/base/tabs";
 
 function CircleIndicator({ s }: { s: string }) {
   const color: { [n: string]: string } = {
@@ -50,7 +51,7 @@ export default function StaffTickets() {
 
   const ticketList = useTickets();
 
-  const [gridView, setGridView] = useState(false);
+  const displayState = useState("grid");
 
   if (ticketList.status === "loading" || ticketList.status === "idle") {
     return <FullscreenLoading />;
@@ -76,9 +77,9 @@ export default function StaffTickets() {
       <div className="content-wrapper flex">
         <div className="h-full flex coll key-fade-in flex-1">
           <div className="flex aictr pb-4 pt-8 pr-8 gap-3">
-            <Icon name="article" size="3em" />
+            <Icon name="confirmation_number" size="3em" />
             <div className="flex-1">
-              <div className="text-4xl font-bold">Tickets</div>
+              <div className="text-2xl font-bold">System's Tickets</div>
               <div className="">{tickets.length} tickets</div>
             </div>
 
@@ -87,35 +88,18 @@ export default function StaffTickets() {
                 <Icon name="add" />
                 Create a ticket
               </button>
-              <div className="flex aictr gap-2 h-full">
-                <Tooltips text="Grid View">
-                  <button
-                    className={
-                      "btn-primary btn btn-square btn-lg " +
-                      (gridView ? "" : "btn-outline")
-                    }
-                    onClick={() => setGridView(true)}
-                  >
-                    <Icon name="grid_view" size="1.5em" />
-                  </button>
-                </Tooltips>
-                <Tooltips text="Table View">
-                  <button
-                    className={
-                      "btn-primary btn btn-square btn-lg " +
-                      (gridView ? "btn-outline" : "")
-                    }
-                    onClick={() => setGridView(false)}
-                  >
-                    <Icon name="view_list" size="1.5em" />
-                  </button>
-                </Tooltips>
-              </div>
+              <TabSelector
+                list={[
+                  { name: "Grid", icon: "grid_view", value: "grid" },
+                  { name: "Table", icon: "view_list", value: "table" },
+                ]}
+                state={displayState}
+              />
             </div>
           </div>
 
           {tickets.length ? (
-            gridView ? (
+            displayState[0] === "grid" ? (
               <GridList />
             ) : (
               <TableList />
@@ -138,7 +122,7 @@ function GridList() {
   const { tickets, setCurrentId } = useContext(TicketPanelContext);
 
   return (
-    <div className="grid grid-cols-4 overflow-y-auto gap-4 place-items-center py-8">
+    <div className="overflow-y-auto cards-grid">
       {tickets.map((ticket, i) => {
         const { ticket_id, status, date_created, content, title, ticket_type } =
           ticket;
@@ -184,17 +168,18 @@ function TableList() {
     <Table
       columns={[
         {
-          header: <div className="tactr">#</div>,
+          header: "",
           render(_) {
             return <CircleIndicator s={_.status} />;
           },
           width: 40,
+          className: "flex aictr jcctr",
         },
         {
           header: "Request",
           render(a) {
             return (
-              <div>
+              <div className="max-w-0">
                 <div className="font-bold">{a.title}</div>
                 <div>┗ {a.content} </div>
               </div>
@@ -235,9 +220,8 @@ function TableList() {
               </button>
             );
           },
-
-          header: "Action",
-          width: 100,
+          header: "",
+          width: 130,
         },
       ]}
       list={tickets}

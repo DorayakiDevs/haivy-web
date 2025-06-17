@@ -23,6 +23,9 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      '@eslint-react/no-missing-key': [
+        'error'
+      ]
     },
   },
 )

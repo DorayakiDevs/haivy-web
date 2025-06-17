@@ -28,7 +28,7 @@ export function PatientDashboard() {
           <div className="text-2xl font-bold my-3">Medicine information</div>
 
           <Table
-            cols={[
+            columns={[
               {
                 header: (
                   <div className="flex aictr gap-2">
