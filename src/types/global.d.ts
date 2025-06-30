@@ -3,6 +3,14 @@ import { Database } from "./db.types";
 type DBCol<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Row"];
 
+type DBFuncs = keyof Database["public"]["Functions"];
+
+type DBRpcFunc<T extends keyof Database["public"]["Functions"]> =
+  Database["public"]["Functions"][T];
+
+type DBEnum<T extends Database["public"]["Enums"]> =
+  Database["public"]["Enums"][T];
+
 declare global {
   namespace Haivy {
     type User = DBCol<"user_details">;
@@ -10,6 +18,14 @@ declare global {
     type Ticket = DBCol<"ticket">;
     type TicketInteractions = DBCol<"ticket_interaction_history">;
     type Medicine = DBCol<"medicines">;
+
+    type RPCArgs<T extends DBFuncs> = DBRpcFunc<T>["Args"];
+    type RPCReturns<T extends DBFuncs> = DBRpcFunc<T>["Returns"];
+
+    type RPCFunc<T> = DBRpcFunc<T>;
+    type RPCFuncRet<T> = DBRpcFunc<T>["Returns"];
+    type RPCFuncs = keyof Database["public"]["Functions"];
+    type Enum<T> = DBEnum<T>;
   }
 
   namespace React {

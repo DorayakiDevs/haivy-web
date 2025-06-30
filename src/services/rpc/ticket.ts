@@ -2,9 +2,9 @@ import { useRPC } from "./base";
 
 type Ticket = Haivy.Ticket;
 type UserInfo = Haivy.User;
-type InteractionHistory = (Omit<Haivy.TicketInteractions, "by"> & {
+type InteractionHistory = Omit<Haivy.TicketInteractions, "by"> & {
   by: UserInfo | null;
-})[];
+};
 
 /**
  * Get tickets details + interaction history
@@ -14,14 +14,14 @@ type InteractionHistory = (Omit<Haivy.TicketInteractions, "by"> & {
 export function getTicketData(ticketId: string) {
   const ticket = useRPC<{
     ticket: Omit<Haivy.Ticket, "created_by"> & { created_by: UserInfo };
-    interactions: InteractionHistory;
+    interactions: InteractionHistory[];
     appointments: Haivy.Appointment[];
   }>("get_ticket_details", { tid: ticketId }, !ticketId);
 
   return ticket;
 }
 
-export function useTickets() {
+export function getTickets() {
   const tickets = useRPC<Ticket[]>("get_all_tickets");
   return tickets;
 }

@@ -76,19 +76,23 @@ export function InputText(props: InputTextProps) {
 
   return (
     <fieldset className={["fieldset text-1 p-0", className].join(" ")}>
-      <legend className="fieldset-legend flex aiend spbtw w-full pr-2">
-        <div>{title || ""}</div>
-        <div className="label">
-          {maxLength ? (
-            <div className="text-sm">
-              {value.length}/{maxLength}
-            </div>
-          ) : (
-            ""
-          )}
-          {notice}
-        </div>
-      </legend>
+      {!title || (
+        <legend className="fieldset-legend flex aiend spbtw w-full pr-2">
+          <label className="text-sm font-semibold">
+            <span className="label-text">{title}</span>
+          </label>
+          <div className="label">
+            {maxLength ? (
+              <div className="text-sm">
+                {value.length}/{maxLength}
+              </div>
+            ) : (
+              ""
+            )}
+            {notice}
+          </div>
+        </legend>
+      )}
       <div className="flex gap-2">
         {children}
         <label className={["input flex-1", inputClass].join(" ")}>

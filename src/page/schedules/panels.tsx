@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-import { addMinutes, format, isValid, set } from "date-fns";
+import { addMinutes, isValid, set } from "date-fns";
 
 import { InputTextErrorable } from "@components/base/input";
 import { SubmitWithLoading } from "@components/base/button";
@@ -9,14 +9,17 @@ import { SelectOptions } from "@components/base/select";
 import { DatePicker } from "@components/base/date";
 import { Icon } from "@components/icons";
 
+import { useClient } from "@services/client";
+
 import { SidePanelWrapper, useSidePanel } from "@context/ui/sidepanel";
 import { useUIContext } from "@context/ui";
 
 import { useValidatableState, validatePhoneNumber } from "@hooks/validator";
 
-import { useClient } from "@services/client";
+import { DateUtils } from "@utils/date";
 
-import { useSchedulePanel } from ".";
+import { useSchedulePanel } from "./staff";
+import { convertDateToServerTimeString } from "./utils";
 
 const DUR_TEMP = [
   { value: "15", text: "15 minutes" },
@@ -26,11 +29,11 @@ const DUR_TEMP = [
   { value: "120", text: "2 hours" },
 ];
 
-export function CreateAppointmentExternalPanel() {
-  const PANEL_ID = "create_apt";
+export function AppointmentExternalPanel() {
+  const PANEL_ID = "ext_apt";
 
-  const { supabase } = useClient();
-  const { panelId } = useSidePanel();
+  const { supabase, session } = useClient();
+  const { panelId, close } = useSidePanel();
   const { alert } = useUIContext();
 
   const [params] = useSearchParams();
@@ -45,7 +48,7 @@ export function CreateAppointmentExternalPanel() {
   const stateDur = useState("30");
   const stateContent = useState("");
 
-  const stateDoctor = useState<Haivy.User | null>(null);
+  // const stateDoctor = useState<Haivy.User | null>(null);
   const statePatient = useState<Haivy.User | null>(null);
 
   const phone = useValidatableState("", validatePhoneNumber);
@@ -57,7 +60,7 @@ export function CreateAppointmentExternalPanel() {
   const aptDate = stateDate[0];
   const aptDetails = stateContent[0];
   const aptDur = parseInt(stateDur[0]);
-  const aptDoctor = stateDoctor[0];
+  // const aptDoctor = stateDoctor[0];
   const aptPatient = statePatient[0];
   const aptPhone = phone.current;
   const aptService = service.current;
@@ -88,7 +91,7 @@ export function CreateAppointmentExternalPanel() {
     }
   }, [dateStrParam]);
 
-  const curTime = format(aptDate, "kk:mm");
+  const curTime = DateUtils.format(aptDate, "kk:mm");
 
   useEffect(() => {
     if (panelId !== PANEL_ID) {
@@ -100,8 +103,6 @@ export function CreateAppointmentExternalPanel() {
       meeting_date: aptDate.toISOString(),
       duration: aptDur,
       status: null,
-      staff_id: aptDoctor?.user_id,
-      patient_id: aptPatient?.user_id,
       content: aptDetails,
     });
   }, [aptDate.toISOString(), aptDur, aptDetails, panelId]);
@@ -111,9 +112,9 @@ export function CreateAppointmentExternalPanel() {
       return;
     }
 
-    if (!aptDoctor) {
-      return alert.toggle({ text: "Please assign a doctor", type: "error" });
-    }
+    // if (!aptDoctor) {
+    //   return alert.toggle({ text: "Please assign a doctor", type: "error" });
+    // }
 
     if (!aptPatient) {
       return alert.toggle({ text: "Please assign a patient", type: "error" });
@@ -123,12 +124,13 @@ export function CreateAppointmentExternalPanel() {
 
     const { error } = await supabase.rpc("create_appointment", {
       p_duration: aptDur,
-      p_ispublic: true,
-      p_doctor_id: aptDoctor.user_id,
+      p_is_public: true,
+      p_doctor_id: session?.user.id,
       p_patient_id: aptPatient.user_id,
       p_phone: aptPhone,
-      p_service_description: aptService,
-      p_meeting_date: aptDate.toISOString(),
+      p_service_desc: aptService,
+      p_meeting_date: convertDateToServerTimeString(aptDate),
+      p_content: aptDetails,
     });
 
     if (error) {
@@ -136,6 +138,8 @@ export function CreateAppointmentExternalPanel() {
     } else {
       reload();
       alert.toggle({ text: "Appointment created!", type: "success" });
+      setViewDateParams("schedule", aptDate);
+      close();
     }
 
     setLoading(false);
@@ -145,8 +149,8 @@ export function CreateAppointmentExternalPanel() {
     <SidePanelWrapper id={PANEL_ID} className="overflow-y-scroll">
       <div>
         <div className="text-2xl font-semibold mb-2 flex spbtw aiend">
-          <div className="pl-2 border-l-8">Create an appointment</div>
-          <Icon name="event" size="2rem" />
+          <div>Create appointment</div>
+          <Icon name="calendar_add_on" size="2rem" />
         </div>
       </div>
       <div className={loading ? "pointer-events-none opacity-50" : ""}>
@@ -175,7 +179,7 @@ export function CreateAppointmentExternalPanel() {
             label="Duration"
             options={DUR_TEMP.map((c) => ({
               ...c,
-              sub: `from ${curTime} to ${format(
+              sub: `from ${curTime} to ${DateUtils.format(
                 addMinutes(aptDate, parseInt(c.value)),
                 "kk:mm"
               )}`,
@@ -188,11 +192,11 @@ export function CreateAppointmentExternalPanel() {
         </div>
 
         <div className="my-2">
-          <UserSearchInput
+          {/* <UserSearchInput
             label="Assigned doctor"
             state={stateDoctor}
             roleFilter={["doctor"]}
-          />
+          /> */}
           <UserSearchInput
             label="Patient"
             state={statePatient}
@@ -210,7 +214,7 @@ export function CreateAppointmentExternalPanel() {
       </div>
       <div>
         <SubmitWithLoading
-          text="Create appointment"
+          children="Create appointment"
           onClick={submitData}
           loading={loading}
         />

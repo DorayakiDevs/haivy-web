@@ -1,7 +1,6 @@
-import type { ReactJSXProps } from "react";
 import { LTRLoadingBar } from "./others";
 
-type BttProps = ReactJSXProps<"button">;
+type BttProps = React.JSXProps<"button">;
 
 export function Button(props: BttProps) {
   const { className, ...rest } = props;
@@ -18,11 +17,11 @@ export function Button(props: BttProps) {
 export function SubmitWithLoading({
   loading,
   onClick,
-  text,
+  children,
 }: {
   loading?: boolean;
   onClick?: React.MouseEventHandler;
-  text?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="overflow-hidden h-[45px] my-4">
@@ -37,18 +36,10 @@ export function SubmitWithLoading({
           className="btn btn-primary"
           onClick={loading ? undefined : onClick}
         >
-          {text}
+          {children}
         </button>
         <LTRLoadingBar height={45} />
       </div>
     </div>
-  );
-}
-
-export function CelebrateButton() {
-  return (
-    <button className="btn bg-gradient-to-r from-pink-200 to-secondary btn-lg via-yellow-100">
-      Celebrate!
-    </button>
   );
 }

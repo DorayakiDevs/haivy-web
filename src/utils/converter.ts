@@ -1,20 +1,18 @@
-export function formatDate(isoDateString?: string | null): string {
-  const date = isoDateString ? new Date(isoDateString) : new Date();
-
-  if (isNaN(date.getTime())) {
-    throw new Error("Invalid date string provided");
-  }
-
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${day}/${month}/${year} - ${hours}:${minutes}`;
-}
-
 export function capitalize(s: string) {
   return s[0].toUpperCase() + s.slice(1);
+}
+
+export function clipString(input: string | null, maxLength: number): string {
+  if (input === null) return "";
+
+  if (maxLength <= 3) {
+    // Not enough room for ellipsis and content
+    return ".".repeat(Math.max(0, maxLength));
+  }
+
+  if (input.length <= maxLength) {
+    return input;
+  }
+
+  return input.slice(0, maxLength - 3) + "...";
 }

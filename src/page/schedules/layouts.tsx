@@ -1,22 +1,11 @@
-import {
-  addDays,
-  format,
-  getDaysInMonth,
-  getMonth,
-  getYear,
-  isToday,
-} from "date-fns";
+import { addDays, getDaysInMonth, getMonth, getYear, isToday } from "date-fns";
 import { Helmet } from "react-helmet-async";
 
-import { CelebrateButton } from "@components/base/button";
-import { Icon } from "@components/icons";
+import { DateUtils } from "@utils/date";
 
-import { formatMonthYearRanges } from "@utils/date";
-
+import { useSchedulePanel } from "./staff";
 import { AppointmentDisplay } from "./components";
 import { TimelineRunner } from "./components";
-
-import { useSchedulePanel } from ".";
 
 function FilterAppt(dd: Date) {
   return (a: Haivy.Appointment) => {
@@ -42,7 +31,7 @@ export function ColumnView({
     };
   }
 
-  const title = formatMonthYearRanges(dates);
+  const title = DateUtils.formatMonthYearRanges(dates);
 
   return (
     <div className="w-full h-full overflow-auto relative key-fade-in scroll-p-40">
@@ -59,7 +48,9 @@ export function ColumnView({
               className="flex-1 flex coll aictr jcctr h-20 border-x-1 border-[#fff2] gap-1"
               key={date.toISOString()}
             >
-              <div className="uppercase text-sm">{format(date, "EEE")}</div>
+              <div className="uppercase text-sm">
+                {DateUtils.format(date, "EEE")}
+              </div>
               <div
                 onClick={handleBlockClick(date)}
                 className={[
@@ -135,18 +126,6 @@ export function ColumnView({
 export function ScheduleListView() {
   const { appointments, viewDate, setViewDateParams } = useSchedulePanel();
 
-  if (!appointments.length) {
-    return (
-      <div className="flex aictr jcctr h-full coll gap-8">
-        <Icon name="celebration" size="6em" />
-        <div className="text-xl font-bold">
-          You currently have no appointment incoming!
-        </div>
-        <CelebrateButton />
-      </div>
-    );
-  }
-
   const dates = Array(14)
     .fill(0)
     .map((_, i) => {
@@ -160,37 +139,49 @@ export function ScheduleListView() {
   return (
     <div className="key-fade-in overflow-y-auto">
       {dates.map((date) => {
+        const aptsForDay = appointments.filter(FilterAppt(date));
+
         return (
           <div
             key={date.toISOString()}
-            className="flex gap-2 border-b-1 py-2"
+            className="flex gap-2 border-b-1 py-2 min-h-16"
             style={{ borderColor: "#0001" }}
           >
-            <div className="flex aictr gap-2 w-46">
-              <div
-                className={
-                  "btn btn-ghost w-14 h-14 btn-circle" +
-                  (isToday(date) ? " btn-active btn-primary" : "")
-                }
-                onClick={handleDayClick(date)}
-              >
-                <div> {date.getDate()}</div>
-              </div>
-              <div className="uppercase text-sm font-semibold">
-                {format(date, "MMM, E")}
+            <div className="w-46">
+              <div className="flex aictr gap-2">
+                <div
+                  className={
+                    "btn btn-ghost w-14 h-14 btn-circle" +
+                    (isToday(date) ? " btn-active btn-primary" : "")
+                  }
+                  onClick={handleDayClick(date)}
+                >
+                  <div> {date.getDate()}</div>
+                </div>
+                <div className="uppercase text-sm font-semibold">
+                  {DateUtils.format(date, "MMM, E")}
+                </div>
               </div>
             </div>
-            <div className="pb-6 flex-1">
-              {appointments.filter(FilterAppt(date)).map((a) => {
-                return (
-                  <AppointmentDisplay
-                    app={a}
-                    baseHeight={32}
-                    key={a.appointment_id}
-                    displayAsLine
-                  />
-                );
-              })}
+            <div className="flex-1">
+              {aptsForDay.length ? (
+                <div className="pb-6">
+                  {aptsForDay.map((a) => {
+                    return (
+                      <AppointmentDisplay
+                        app={a}
+                        baseHeight={32}
+                        key={a.appointment_id}
+                        displayAsLine
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex aictr jcctr h-full opacity-20">
+                  <i>No event to display</i>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -198,6 +189,8 @@ export function ScheduleListView() {
     </div>
   );
 }
+
+const MAX_DISPLAY = 2;
 
 export function GridView({ date }: { date: Date }) {
   const { setViewDateParams, appointments } = useSchedulePanel();
@@ -213,11 +206,11 @@ export function GridView({ date }: { date: Date }) {
     return addDays(firstDate, offset);
   });
 
-  const title = formatMonthYearRanges(dates.slice(0, dayCount - 1));
+  const title = DateUtils.formatMonthYearRanges(dates.slice(0, dayCount - 1));
 
-  function handleDateClick(d: Date) {
+  function getDateClickHandler(d: Date, t = "day") {
     return () => {
-      setViewDateParams("day", d);
+      setViewDateParams(t, d);
     };
   }
 
@@ -242,11 +235,16 @@ export function GridView({ date }: { date: Date }) {
             className="flex aictr jcctr bg-primary text-primary-content"
             key={i}
           >
-            <span className="text-sm uppercase"> {format(d, "EEE")}</span>
+            <span className="text-sm uppercase">
+              {DateUtils.format(d, "EEE")}
+            </span>
           </div>
         );
       })}
       {dates.map((date) => {
+        const aptsForDay = appointments.filter(FilterAppt(date));
+        const hasMoreEvents = aptsForDay.length > MAX_DISPLAY;
+
         return (
           <div
             className="w-full h-full relative hover:shadow-lg"
@@ -263,14 +261,14 @@ export function GridView({ date }: { date: Date }) {
               {isToday(date) ? (
                 <div
                   className="w-7 h-7 btn btn-circle btn-primary btn-active"
-                  onClick={handleDateClick(date)}
+                  onClick={getDateClickHandler(date)}
                 >
                   {date.getDate()}
                 </div>
               ) : (
                 <div
                   className="w-7 h-7 btn btn-circle btn-ghost btn-primary"
-                  onClick={handleDateClick(date)}
+                  onClick={getDateClickHandler(date)}
                 >
                   {date.getDate()}
                 </div>
@@ -278,7 +276,7 @@ export function GridView({ date }: { date: Date }) {
             </div>
 
             <div className="mt-9">
-              {appointments.filter(FilterAppt(date)).map((a) => {
+              {aptsForDay.slice(0, MAX_DISPLAY).map((a) => {
                 return (
                   <AppointmentDisplay
                     displayAsLine
@@ -288,6 +286,14 @@ export function GridView({ date }: { date: Date }) {
                   />
                 );
               })}
+              {!hasMoreEvents || (
+                <div
+                  className="line-apt-display"
+                  onClick={getDateClickHandler(date, "schedule")}
+                >
+                  <i>+ {aptsForDay.length - MAX_DISPLAY} more events</i>
+                </div>
+              )}
             </div>
           </div>
         );

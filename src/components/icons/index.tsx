@@ -41,6 +41,7 @@ export function Icon({
           : "'wght' 500, 'opsz' 48",
 
         cursor,
+        verticalAlign: "middle",
       }}
       onClick={onClick}
       {...spanProps}

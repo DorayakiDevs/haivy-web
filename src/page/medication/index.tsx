@@ -8,7 +8,7 @@ import { getMedicines } from "@services/rpc/medicine";
 
 import { FullscreenLoading } from "@pages/others/loading";
 
-import { getTextFromBrackets } from "@utils/parser";
+import { Parser } from "@utils/parser";
 
 import { MedicationDetailsPanel } from "./details";
 import { MedicationListPanel } from "./list";
@@ -50,7 +50,7 @@ export default function MedicationPanel() {
       return {
         ...med,
         commercialName: med.name.split("(")[0] || med.name,
-        supplNames: getTextFromBrackets(med.name)
+        supplNames: Parser.extractTextInBrackets(med.name)
           .split("/")
           .map((q) => q.trim()),
       };

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useClient } from "@services/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 type T_RPCHook<T> =
   | { status: "idle" }
@@ -103,4 +104,12 @@ export function useRPC<T>(
     },
     timestamp,
   };
+}
+
+export function executeDbRPC<T extends Haivy.RPCFuncs>(
+  supabase: SupabaseClient,
+  fn: T,
+  params: Haivy.RPCArgs<T>
+) {
+  return supabase.rpc(fn, params);
 }

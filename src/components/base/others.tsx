@@ -1,14 +1,16 @@
 export function LTRLoadingBar({
   speed = "0.6s",
+  width = "w-[30%]",
   height,
 }: {
   speed?: string;
   height: string | number;
+  width?: string;
 }) {
   return (
     <div className="flex jcctr aictr" style={{ height }}>
       <progress
-        className="progress w-[30%] progress-primary"
+        className={`progress ${width} progress-primary`}
         style={{
           animationDuration: speed,
         }}

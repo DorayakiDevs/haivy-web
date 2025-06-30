@@ -29,6 +29,10 @@ export function Alert({
       className = "alert-error";
       break;
     }
+    case "warning": {
+      className = "alert-warning";
+      break;
+    }
   }
 
   return (

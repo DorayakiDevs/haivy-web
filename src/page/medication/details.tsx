@@ -61,7 +61,7 @@ export function MedicationDetailsPanel() {
       <Helmet>
         <title>Haivy | Medicine - {chemName}</title>
       </Helmet>
-      <div className="selectable-text">
+      <div className="selectable-text mb-2">
         <div>Medicine details</div>
         <div className="text-2xl font-bold text-wrap">{chemName}</div>
         {!medsName || <sub>{medsName}</sub>}

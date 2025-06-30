@@ -9,12 +9,14 @@ type T_DraggableRetVal = {
   offsetY: number;
 
   holding: boolean;
+  ref: any;
 };
 
 export function useDraggable(
   fillMode: "forward" | "backward" = "backward"
 ): T_DraggableRetVal {
   const oldMouse = useRef([0, 0]);
+  const eleRef = useRef<HTMLElement | null>(null);
 
   const [offset, setOffset] = useState([0, 0]);
   const [holding, setHolding] = useState(false);
@@ -30,8 +32,8 @@ export function useDraggable(
     if (!holding) return;
     const [orX, orY] = oldMouse.current;
 
-    const movementX = e.clientX - orX;
-    const movementY = e.clientY - orY;
+    let movementX = e.clientX - orX;
+    let movementY = e.clientY - orY;
 
     oldMouse.current = [e.clientX, e.clientY];
 
@@ -83,6 +85,7 @@ export function useDraggable(
     offsetY: ty,
 
     holding,
+    ref: eleRef as any,
   };
 }
 

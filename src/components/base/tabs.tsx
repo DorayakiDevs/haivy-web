@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Tooltips } from "./others";
 import { Icon } from "@components/icons";
 
 type T_ListType = {
   name?: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   value: string;
+  type?: "icon" | "text";
 };
 
 export function TabButton({
@@ -13,7 +14,17 @@ export function TabButton({
   icon,
   name,
   onClick,
+  type = "icon",
 }: T_ListType & { active?: boolean; onClick: React.MouseEventHandler }) {
+  if (type === "text") {
+    return (
+      <button className="btn btn-sm flex aictr">
+        {icon}
+        {name}
+      </button>
+    );
+  }
+
   return (
     <Tooltips text={name || ""}>
       <button
@@ -22,7 +33,8 @@ export function TabButton({
           "btn-primary btn btn-square btn-md " + (active ? "" : "btn-outline")
         }
       >
-        {!icon || <Icon name={icon} size="1.5em" />}
+        {!icon ||
+          (typeof icon === "string" ? <Icon name={icon} size="1.5em" /> : icon)}
       </button>
     </Tooltips>
   );
@@ -31,10 +43,12 @@ export function TabButton({
 export function TabSelector({
   list = [],
   state,
+  type,
 }: {
   list?: T_ListType[];
   initial?: string;
   state?: React.State<string>;
+  type?: "icon" | "text";
 }) {
   const local = useState("");
 
@@ -47,6 +61,7 @@ export function TabSelector({
           <TabButton
             {...t}
             key={i}
+            type={type}
             active={currentTab === t.value}
             onClick={() => {
               setCurrentTab(t.value);

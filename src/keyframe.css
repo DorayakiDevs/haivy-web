@@ -111,3 +111,24 @@
     transform: translateX(0%);
   }
 }
+
+.key-lets-gooo {
+  transform: translateX(100vw);
+  animation: base-lets-gooo 2.5s 0.3s forwards;
+  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@keyframes base-lets-gooo {
+  0% {
+    transform: translateX(100vw);
+  }
+
+  90% {
+    transform: translateX(-90%);
+    /* opacity: 1; */
+  }
+  100% {
+    transform: translateX(-100%);
+    /* opacity: 0; */
+  }
+}

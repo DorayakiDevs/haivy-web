@@ -118,7 +118,7 @@ export function FormRegister() {
         />
 
         <SubmitWithLoading
-          text="Create account"
+          children="Create account"
           onClick={submitInformation}
           loading={loading}
         />

@@ -1,49 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { addMinutes, format, getHours, getMinutes, isToday } from "date-fns";
+import { Link, useNavigate } from "react-router";
+import { addMinutes, getHours, getMinutes, isToday } from "date-fns";
 import "./components.styles.css";
 
-import { SelectOptions } from "@components/base/select";
+import { getStatusColor, StatusBadge } from "@components/base/badge";
 import { Tooltips } from "@components/base/others";
-import { UserAutoInfo } from "@components/users";
+import { UserInfo } from "@components/users";
 import { Icon } from "@components/icons";
+
+import { useUIContext } from "@context/ui";
 
 import { useDraggable } from "@hooks/helper";
 
-import { getBestPosition } from "./test";
-import { useUIContext } from "@context/ui";
 import { capitalize } from "@utils/converter";
+import { DateUtils } from "@utils/date";
 
-export function getStatusColor(status: string | null): string {
-  switch (status) {
-    case "pending":
-      return "#d97706";
-    case "scheduled":
-      return "#1d4ed8";
-    case "in_progress":
-      return "#3730a3";
-    case "completed":
-      return "#047857";
-    case "canceled":
-      return "#9f1239";
-    case "no_show":
-      return "#374151";
-    case "ghost":
-      return "#888888";
-    default:
-      return "var(--color-primary)";
-  }
-}
-
-function StatusBadge({ s }: { s: string | null }) {
-  return (
-    <div
-      className="badge badge-ghost badge-sm capitalize"
-      style={{ background: getStatusColor(s), color: "var(--color-white)" }}
-    >
-      {s?.replace("_", " ")}
-    </div>
-  );
-}
+import { getBestPosition } from "./test";
+import { CancelDialog, CompleteDialog } from "./dialogs";
+import { useSchedulePanel } from "./staff";
 
 export function DetailCards({
   details,
@@ -52,7 +26,11 @@ export function DetailCards({
   details: Haivy.Appointment;
   close: () => void;
 }) {
-  const { props, onMouseDown } = useDraggable("forward");
+  const { alert } = useUIContext();
+  const cancelRef = useRef<HTMLDialogElement | null>(null);
+  const completeRef = useRef<HTMLDialogElement | null>(null);
+
+  const { props, onMouseDown, ref } = useDraggable("forward");
   const { style: oStyle, ...oRest } = props;
 
   const statusState = useState(details.status || "");
@@ -62,17 +40,31 @@ export function DetailCards({
 
   const status = statusState[0];
 
-  function toggleEditMode() {}
+  function toggleEditMode() {
+    alert.toggle({
+      text: "Editing is not available for appointments",
+      type: "warning",
+    });
+  }
+
+  function toggleCancelDialog() {
+    cancelRef.current?.showModal();
+  }
+
+  function toggleCompleteDialog() {
+    completeRef.current?.showModal();
+  }
 
   return (
     <div
-      className="card bg-base-200 shadow-xl min-w-[360px] border-t-12 max-w-[40vw]"
+      className="card bg-base-200 shadow-xl min-w-[360px] border-t-12 max-w-[40vw] z-10"
       style={{
         borderColor: getStatusColor(status),
         ...oStyle,
       }}
       {...oRest}
       onClick={(e) => e.stopPropagation()}
+      ref={ref}
     >
       <div className="flex spbtw h-15 p-2">
         <div className="btn w-8 h-8 cursor-grab" onMouseDown={onMouseDown}>
@@ -94,63 +86,87 @@ export function DetailCards({
         </div>
       </div>
 
-      <div className="text-xl font-semibold mb-4 link link-hover px-4">
+      <div className="text-lg font-semibold mb-4 link link-hover px-4">
         {details.content?.trim() || "Unnamed appointment"}
       </div>
 
-      <div className="text-md px-4 w-full">
-        <div className="flex aictr gap-3 mb-2">
+      <div className="text-sm px-4 w-full">
+        <div className="flex aictr gap-4 mb-2">
           <Icon name="schedule" size="1.5em" />
           <div>
-            <div>{format(date, "PPPP")}</div>
+            <div>{DateUtils.format(date, "PPPP")}</div>
             <div>
-              {format(date, "K:mm")} - {format(endDate, "K:mm")}
+              {DateUtils.format(date, "HH:mm")} -{" "}
+              {DateUtils.format(endDate, "HH:mm")}
             </div>
           </div>
         </div>
 
-        <div className="flex gap-3 mb-4">
+        <div className="flex gap-4 mb-4">
           <Icon name="subject" size="1.5em" />
           <div>{details.content?.trim() || "No information provided"}</div>
         </div>
 
-        <div className="flex gap-3 mb-4">
+        <div className="flex gap-4 mb-4">
           <Icon name="info" size="1.5em" />
           <div className="flex aictr spbtw flex-1">
             Status:
-            <SelectOptions
-              options={[
-                "pending",
-                "scheduled",
-                "in_progress",
-                "completed",
-                "canceled",
-                "no_show",
-              ].map((s) => ({
-                text: <StatusBadge s={s} />,
-                value: s,
-              }))}
-              state={statusState}
-              closeOnClick
-              direction="bottom right"
-            />
+            <StatusBadge status={status} />
           </div>
         </div>
 
-        <div className="flex gap-3 mb-4 flex-1">
+        <div className="flex gap-4 mb-4 flex-1">
           <Icon name="person" size="1.5em" />
           <div className="flex-1">
             <div className="flex aictr spbtw gap-4 my-1">
               <div>Patient: </div>
-              <UserAutoInfo id={details.patient_id} hideAvatar roleCount={0} />
+              <UserInfo
+                data={(details as any).patient}
+                hideAvatar
+                roleCount={0}
+              />
             </div>
             <div className="flex aictr spbtw gap-4 my-1">
               <div>Assigned to: </div>
-              <UserAutoInfo id={details.staff_id} hideAvatar roleCount={0} />
+              <UserInfo
+                data={(details as any).staff}
+                hideAvatar
+                roleCount={0}
+              />
             </div>
           </div>
         </div>
+
+        <div className="flex gap-4 mb-4">
+          <Icon name="confirmation_number" size="1.5em" />
+          <Link
+            to={`/tickets/${details.ticket_id}`}
+            className="link link-hover"
+          >
+            Support ticket link <Icon name="open_in_new" size="1em" />
+          </Link>
+        </div>
+
+        {status !== "scheduled" || (
+          <div className="flex aictr mb-4 gap-2">
+            <button
+              className="btn btn-success flex-1"
+              onClick={toggleCompleteDialog}
+            >
+              Complete
+            </button>
+            <button
+              className="btn btn-error btn-soft flex-1"
+              onClick={toggleCancelDialog}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
+
+      <CancelDialog dialogRef={cancelRef} aptId={details.appointment_id} />
+      <CompleteDialog dialogRef={completeRef} aptId={details.appointment_id} />
     </div>
   );
 }
@@ -164,10 +180,19 @@ export function AppointmentDisplay({
   baseHeight: number;
   displayAsLine?: boolean;
 }) {
+  let isInSchedulePanel = true;
+
+  try {
+    useSchedulePanel();
+  } catch {
+    isInSchedulePanel = false;
+  }
+
   const detailBoxRef = useRef<HTMLDivElement | null>(null);
   const selfRef = useRef<HTMLDivElement | null>(null);
 
   const { ctxMenu } = useUIContext();
+  const navigate = useNavigate();
 
   const [pos, setPos] = useState<{ x: number; y: number; o: number }>({
     x: 0,
@@ -196,6 +221,12 @@ export function AppointmentDisplay({
   }
 
   function open(e: React.MouseEvent) {
+    if (!isInSchedulePanel) {
+      const date = DateUtils.format(time, "yyyy-M-dd");
+      navigate(`/schedule?view=schedule&date=${date}`);
+      return;
+    }
+
     if (!status) return;
     if (showDetails) return close();
 
@@ -229,7 +260,7 @@ export function AppointmentDisplay({
 
   const LineDisplay = () => (
     <div
-      className="line-apt-display"
+      className={"line-apt-display " + status}
       style={{
         height: baseHeight,
         boxShadow: showDetails ? "var(--shadow)" : "",
@@ -244,10 +275,10 @@ export function AppointmentDisplay({
       </Tooltips>
       <div className="overflow-hidden whitespace-nowrap flex aictr gap-3">
         <div className="font-mono">
-          <span>{format(time, "kk:mm")}</span>
+          <span>{DateUtils.format(time, "HH:mm")}</span>
           <span className="extra"> - </span>
           <span className="extra">
-            {format(addMinutes(time, duration), "kk:mm")}
+            {DateUtils.format(addMinutes(time, duration), "HH:mm")}
           </span>
         </div>
         <div className="font-semibold"> {content || "Unnamed appointment"}</div>
@@ -271,6 +302,7 @@ export function AppointmentDisplay({
         fontSize: 11,
 
         transition: "all 0.1s",
+        opacity: status === "cancelled" ? 0.5 : 1,
       }}
       tabIndex={0}
       onClick={open}
@@ -286,7 +318,7 @@ export function AppointmentDisplay({
           {content?.trim() || "Unnamed appointment"}
         </div>
         <span>
-          {format(time, "k:mm")} - {format(endTime, "k:mm")}
+          {DateUtils.format(time, "k:mm")} - {DateUtils.format(endTime, "k:mm")}
         </span>
       </div>
     </div>
@@ -324,7 +356,7 @@ export function AppointmentDisplay({
                   "scheduled",
                   "in_progress",
                   "completed",
-                  "canceled",
+                  "cancelled",
                   "no_show",
                 ].map((c) => {
                   return {
@@ -361,7 +393,7 @@ export function TimelineRunner({ b, date }: { b: number; date: Date }) {
         transform: `translateY(calc(100% + ${timePassed * b}px))`,
       }}
     >
-      <Tooltips text={format(new Date(), "H:mm:ss")}>
+      <Tooltips text={DateUtils.format(cur, "H:mm")}>
         <div className="w-3 h-3 bg-red-600 rounded-xl -ml-3"></div>
       </Tooltips>
     </div>

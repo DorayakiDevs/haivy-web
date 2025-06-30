@@ -164,7 +164,7 @@ export function SidePanelWrapper({
           className="p-4 z-1 absolute w-full bottom-0"
           style={{
             backgroundImage:
-              "linear-gradient(to top, var(--color-base-100) 30%, #fffa)",
+              "linear-gradient(to top, var(--color-base-200) 30%, #fff0)",
           }}
         >
           <button className="btn btn-md btn-ghost w-full" onClick={close}>

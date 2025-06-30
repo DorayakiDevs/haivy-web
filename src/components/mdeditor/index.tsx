@@ -33,9 +33,9 @@ export default function MDEditor({
     setTab("write");
   }
 
-  function switchPreview() {
-    setTab("preview");
-  }
+  // function switchPreview() {
+  //   setTab("preview");
+  // }
 
   useEffect(() => {
     if (onChange) onChange(content);
@@ -84,59 +84,60 @@ export default function MDEditor({
       <div className="flex border-b border-base-content spbtw">
         <div>
           <MDOption
-            text="Write"
+            text="Add a comment"
             active={tab === "write"}
             onClick={switchEdit}
           />
-          <MDOption
+          {/* <MDOption
             text="Preview"
             active={tab === "preview"}
             onClick={switchPreview}
-          />
+          /> */}
         </div>
 
-        {tab === "write" && (
-          <div className="flex items-center">
-            <MDOption
-              icon="format_h1"
-              title="Add heading"
-              onClick={format("h2")}
-            />
+        {true ||
+          (tab === "write" && (
+            <div className="flex items-center">
+              <MDOption
+                icon="format_h1"
+                title="Add heading"
+                onClick={format("h2")}
+              />
 
-            <MDOption
-              icon="format_h2"
-              title="Add subheading"
-              onClick={format("h3")}
-            />
+              <MDOption
+                icon="format_h2"
+                title="Add subheading"
+                onClick={format("h3")}
+              />
 
-            <MDOption
-              icon="format_bold"
-              title="Bold text"
-              onClick={format("bold")}
-            />
-            <MDOption
-              icon="format_italic"
-              title="Italic text"
-              onClick={format("italic")}
-            />
+              <MDOption
+                icon="format_bold"
+                title="Bold text"
+                onClick={format("bold")}
+              />
+              <MDOption
+                icon="format_italic"
+                title="Italic text"
+                onClick={format("italic")}
+              />
 
-            <MDOption icon="link" title="Add link" onClick={format("link")} />
+              <MDOption icon="link" title="Add link" onClick={format("link")} />
 
-            <MDOption text="@" title="Mention" onClick={format("mention")} />
+              <MDOption text="@" title="Mention" onClick={format("mention")} />
 
-            <MDOption
-              icon="format_list_numbered"
-              title="Add list"
-              onClick={format("ol")}
-            />
+              <MDOption
+                icon="format_list_numbered"
+                title="Add list"
+                onClick={format("ol")}
+              />
 
-            <MDOption
-              icon="format_list_bulleted"
-              title="Add unordered list"
-              onClick={format("ul")}
-            />
-          </div>
-        )}
+              <MDOption
+                icon="format_list_bulleted"
+                title="Add unordered list"
+                onClick={format("ul")}
+              />
+            </div>
+          ))}
       </div>
 
       <div className="p-4 flex-1">

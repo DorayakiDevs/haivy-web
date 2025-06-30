@@ -59,10 +59,14 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
     clssArr.push(width);
   }
 
+  if (readOnly) {
+    clssArr.push("pointer-events-none");
+  }
+
   return (
     <div className={clssArr.join(" ")}>
       {!label || <div className="my-2 font-semibold text-sm">{label}</div>}
-      <div tabIndex={0} role="button" className={"btn bg-base-100 w-full"}>
+      <div tabIndex={0} role="button" className={"btn bg-base-300 w-full"}>
         <div className="flex-1 text-left">
           {options[curIndex]?.text ||
             options[curIndex]?.value ||

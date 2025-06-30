@@ -62,3 +62,13 @@ export function validatePassword(password: string): string {
 
   return "";
 }
+
+export function validateNotEmpty(str: string): string {
+  const trimmed = str.trim();
+
+  if (!trimmed.length) {
+    return "This field cannot be empty!";
+  }
+
+  return "";
+}

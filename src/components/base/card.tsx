@@ -1,21 +1,21 @@
 import { Icon } from "@components/icons";
 
-import Badge from "./badge";
+import Badge, { StatusBadge } from "./badge";
 
-import { formatDate } from "@utils/converter";
+import { DateUtils } from "@utils/date";
 import { useNavigate } from "react-router";
-import { format } from "date-fns";
+import { UserAutoInfo } from "@components/users";
 
 type Props = React.JSXProps<"div">;
 
-type Action = {
+type T_Action = {
   title: string;
   onClick?: React.MouseEventHandler;
 };
 
-type CardContent = React.ReactNode;
-type CardTitle = React.ReactNode;
-type CardSize = "xs" | "sm" | "md" | "lg" | "xs";
+type T_CardContent = React.ReactNode;
+type T_CardTitle = React.ReactNode;
+type T_CardSize = "xs" | "sm" | "md" | "lg" | "xs";
 
 export function Card(props: Props) {
   const { className, ...rest } = props;
@@ -29,19 +29,19 @@ export function Card(props: Props) {
   return <div className={clssArr.join(" ")} {...rest} />;
 }
 
-type ActionCardProps = {
+type T_ActionCardProps = {
   subtitle?: string;
   subIcon?: string;
 
   tag?: React.ReactNode;
   description?: React.ReactNode;
-  details?: CardContent;
+  details?: T_CardContent;
 
-  title?: CardTitle;
-  actions?: Action[];
+  title?: T_CardTitle;
+  actions?: T_Action[];
 } & React.JSXProps<"div">;
 
-export function ActionCard(props: ActionCardProps) {
+export function ActionCard(props: T_ActionCardProps) {
   const {
     subtitle,
     subIcon,
@@ -71,7 +71,7 @@ export function ActionCard(props: ActionCardProps) {
         </div>
         {tag}
       </div>
-      <div className="text-clip overflow-hidden">
+      <div className="text-clip overflow-hidden mt-2">
         <div className="card-title text-md">{title}</div>
         <div className="text-sm font-semibold">{description}</div>
       </div>
@@ -97,28 +97,30 @@ export function ActionCard(props: ActionCardProps) {
   );
 }
 
-type AppointmentCardProps = {
+type T_AppointmentCardProps = {
   data: Haivy.Appointment;
-} & ActionCardProps;
+} & T_ActionCardProps;
 
-export function AppointmentCard({ data, ...rest }: AppointmentCardProps) {
+export function AppointmentCard({ data, ...rest }: T_AppointmentCardProps) {
   const navigate = useNavigate();
 
-  const meetDate = new Date(data.created_date || "");
-  const date = format(meetDate, "yyyy-M-dd");
+  const meetDate = new Date(data.meeting_date || "");
+  const date = DateUtils.format(meetDate, "yyyy-M-dd");
 
   return (
     <ActionCard
       subIcon="event"
       title={data.content || "Unnamed appointment"}
-      tag={
-        <Badge className="badge-primary badge-sm capitalize">
-          {data.status}
-        </Badge>
+      tag={<StatusBadge status={data.status} />}
+      subtitle={DateUtils.dFormat(data.meeting_date)}
+      description={
+        <div className="py-2">
+          <UserAutoInfo id={data.staff_id} />
+          <div className="h-2"></div>
+          <UserAutoInfo id={data.patient_id} />
+        </div>
       }
-      subtitle={formatDate(data.meeting_date)}
-      description={!data.staff_id || "by " + data.staff_id}
-      details={"Created on: " + formatDate(data.created_date)}
+      details={"Created on: " + DateUtils.dFormat(data.created_date)}
       {...rest}
       actions={[
         {
@@ -171,12 +173,12 @@ export function ImageCard({
   active,
   ...props
 }: {
-  content?: CardContent;
-  title: CardTitle;
+  content?: T_CardContent;
+  title: T_CardTitle;
   url: string;
-  size?: CardSize;
+  size?: T_CardSize;
   active?: boolean;
-  actions?: Action[];
+  actions?: T_Action[];
 } & React.JSXProps<"div">) {
   const clssArr = ["card shadow-sm card-sm hover-wrapper"];
 

@@ -199,7 +199,7 @@ export function FormLogin() {
             />
 
             <SubmitWithLoading
-              text="Submit"
+              children="Submit"
               onClick={submitInformation}
               loading={loading}
             />
@@ -241,7 +241,7 @@ export function FormLogin() {
             )}
 
             <SubmitWithLoading
-              text={OTPPassedStageOne ? "Confirm OTP" : "Send me OTP code"}
+              children={OTPPassedStageOne ? "Confirm OTP" : "Send me OTP code"}
               onClick={submitPhoneNumber}
               loading={loading}
             />
