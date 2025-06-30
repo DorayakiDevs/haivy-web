@@ -50,15 +50,24 @@ export function validatePassword(password: string): string {
     return basicValidation;
   }
 
-  const PASSWORD_COMPLEXITY_REGEX =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/;
+  const PASSWORD_COMPLEXITY_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
   if (!PASSWORD_COMPLEXITY_REGEX.test(password)) {
-    return "Password must contain uppercase, lowercase, number, and special character.";
+    return "Password must contain uppercase, lowercase and number";
   }
 
   if (/\s/.test(password)) {
     return "Password cannot contain spaces.";
+  }
+
+  return "";
+}
+
+export function validateNotEmpty(str: string): string {
+  const trimmed = str.trim();
+
+  if (!trimmed.length) {
+    return "This field cannot be empty!";
   }
 
   return "";

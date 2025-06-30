@@ -1,5 +1,6 @@
 import { type CSSProperties } from "react";
 import "./index.css";
+import { Tooltips } from "@components/base/others";
 
 type Props = {
   name: string;
@@ -7,7 +8,7 @@ type Props = {
   fill?: boolean;
   clickable?: boolean;
   cursor?: CSSProperties["cursor"];
-} & React.JSX.IntrinsicElements["span"];
+} & React.JSXProps<"span">;
 
 export function Icon({
   name,
@@ -19,6 +20,7 @@ export function Icon({
   clickable,
   cursor,
   onClick,
+  title,
   ...spanProps
 }: Props) {
   const clssArr = ["dft-icon material-symbols-rounded"];
@@ -26,7 +28,7 @@ export function Icon({
     clssArr.push(className);
   }
 
-  return (
+  const content = (
     <span
       className={clssArr.join(" ")}
       style={{
@@ -39,6 +41,7 @@ export function Icon({
           : "'wght' 500, 'opsz' 48",
 
         cursor,
+        verticalAlign: "middle",
       }}
       onClick={onClick}
       {...spanProps}
@@ -46,4 +49,10 @@ export function Icon({
       {name}
     </span>
   );
+
+  if (!title) {
+    return content;
+  }
+
+  return <Tooltips text={title}>{content}</Tooltips>;
 }

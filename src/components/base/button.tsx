@@ -1,6 +1,6 @@
 import { LTRLoadingBar } from "./others";
 
-type BttProps = React.JSX.IntrinsicElements["button"];
+type BttProps = React.JSXProps<"button">;
 
 export function Button(props: BttProps) {
   const { className, ...rest } = props;
@@ -17,11 +17,11 @@ export function Button(props: BttProps) {
 export function SubmitWithLoading({
   loading,
   onClick,
-  text,
+  children,
 }: {
   loading?: boolean;
   onClick?: React.MouseEventHandler;
-  text?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="overflow-hidden h-[45px] my-4">
@@ -32,12 +32,12 @@ export function SubmitWithLoading({
           transition: "all 0.1s",
         }}
       >
-        <div
+        <button
           className="btn btn-primary"
           onClick={loading ? undefined : onClick}
         >
-          {text}
-        </div>
+          {children}
+        </button>
         <LTRLoadingBar height={45} />
       </div>
     </div>

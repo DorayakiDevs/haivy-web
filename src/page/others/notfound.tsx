@@ -1,14 +1,18 @@
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router";
 
 export function NotFoundPage() {
   const navigate = useNavigate();
 
   function goBackHome() {
-    navigate("/dashboard");
+    navigate("/");
   }
 
   return (
     <div className="app-wrapper flex aictr jcctr coll gap-16">
+      <Helmet>
+        <title>Haivy | Not found</title>
+      </Helmet>
       <div className="flex aictr jcctr gap-24">
         <div className="text-[12rem] font-bold">
           <div className="rotate-[-6deg] underline underline-offset-12">

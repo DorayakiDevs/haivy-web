@@ -38,7 +38,7 @@ export function validatePhoneNumber(phone: string): string {
   const regex = /^\+?\d{10,15}$/;
 
   if (!regex.test(trimmed)) {
-    return "Phone number must be 10–15 digits and may start with '+'.";
+    return "Phone number must be 10 - 15 digits and may start with '+'.";
   }
 
   return "";

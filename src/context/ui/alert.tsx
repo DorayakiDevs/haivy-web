@@ -1,6 +1,6 @@
 import { useContext, createContext, useRef, useState } from "react";
 
-import { Alert } from "@components/feedback/alert";
+import { Alert } from "@components/overlay/alert";
 
 type T_AlertProps = {
   type?: "info" | "base" | "success" | "error" | "warning";
@@ -57,7 +57,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
   return (
     <AlertContext.Provider value={{ toggle, close }}>
       <div
-        className="fixed bottom-32 left-0 z-5 flex aictr jcctr w-full"
+        className="fixed bottom-32 left-0 z-20 flex aictr jcctr w-full"
         style={{
           pointerEvents: "none",
           opacity: active ? 1 : 0,

@@ -7,6 +7,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    "allowJs": true,
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -30,9 +32,18 @@
       "@hooks/*": ["hooks/*"],
       "@context/*": ["context/*"],
       "@layouts/*": ["layouts/*"],
-      "@auth/*": ["auth/*"],
+      "@services/*": ["services/*"],
       "@utils/*": ["utils/*"],
-      "@pages/*": ["page/*"]
+      "@pages/*": ["page/*"],
+
+      "@services": ["services/index"],
+      "@components": ["components/index"],
+      "@test": ["test/index"],
+      "@hooks": ["hooks/index"],
+      "@context": ["context/index"],
+      "@layouts": ["layouts/index"],
+      "@utils": ["utils/index"],
+      "@pages": ["page/index"]
     }
   },
   "include": ["src"]

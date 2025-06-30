@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-import { ErrorableTextInput } from "@components/base/input";
+import { InputTextErrorable } from "@components/base/input";
 import { SubmitWithLoading } from "@components/base/button";
 import { FormHeader } from ".";
 
@@ -8,10 +8,9 @@ import { useValidatableState } from "@hooks/validator";
 
 import { useUIContext } from "@context/ui";
 
-import { useSignUp } from "@auth/index";
+import { useSignUp } from "services/index";
 
 import { validateEmail, validatePassword } from "@utils/validator";
-import { wait } from "@utils/timing";
 
 const formCardProps = {
   className: "card bg-base-100 p-8 pt-16 rounded-3xl w-full key-fade-in",
@@ -67,10 +66,6 @@ export function FormRegister() {
         type: "success",
       });
 
-      //! Temporary fix pending for signal implementation
-      await wait(1000);
-      window.location.pathname = "/";
-
       return;
     }
   }
@@ -80,9 +75,9 @@ export function FormRegister() {
       <FormHeader title="Hello there!" type="Register" />
 
       <div className="my-[2rem] flex coll gap-[8px]">
-        <ErrorableTextInput
-          title="Email address"
-          placeholder="thomasjeffison@gmail.com"
+        <InputTextErrorable
+          label="Email address"
+          placeholder="abrahamlincoln@kennedy.com"
           inputClass="w-full"
           icon="email"
           state={email.state}
@@ -91,7 +86,7 @@ export function FormRegister() {
 
         {/* <ErrorableTextInput
           title="Full name"
-          placeholder="Thomas Jeffeson"
+          placeholder="appon"
           inputClass="w-full"
           icon="person"
           state={fullname.state}
@@ -102,8 +97,8 @@ export function FormRegister() {
           </button>
         </ErrorableTextInput> */}
 
-        <ErrorableTextInput
-          title="Password"
+        <InputTextErrorable
+          label="Password"
           placeholder="Enter a secure password"
           inputClass="w-full"
           icon="password"
@@ -112,18 +107,18 @@ export function FormRegister() {
           error={password.error}
         />
 
-        <ErrorableTextInput
+        <InputTextErrorable
           placeholder="Re-enter your password"
           inputClass="w-full"
           type="password"
           state={repassword.state}
           error={repassword.error}
-          title="Retype your password"
+          label="Retype your password"
           icon="password"
         />
 
         <SubmitWithLoading
-          text="Create account"
+          children="Create account"
           onClick={submitInformation}
           loading={loading}
         />
