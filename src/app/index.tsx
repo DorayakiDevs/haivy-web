@@ -1,3 +1,10 @@
+import ApplicationLayout from "./layout";
+import ApplicationProvider from "./provider";
+
 export default function MainApplication() {
-  return <></>;
+  return (
+    <ApplicationProvider>
+      <ApplicationLayout />
+    </ApplicationProvider>
+  );
 }
