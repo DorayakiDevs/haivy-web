@@ -54,6 +54,8 @@ const CLSS =
   "rounded-xl p-4 pt-0 bg-base-300 hover:shadow-lg transition-all flex-1 key-fade-in";
 
 function TicketOverview() {
+  const navigate = useNavigate();
+
   function Header() {
     return (
       <div className="p-2 pt-4 flex aiend gap-4">
@@ -95,7 +97,10 @@ function TicketOverview() {
       <div className="flex aictr spbtw border-b-1 border-[#0002]">
         <Header />
 
-        <button className="btn btn-outline btn-primary">
+        <button
+          className="btn btn-outline btn-primary"
+          onClick={() => navigate("/tickets")}
+        >
           View all tickets
         </button>
       </div>

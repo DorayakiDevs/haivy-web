@@ -108,7 +108,7 @@ export class DateUtils {
    * @param f Format string
    * @returns Formatted date
    */
-  static format(date: Date, f: string) {
+  static format(date: Date | string, f: string) {
     return fnsFormat(date, f);
   }
 

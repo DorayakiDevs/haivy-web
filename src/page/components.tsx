@@ -23,13 +23,29 @@ function buildNavBar(roles: Haivy.Enum<"role">[] = []): T_RouteButton[] {
   const list = [];
 
   list.push({ name: "Dashboard", icon: "dashboard", path: "/", exact: true });
-  list.push({ name: "Schedule", icon: "event", path: "/schedule" });
+
+  if (roles.includes("customer")) {
+    list.push({
+      name: "Appointments",
+      icon: "event",
+      path: "/appointments",
+    });
+  }
 
   if (roles.includes("staff")) {
+    list.push({ name: "Schedule", icon: "calendar_month", path: "/schedule" });
     list.push({
       name: "Tickets",
       icon: "confirmation_number",
       path: "/tickets",
+    });
+  }
+
+  if (roles.includes("manager")) {
+    list.push({
+      name: "Staff",
+      icon: "people",
+      path: "/staffs",
     });
   }
 
@@ -46,7 +62,7 @@ export function VerticalNavigationBar() {
   const routes = buildNavBar(roles);
 
   return (
-    <div className="mx-12 h-full flex coll spbtw relative z-2">
+    <div className="mx-6 h-full flex coll spbtw relative z-2">
       <div className="bg-primary flex coll p-2.5 gap-2.5 rounded-b-full">
         <div
           className={"w-full aspect-square " + BTT_SIZE}
@@ -111,7 +127,7 @@ function LogOutButton() {
 
   return (
     <>
-      <Tooltips text="Log out" className="tooltip-right">
+      <Tooltips text="Log out" dir="right">
         <button className={className} onClick={handleModalClick}>
           <Icon name="logout" />
         </button>
@@ -163,7 +179,7 @@ function AccountSettings() {
   }
 
   return (
-    <Tooltips text="Profile" className="tooltip-right">
+    <Tooltips text="Profile" dir="right">
       <button
         className={"btn btn-circle btn-ghost w-full " + BTT_SIZE}
         style={{

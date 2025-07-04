@@ -14,8 +14,8 @@ import { useClient } from "@services/client";
 
 import { DateUtils } from "@utils/date";
 
-import { RequestAppointmentDialog } from "./dialogs";
-import { adjustTimeToLocal } from "./utils";
+import { RequestAppointmentDialog } from "../schedules/dialogs";
+import { adjustTimeToLocal } from "../schedules/utils";
 
 type T_RetType = any[];
 
@@ -25,7 +25,7 @@ const EmptyBox = {
   style: { borderColor: "#0002" },
 };
 
-export default function PatientSchedulePage() {
+export function PatientAppointmentsPage() {
   return (
     <div className="content-wrapper pr-8 overflow-y-auto">
       <Helmet>
@@ -35,12 +35,31 @@ export default function PatientSchedulePage() {
         <div>Schedule</div>
         <div className="font-bold text-2xl">My Appointments</div>
       </div>
-      <PageContent />
+      <PageContent name="get_patient_schedule_in_range" />
     </div>
   );
 }
 
-function PageContent() {
+export function DoctorAppointmentsPage() {
+  return (
+    <div className="content-wrapper pr-8 overflow-y-auto">
+      <Helmet>
+        <title>Haivy | My Appointments</title>
+      </Helmet>
+      <div className="py-8">
+        <div>Schedule</div>
+        <div className="font-bold text-2xl">My Appointments</div>
+      </div>
+      <PageContent name="get_patient_schedule_in_range" />
+    </div>
+  );
+}
+
+function PageContent({
+  name,
+}: {
+  name: "get_patient_schedule_in_range" | "get_doctor_schedule_in_range";
+}) {
   const { supabase } = useClient();
   const requestPan = useState(false);
 
@@ -59,14 +78,10 @@ function PageContent() {
     async function fetch() {
       setLoading(true);
 
-      const { data, error } = await executeDbRPC(
-        supabase,
-        "get_patient_schedule_in_range",
-        {
-          p_begin_date: "2000-01-01",
-          p_end_date: "2100-01-01",
-        }
-      ).abortSignal(controller.signal);
+      const { data, error } = await executeDbRPC(supabase, name, {
+        p_begin_date: "2000-01-01",
+        p_end_date: "2100-01-01",
+      }).abortSignal(controller.signal);
 
       setError(error || null);
 

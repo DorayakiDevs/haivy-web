@@ -1,7 +1,8 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 
 import { FormRegister } from "./signup";
 import { FormLogin } from "./signin";
+import { useEffect } from "react";
 
 export default function AuthenticationPage() {
   return (
@@ -9,10 +10,20 @@ export default function AuthenticationPage() {
       <Routes>
         <Route path="/register" element={<FormRegister />} />
         <Route path="/login" element={<FormLogin />} />
-        <Route path="/*" element={<FormLogin />} />
+        <Route path="*" element={<Navigate />} />
       </Routes>
     </LogoLeftSidePreset>
   );
+}
+
+function Navigate() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate("/login");
+  }, []);
+
+  return <></>;
 }
 
 function LogoLeftSidePreset(props: any) {

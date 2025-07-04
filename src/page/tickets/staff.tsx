@@ -308,7 +308,9 @@ function TableList() {
           header: "Created day",
           width: 200,
           render(a) {
-            return <div>{DateUtils.dFormat(a.date_created)}</div>;
+            return (
+              <div>{DateUtils.format(a.date_created || "", "yyyy-MM-dd")}</div>
+            );
           },
           sortBy: (t) => t.date_created,
         },
