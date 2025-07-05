@@ -5,6 +5,7 @@ import { SuperClient as Client } from "./init";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { AuthContext, AuthProvider } from "./auth";
 import { DataContext, DataProvider } from "./data";
+import { ToasterProvider } from "@components/feedbacks/toaster/context";
 
 type T_Context = SupabaseClient;
 
@@ -14,7 +15,9 @@ export function ServiceProvider(props: React.ChildrenProps) {
   return (
     <ClientContext.Provider value={Client}>
       <AuthProvider>
-        <DataProvider>{props.children}</DataProvider>
+        <ToasterProvider>
+          <DataProvider>{props.children}</DataProvider>
+        </ToasterProvider>
       </AuthProvider>
     </ClientContext.Provider>
   );

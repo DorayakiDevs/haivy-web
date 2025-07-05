@@ -137,6 +137,12 @@ body {
   text-align: right;
 }
 
+.content-ctr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 *:not(.selectable),
 *:not(.selectable-text),
 *:not(.selectable-all),

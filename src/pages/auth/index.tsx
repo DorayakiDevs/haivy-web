@@ -1,9 +1,7 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, Navigate } from "react-router";
 import "./index.css";
 
 import Toaster from "@components/feedbacks/toaster/component";
-
-import { Navigate } from "@components/routing";
 
 import FormLogin from "./login";
 import FormRegister from "./signup";
@@ -17,10 +15,9 @@ export default function AuthenticationPages() {
         <Routes>
           <Route path="/login" element={<FormLogin />} />
           <Route path="/register" element={<FormRegister />} />
-          <Route path="*" element={<Navigate path="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </LogoLeftSidePreset>
-      <Toaster />
     </div>
   );
 }

@@ -7,9 +7,14 @@ import { useValidatableState } from "@hooks/useValidatableState";
 import { validateEmail, validatePassword } from "@utils/validator";
 
 import { formCardProps, FormHeader } from "./components";
+
+import { useToaster } from "@components/feedbacks/toaster/context";
+
 import { Button } from "@components/shared/buttons";
 
 export default function FormRegister() {
+  const toaster = useToaster();
+
   const email = useValidatableState("", validateEmail);
   const password = useValidatableState("", validatePassword);
   const repassword = useValidatableState("");
@@ -18,7 +23,9 @@ export default function FormRegister() {
   //   fullname.setValue(getRandomName());
   // }
 
-  async function submitInformation() {}
+  async function submitInformation() {
+    toaster.open({ content: "Hi this is a toaster!", color: "info" });
+  }
 
   return (
     <div {...formCardProps}>
@@ -58,6 +65,7 @@ export default function FormRegister() {
           children="Create account"
           onClick={submitInformation}
           loading={false}
+          className="mt-2"
         />
       </div>
 

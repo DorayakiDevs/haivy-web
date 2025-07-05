@@ -1,10 +1,10 @@
 import { createContext, useContext, useRef, useState } from "react";
+import Toaster from "./component";
 
-type T_ToasterProps = {
+export type T_ToasterProps = {
   icon: string;
   color: Style.Color;
   content: string;
-  duration: number;
 };
 
 type T_OpenProps = Partial<T_ToasterProps>;
@@ -12,6 +12,10 @@ type T_OpenProps = Partial<T_ToasterProps>;
 type T_ToasterContext = {
   close(): void;
   open(props: T_OpenProps): void;
+
+  error(content?: string, duration?: number): void;
+  note(content?: string, duration?: number): void;
+  success(content?: string, duration?: number): void;
 };
 
 const ToasterContext = createContext<T_ToasterContext | null>(null);
@@ -26,11 +30,11 @@ export function ToasterProvider(props: React.ChildrenProps) {
   const [color, setColor] = useState<Style.Color>("neutral");
   const [active, setActive] = useState(false);
 
-  function cap(c = 0) {
+  function cap(c = 2000) {
     return Math.max(500, c);
   }
 
-  function open(props: T_OpenProps) {
+  function open(props: T_OpenProps & { duration?: number }) {
     const { color, duration, icon, content } = props;
 
     setContent(content ?? "");
@@ -42,6 +46,18 @@ export function ToasterProvider(props: React.ChildrenProps) {
     timeoutRef.current = setTimeout(close, cap(duration));
   }
 
+  function error(content = "An error occured", duration = 2000) {
+    open({ content, color: "error", icon: "error", duration });
+  }
+
+  function success(content: string, duration = 2000) {
+    open({ content, color: "success", icon: "check_circle", duration });
+  }
+
+  function note(content: string, duration = 2000) {
+    open({ content, color: "neutral", icon: "note", duration });
+  }
+
   function close() {
     clearTimeout(timeoutRef.current);
     setActive(false);
@@ -50,18 +66,22 @@ export function ToasterProvider(props: React.ChildrenProps) {
   const value = {
     open,
     close,
+    error,
+    success,
+    note,
   };
 
-  // const data = { "}
+  const data = { content, color, icon, active };
 
   return (
     <ToasterContext.Provider value={value}>
       {props.children}
+      <Toaster {...data} active={active} />
     </ToasterContext.Provider>
   );
 }
 
-export default function useToaster() {
+export function useToaster() {
   const data = useContext(ToasterContext);
   if (!data) {
     throw new Error("Toaster context not found");

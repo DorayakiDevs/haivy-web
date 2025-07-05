@@ -5,6 +5,11 @@ declare global {
   namespace Haivy {
     type Table<T extends keyof Database["public"]["Tables"]> =
       Database["public"]["Tables"][T];
+
+    type Enum<T extends keyof Database["public"]["Enums"]> =
+      Database["public"]["Enums"][T];
+
+    type User = Database["public"]["Tables"]["user_details"]["Row"];
   }
 
   namespace React {

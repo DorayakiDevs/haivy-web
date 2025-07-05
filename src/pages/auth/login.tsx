@@ -4,25 +4,30 @@ import { Link } from "react-router";
 import { InputTextErrorable } from "@components/shared/text";
 import { Button } from "@components/shared/buttons";
 
+import { useServices } from "@services/index";
+
 import { useValidatableState } from "@hooks/useValidatableState";
+import { useUI } from "@hooks/useUI";
 
 import { validateBasicPassword, validateEmail } from "@utils/validator";
 
 import { formCardProps, FormHeader } from "./components";
 
 export default function FormLogin() {
+  const { toaster } = useUI();
+  const { client } = useServices();
+
   const CardContent = useRef<HTMLDivElement | null>(null);
 
   const [height, setHeight] = useState<string | number>("fit-content");
   const [usePwdLogin, setPwdLogin] = useState(true);
 
-  const email = useValidatableState("", validateEmail);
-  const password = useValidatableState("", validateBasicPassword);
+  const [loading, setLoading] = useState(false);
+  const sEmail = useValidatableState("", validateEmail);
+  const sPassword = useValidatableState("", validateBasicPassword);
 
   const willSaveLoginInfo = useState(false);
   const confirmationOTP = useState("");
-
-  const loading = false;
 
   useEffect(() => {
     const { clientHeight = -1 } = CardContent.current || {};
@@ -32,13 +37,32 @@ export default function FormLogin() {
     setHeight(newH);
   });
 
-  function submitInformation() {
-    email.validate();
-    password.validate();
+  async function submitInformation() {
+    const a = sEmail.validate();
+    const b = sPassword.validate();
+
+    if (!a || !b) {
+      return;
+    }
+
+    setLoading(true);
+
+    const email = sEmail.current;
+    const password = sPassword.current;
+
+    const { error } = await client.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      toaster.error(error.message);
+    } else {
+      toaster.success("Login successfully!");
+    }
+
+    setLoading(false);
   }
 
   function submitOTPEmail() {
-    email.validate();
+    sEmail.validate();
   }
 
   function tabSwitch(c = false) {
@@ -72,8 +96,8 @@ export default function FormLogin() {
                 placeholder="myemail@email.com"
                 icon="email"
                 type="email"
-                error={email.error}
-                state={email.state}
+                error={sEmail.error}
+                state={sEmail.state}
               />
 
               <InputTextErrorable
@@ -81,8 +105,8 @@ export default function FormLogin() {
                 placeholder="Enter your password"
                 icon="key"
                 type="password"
-                error={password.error}
-                state={password.state}
+                error={sPassword.error}
+                state={sPassword.state}
               />
 
               {/* <InputToggle
@@ -104,8 +128,8 @@ export default function FormLogin() {
                 placeholder="Enter your email address"
                 className="w-full"
                 icon="email"
-                error={email.error}
-                state={email.state}
+                error={sEmail.error}
+                state={sEmail.state}
               />
 
               <Button
