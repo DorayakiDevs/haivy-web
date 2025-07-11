@@ -5,7 +5,12 @@ import { Tooltip } from "@components/shared/tooltip";
 import { Loading } from "@components/icons/loading";
 import { Icon } from "@components/icons/google";
 
-import { getUserAvatar } from "@utils/parser";
+import { useServices } from "@services/index";
+
+import useUI from "@hooks/useUI";
+
+import { getNameInitials, parseError } from "@utils/parser";
+import { sleep } from "@utils/timing";
 
 import logo from "@assets/logo.svg";
 
@@ -22,18 +27,19 @@ type T_RouteButton = {
   exact?: boolean;
 };
 
-function buildNavBar(roles: Haivy.Enum<"user_role">[] = []): T_RouteButton[] {
+function buildNavBar(roles: Haivy.Enum<"role">[] = []): T_RouteButton[] {
   const list = [];
 
   list.push({ name: "Dashboard", icon: "dashboard", path: "/", exact: true });
-  list.push({ name: "Schedule", icon: "event", path: "/schedule" });
 
-  if (roles.includes("staff")) {
+  if (roles.includes("staff") || roles.includes("doctor")) {
     list.push({
-      name: "Tickets",
+      name: "Ticket",
       icon: "confirmation_number",
       path: "/tickets",
     });
+
+    list.push({ name: "Schedule", icon: "calendar_month", path: "/schedule" });
   }
 
   list.push({ name: "Medicine", icon: "medication", path: "/medication" });
@@ -42,17 +48,17 @@ function buildNavBar(roles: Haivy.Enum<"user_role">[] = []): T_RouteButton[] {
 }
 
 export function NavigationBar() {
-  //   const { client } = useServices();
+  const { auth } = useServices();
 
-  const routes = buildNavBar(["guest"]);
+  const routes = buildNavBar(auth.userDetails?.roles);
 
   return (
-    <div className="mx-6 h-full flex coll spbtw relative z-2 w-20">
+    <div className="mx-6 h-full flex coll spbtw relative z-2 w-18">
       <div className="bg-primary flex coll p-1.5 gap-1.5 rounded-b-full">
         <img src={logo} className="w-full" />
 
         {routes.map((route) => (
-          <NavBarButton {...route} />
+          <NavBarButton {...route} key={route.path} />
         ))}
       </div>
 
@@ -91,6 +97,9 @@ function NavBarButton({ name, path, icon, exact }: T_RouteButton) {
 }
 
 function LogOutButton() {
+  const { client } = useServices();
+  const { toaster } = useUI();
+
   const [loading, setLoading] = useState(false);
   const logOutModal = useRef<HTMLDialogElement | null>(null);
 
@@ -98,9 +107,18 @@ function LogOutButton() {
     logOutModal.current?.showModal();
   }
 
-  function handleLogOut(e: React.MouseEvent) {
+  async function handleLogOut(e: React.MouseEvent) {
     e.stopPropagation();
-    // signOut();
+
+    setLoading(true);
+    await sleep(500);
+
+    const { error } = await client.auth.signOut();
+    if (error) {
+      toaster.error(parseError(error));
+    }
+
+    setLoading(false);
   }
 
   const className = BTT_CLSS;
@@ -142,8 +160,8 @@ function LogOutButton() {
 
 function AccountSettings() {
   const nav = useNavigate();
-  //   const { account } = useClient();
-  const account = null;
+  const { auth } = useServices();
+  const account = auth.userDetails;
 
   if (!account) {
     return (
@@ -153,8 +171,6 @@ function AccountSettings() {
     );
   }
 
-  const imgUrl = getUserAvatar(account);
-
   function navigate() {
     if (location.pathname === "/settings") {
       return;
@@ -163,16 +179,16 @@ function AccountSettings() {
     nav("/settings");
   }
 
+  const INITIAL = getNameInitials(account.full_name || "");
+
   return (
     <Tooltip title="Profile" className="tooltip-right">
-      <button
-        className="btn btn-circle btn-ghost w-full"
-        style={{
-          backgroundImage: imgUrl,
-          backgroundSize: "cover",
-        }}
+      <div
+        className={BASE_CLSS + BTT_CLSS + " flex aictr jcctr"}
         onClick={navigate}
-      ></button>
+      >
+        <span className="text-xl font-bold">{INITIAL}</span>
+      </div>
     </Tooltip>
   );
 }

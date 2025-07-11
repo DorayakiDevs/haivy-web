@@ -1,15 +1,27 @@
 import type { React } from "react";
+
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import type { Database } from "./db.types";
 
 declare global {
   namespace Haivy {
+    type Client = SupabaseClient<Database>;
+
     type Table<T extends keyof Database["public"]["Tables"]> =
       Database["public"]["Tables"][T];
 
     type Enum<T extends keyof Database["public"]["Enums"]> =
       Database["public"]["Enums"][T];
 
-    type User = Database["public"]["Tables"]["user_details"]["Row"];
+    type DBRow<T extends keyof Database["public"]["Tables"]> =
+      Database["public"]["Tables"][T]["Row"];
+
+    type User = DBRow<"user_details">;
+    type Appointment = DBRow<"appointment">;
+    type Regimen = DBRow<"regimens">;
+    type Medicine = DBRow<"medicines">;
+    type Ticket = DBRow<"ticket">;
   }
 
   namespace React {
@@ -17,7 +29,7 @@ declare global {
       React.JSX.IntrinsicElements[T];
 
     type ChildrenProps = {
-      children: ?React.ReactNode;
+      children?: React.ReactNode;
     };
 
     type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];

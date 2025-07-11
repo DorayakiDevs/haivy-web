@@ -7,11 +7,12 @@ import { Button } from "@components/shared/buttons";
 import { useServices } from "@services/index";
 
 import { useValidatableState } from "@hooks/useValidatableState";
-import { useUI } from "@hooks/useUI";
+import useUI from "@hooks/useUI";
 
 import { validateBasicPassword, validateEmail } from "@utils/validator";
 
 import { formCardProps, FormHeader } from "./components";
+import { parseError } from "@utils/parser";
 
 export default function FormLogin() {
   const { toaster } = useUI();
@@ -26,8 +27,8 @@ export default function FormLogin() {
   const sEmail = useValidatableState("", validateEmail);
   const sPassword = useValidatableState("", validateBasicPassword);
 
-  const willSaveLoginInfo = useState(false);
-  const confirmationOTP = useState("");
+  // const willSaveLoginInfo = useState(false);
+  // const confirmationOTP = useState("");
 
   useEffect(() => {
     const { clientHeight = -1 } = CardContent.current || {};
@@ -53,7 +54,7 @@ export default function FormLogin() {
     const { error } = await client.auth.signInWithPassword({ email, password });
 
     if (error) {
-      toaster.error(error.message);
+      toaster.error(parseError(error), 5000);
     } else {
       toaster.success("Login successfully!");
     }

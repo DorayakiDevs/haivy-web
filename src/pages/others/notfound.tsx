@@ -10,7 +10,7 @@ export default function NotFoundPage() {
   }
 
   return (
-    <div className="content-wrapper flex aictr jcctr coll gap-16">
+    <div className="content-wrapper flex aictr jcctr coll gap-16 fade-in">
       <Helmet>
         <title>Not found | Haivy</title>
       </Helmet>

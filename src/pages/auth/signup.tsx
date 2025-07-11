@@ -1,30 +1,60 @@
+import { useState } from "react";
 import { Link } from "react-router";
 
 import { InputTextErrorable } from "@components/shared/text";
+import { Button } from "@components/shared/buttons";
+
+import { useServices } from "@services/index";
 
 import { useValidatableState } from "@hooks/useValidatableState";
+import useUI from "@hooks/useUI";
 
 import { validateEmail, validatePassword } from "@utils/validator";
 
 import { formCardProps, FormHeader } from "./components";
-
-import { useToaster } from "@components/feedbacks/toaster/context";
-
-import { Button } from "@components/shared/buttons";
+import { parseError } from "@utils/parser";
 
 export default function FormRegister() {
-  const toaster = useToaster();
+  const { client } = useServices();
+  const { toaster } = useUI();
 
-  const email = useValidatableState("", validateEmail);
-  const password = useValidatableState("", validatePassword);
-  const repassword = useValidatableState("");
+  const [loading, setLoading] = useState(false);
+
+  const sEmail = useValidatableState("", validateEmail);
+  const sPassword = useValidatableState("", validatePassword);
+  const sRepassword = useValidatableState("");
 
   // function giveRandomName() {
   //   fullname.setValue(getRandomName());
   // }
 
   async function submitInformation() {
-    toaster.open({ content: "Hi this is a toaster!", color: "info" });
+    const a = sEmail.validate();
+    const b = sPassword.validate();
+    if (!a || !b) return;
+
+    const email = sEmail.current;
+    const password = sPassword.current;
+
+    const c = sRepassword.validate((cur) => {
+      if (cur !== password) {
+        return "Password must match!";
+      }
+    });
+
+    if (!c) return;
+
+    setLoading(true);
+
+    const { error, data } = await client.auth.signUp({ email, password });
+
+    if (error) {
+      toaster.error(parseError(error));
+    } else {
+      toaster.success("Account registered: " + data.user?.email);
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -37,8 +67,8 @@ export default function FormRegister() {
           placeholder="abrahamlincoln@kennedy.com"
           width="w-full"
           icon="email"
-          state={email.state}
-          error={email.error}
+          state={sEmail.state}
+          error={sEmail.error}
         />
 
         <InputTextErrorable
@@ -47,16 +77,16 @@ export default function FormRegister() {
           width="w-full"
           icon="password"
           type="password"
-          state={password.state}
-          error={password.error}
+          state={sPassword.state}
+          error={sPassword.error}
         />
 
         <InputTextErrorable
           placeholder="Re-enter your password"
           width="w-full"
           type="password"
-          state={repassword.state}
-          error={repassword.error}
+          state={sRepassword.state}
+          error={sRepassword.error}
           label="Retype your password"
           icon="password"
         />
@@ -64,7 +94,7 @@ export default function FormRegister() {
         <Button
           children="Create account"
           onClick={submitInformation}
-          loading={false}
+          loading={loading}
           className="mt-2"
         />
       </div>

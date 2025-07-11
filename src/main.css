@@ -85,6 +85,11 @@ body {
   min-width: 0px;
 }
 
+.flex-1 {
+  min-height: 0px;
+  min-width: 0px;
+}
+
 .coll {
   flex-direction: column;
 }
@@ -137,6 +142,10 @@ body {
   text-align: right;
 }
 
+.input {
+  outline: none;
+}
+
 .content-ctr {
   display: flex;
   align-items: center;
@@ -158,4 +167,52 @@ body {
 .selectable-all,
 .selectable-all > * {
   user-select: all;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.clickable:hover {
+  transform: translateY(-3px);
+}
+
+.clickable:active {
+  transform: translateY(0px);
+}
+
+.card-list {
+  white-space: nowrap;
+  overflow-x: scroll;
+
+  > * {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+}
+
+.cards-grid {
+  --w: 300px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--w), 1fr));
+
+  gap: 16px;
+
+  .card-expand {
+    width: 100%;
+  }
+}
+
+.transition-keyword {
+  interpolate-size: allow-keywords;
+}
+
+.first-child-header {
+  > *:first-child {
+    /* border-left: 0.35rem solid #000; */
+    /* padding-left: 0.65rem; */
+    font-size: 1.1em;
+  }
 }

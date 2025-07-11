@@ -16,6 +16,7 @@ type T_ToasterContext = {
   error(content?: string, duration?: number): void;
   note(content?: string, duration?: number): void;
   success(content?: string, duration?: number): void;
+  warn(content?: string, duration?: number): void;
 };
 
 const ToasterContext = createContext<T_ToasterContext | null>(null);
@@ -58,6 +59,10 @@ export function ToasterProvider(props: React.ChildrenProps) {
     open({ content, color: "neutral", icon: "note", duration });
   }
 
+  function warn(content: string, duration = 2000) {
+    open({ content, color: "warning", icon: "note", duration });
+  }
+
   function close() {
     clearTimeout(timeoutRef.current);
     setActive(false);
@@ -68,6 +73,7 @@ export function ToasterProvider(props: React.ChildrenProps) {
     close,
     error,
     success,
+    warn,
     note,
   };
 

@@ -57,14 +57,19 @@ export default function Toaster(props: T_ToasterProps & { active?: boolean }) {
     return;
   }
 
+  const cs = content.split("<sub/>");
+
   return (
     <div
-      className="toast toast-center h-32 transition-all"
+      className="toast toast-center h-32 transition-all z-100"
       style={{ opacity: active ? 1 : 0 }}
     >
       <div className={className}>
         <Icon name={icon} />
-        <span>{content}</span>
+        <div className="flex coll pr-4">
+          <span className="mb-0.5">{cs[0]}</span>
+          <span className="text-xs font-mono">{cs[1]}</span>
+        </div>
       </div>
     </div>
   );

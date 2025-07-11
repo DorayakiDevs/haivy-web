@@ -35,11 +35,11 @@ export default function FullscreenLoading() {
       setIndex((index + 1) % funTexts.length);
     }, d);
 
-    console.log(index, "wait time:", d);
+    // console.log(index, "wait time:", d);
 
     return () => {
       clearTimeout(timeout);
-      console.log("Clear", index);
+      // console.log("Clear", index);
     };
   }, [index]);
 

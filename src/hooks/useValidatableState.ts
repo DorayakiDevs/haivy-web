@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 
-type Validator = (cur: string) => string;
+type Validator = (cur: string) => string | undefined;
 
-export function useValidatableState(initialValue = "", validator?: Validator) {
+export function useValidatableState(
+  initialValue = "",
+  ...validators: Validator[]
+) {
   const state = useState(initialValue);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
   const [value, setValue] = state;
 
   useEffect(() => {
-    setError("");
+    setErrors([]);
   }, [value]);
 
   /**
@@ -16,15 +19,27 @@ export function useValidatableState(initialValue = "", validator?: Validator) {
    * @param __validator Override validator
    * @returns
    */
-  function validate(__validator?: Validator) {
-    const vad = __validator || validator;
-    if (!vad) return "";
+  function validate(...__validators: Validator[]) {
+    const vads = [...__validators, ...validators];
 
-    const err = vad(value);
-    setError(err);
+    const newErrors = [];
 
-    return !err;
+    for (const validator of vads) {
+      const error = validator(state[0]);
+      if (error?.length) newErrors.push(error);
+    }
+
+    setErrors(newErrors);
+
+    return newErrors.length === 0;
   }
 
-  return { state, current: value, setValue, error, validate };
+  return {
+    state,
+    current: value,
+    setValue,
+    errors,
+    validate,
+    error: errors[0] || "",
+  };
 }

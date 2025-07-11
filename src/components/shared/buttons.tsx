@@ -1,6 +1,8 @@
 import { Loading } from "@components/icons/loading";
 
 import { merge } from "@utils/string";
+import { Tooltip } from "./tooltip";
+import { Icon } from "@components/icons/google";
 
 type T_Props = {
   loading?: boolean;
@@ -8,6 +10,7 @@ type T_Props = {
   size?: Style.Size;
   color?: Style.Color;
   look?: T_BtnStyle;
+  dir?: Style.Direction;
   disabled?: boolean;
 } & React.JSXProps<"button">;
 
@@ -72,6 +75,7 @@ export function Button(props: T_Props) {
     loading,
     children,
     size,
+    dir,
     color,
     look,
     width,
@@ -90,9 +94,31 @@ export function Button(props: T_Props) {
 
   const clss = merge("btn", ...arr, width, cSize, cColor, cType);
 
+  if (props.title) {
+    return (
+      <Tooltip title={props.title} dir={dir || "top"}>
+        <button className={clss} {...rest}>
+          {loading ? <Loading type="spinner" /> : children}
+        </button>
+      </Tooltip>
+    );
+  }
+
   return (
     <button className={clss} {...rest}>
       {loading ? <Loading type="spinner" /> : children}
     </button>
+  );
+}
+
+export function IconButton(props: { title?: string; icon: string } & T_Props) {
+  const { title, icon, className, ...rest } = props;
+
+  const clss = merge("btn-square", className);
+
+  return (
+    <Button className={clss} title={props.title} {...rest}>
+      <Icon name={props.icon} />
+    </Button>
   );
 }

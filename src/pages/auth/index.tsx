@@ -1,8 +1,6 @@
 import { Route, Routes, Navigate } from "react-router";
 import "./index.css";
 
-import Toaster from "@components/feedbacks/toaster/component";
-
 import FormLogin from "./login";
 import FormRegister from "./signup";
 

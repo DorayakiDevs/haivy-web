@@ -1,38 +1,19 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
 
-import { useClient } from "..";
+import { HaivyTickets } from "./tickets";
+import { SuperClient } from "@services/init";
 
-import type { AuthChangeEvent } from "@supabase/supabase-js";
+const tickets = new HaivyTickets(SuperClient);
 
-type T_Provider = {};
-
+type T_Provider = {
+  tickets: HaivyTickets;
+};
 export const DataContext = createContext<T_Provider | null>(null);
 
 export function DataProvider(props: React.PropsWithChildren) {
-  const client = useClient();
-
-  const [authState, setAuthState] =
-    useState<AuthChangeEvent>("INITIAL_SESSION");
-
-  function handleAuthChange(e: AuthChangeEvent) {
-    setAuthState(e);
-  }
-
-  useEffect(() => {
-    const { data } = client.auth.onAuthStateChange(handleAuthChange);
-
-    return () => {
-      data.subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (authState !== "SIGNED_IN") return;
-
-    console.log();
-  }, [authState]);
-
-  const value = {};
+  const value = {
+    tickets,
+  };
 
   return (
     <DataContext.Provider value={value}>{props.children}</DataContext.Provider>

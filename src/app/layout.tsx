@@ -8,7 +8,7 @@ import FullscreenLoading from "@pages/others/loading";
 export default function ApplicationLayout() {
   const { auth } = useServices();
 
-  if (auth.loading) {
+  if (!auth.userDetails) {
     return <FullscreenLoading />;
   }
 
