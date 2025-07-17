@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Frame } from "@pages/appointments/component";
 
-import { useAptDetails } from "../details";
+import { useAptDetails } from "../hooks/useAppointmentDetails";
 import { useServices } from "@services/index";
 import { Loading } from "@components/icons/loading";
 import { Icon } from "@components/icons/google";
@@ -28,13 +28,13 @@ type T_Data = {
 };
 
 export function PatientPrescriptionFrame() {
-  const { client } = useServices();
+  const { client, auth } = useServices();
   const { apt_id, details } = useAptDetails();
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T_Data | null>(null);
 
-  const { patient_id } = details;
+  const { patient_id } = details!;
 
   useEffect(() => {
     if (!apt_id || !patient_id) return;
@@ -64,9 +64,15 @@ export function PatientPrescriptionFrame() {
     };
   }, [apt_id, patient_id]);
 
+  const roles = auth.userDetails?.roles || [];
+  const isDoctor = roles.includes("doctor");
+
   return (
     <Frame className="flex-1">
-      <div>Prescription ({data?.medicines.length})</div>
+      <div className="flex spbtw">
+        Prescription
+        <div>{data?.medicines.length || 0} prescribed</div>
+      </div>
 
       {loading ? (
         <Loading size="xl" className="m-auto" />
@@ -84,12 +90,14 @@ export function PatientPrescriptionFrame() {
           })}
         </div>
       ) : (
-        <div className="content-ctr flex-1 flex coll gap-4">
-          <Icon name="pill_off" size="4rem" />
+        <div className="content-ctr coll gap-8 m-auto">
+          <Icon name="pill_off" size="3rem" />
           Not prescribed
-          <Link to="prescribe">
-            <Button color="primary">Add a prescription</Button>
-          </Link>
+          {!isDoctor || (
+            <Link to={`/appointments/${apt_id}/prescribe`}>
+              <Button color="primary">Add prescription</Button>
+            </Link>
+          )}
         </div>
       )}
     </Frame>

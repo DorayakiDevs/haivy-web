@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
+import { format, formatDistance } from "date-fns";
+import { Link } from "react-router";
+
+import { Loading } from "@components/icons/loading";
+import { Icon } from "@components/icons/google";
 
 import { Frame } from "@pages/appointments/component";
-import { Loading } from "@components/icons/loading";
 
 import { useServices } from "@services/index";
 
-import { useAptDetails } from "../details";
-import { format, formatDistance } from "date-fns";
-import { Icon } from "@components/icons/google";
-import { Button } from "@components/shared/buttons";
-import { Link } from "react-router";
+import { useAptDetails } from "../hooks/useAppointmentDetails";
 
 type T_Data = {
   staff: Haivy.User | null;
@@ -21,6 +21,10 @@ export function PreviousAppointmentsFrame() {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T_Data | null>(null);
+
+  if (!details) {
+    return <Loading />;
+  }
 
   const { patient_id } = details;
 
@@ -61,31 +65,30 @@ export function PreviousAppointmentsFrame() {
       {loading ? (
         <Loading size="xl" className="m-auto" />
       ) : data ? (
-        <div className="pt-4 flex-1 flex coll">
-          <div className="text-lg">{data.content}</div>
-          <p className="mb-4">{data.notes || "No notes provided"}</p>
-          <div className="flex spbtw">
-            <div className="flex aictr gap-2">
-              <Icon name="event" />
-              Scheduled on
+        <Link to={`/appointments/${data.appointment_id}`}>
+          <div className="pt-4 flex-1 flex coll">
+            <div className="text-lg">{data.content}</div>
+            <p className="mb-4">{data.notes || "No notes provided"}</p>
+            <div className="flex spbtw">
+              <div className="flex aictr gap-2">
+                <Icon name="event" />
+                Scheduled on
+              </div>
+              <span>
+                {format(meet_then, "dd.MM.yyyy")} (
+                {formatDistance(meet_then, meet_now)} from this)
+              </span>
             </div>
-            <span>
-              {format(meet_then, "dd.MM.yyyy")} (
-              {formatDistance(meet_then, meet_now)} from this)
-            </span>
-          </div>
-          <div className="flex spbtw">
-            <div className="flex aictr gap-2">
-              <Icon name="badge" />
-              Doctor
+            <div className="flex spbtw">
+              <div className="flex aictr gap-2">
+                <Icon name="badge" />
+                Doctor
+              </div>
+              <span>{data.staff?.full_name}</span>
             </div>
-            <span>{data.staff?.full_name}</span>
+            <div className="flex-1"></div>
           </div>
-          <div className="flex-1"></div>
-          <Link to={`/appointments/${data.appointment_id}`}>
-            <Button className="w-full mt-4">View details</Button>
-          </Link>
-        </div>
+        </Link>
       ) : (
         <div className="tactr py-8">Patient has no past appointments</div>
       )}

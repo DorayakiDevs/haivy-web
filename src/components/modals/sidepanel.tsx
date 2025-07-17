@@ -31,7 +31,7 @@ function compareStringRecords(
   param1: Record<string, Stringifiable>,
   param2: Record<string, string>
 ) {
-  console.log(param1);
+  // console.log(param1);
 
   const sigParam1 = JSON.stringify(param1, (key, v) => {
     if (!key) return v;
@@ -44,7 +44,7 @@ function compareStringRecords(
   });
   const sigParam2 = JSON.stringify(param2);
 
-  console.log(sigParam1, sigParam2);
+  // console.log(sigParam1, sigParam2);
 
   return sigParam1 === sigParam2;
 }

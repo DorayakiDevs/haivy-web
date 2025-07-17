@@ -5,8 +5,6 @@ import { InputText } from "@components/shared/text";
 import { useServices } from "@services/index";
 import { useEffect, useState } from "react";
 
-const IMG_PLACEHOLDER = "https://placehold.co/400/?text=No%20image";
-
 export function MedicineRow() {
   return (
     <div className="bg-base-200 flex aictr spbtw h-18 p-2 pr-6 mb-4 rounded-box gap-2">
@@ -121,7 +119,7 @@ export function MedicineQueryInput(props: {
                   <div
                     className="h-12 w-12 bg-cover rounded-box"
                     style={{
-                      backgroundImage: `url(${med.image_url}), url(${IMG_PLACEHOLDER})`,
+                      backgroundImage: `url(${med.image_url}), url(${Constant.IMG_PLACEHOLDER})`,
                     }}
                   ></div>
                   <div>

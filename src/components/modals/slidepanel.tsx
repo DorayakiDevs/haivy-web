@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route, useNavigate } from "react-router";
 
 import { IconButton } from "@components/shared/buttons";
 
-import useNav from "@hooks/useNav";
-
 export function SlidePanelWrapper(
-  props: React.ChildrenProps & { className?: string; path: string }
+  props: React.ChildrenProps & {
+    className?: string;
+    path: string;
+    basePath?: string;
+  }
 ) {
   const { className = "w-1/2", path, children } = props;
 
-  const nav = useNav();
+  const nav = useNavigate();
 
   const [closing, setClosing] = useState(false);
 
@@ -19,7 +21,11 @@ export function SlidePanelWrapper(
   }
 
   function closeForReal() {
-    nav(-1);
+    if (props.basePath) {
+      nav(props.basePath, { replace: true });
+    } else {
+      nav(-1);
+    }
     setClosing(false);
   }
 

@@ -74,3 +74,30 @@ export function extractTextInBrackets(str: string) {
 
   return text.slice(1, text.length - 1);
 }
+
+type T_TestResultsRetType =
+  Haivy.DBFunc<"get_all_tests_for_authenticated_user">["Returns"];
+
+export function groupTestResultsByAppointments(tests: T_TestResultsRetType) {
+  const appts: Record<
+    string,
+    Haivy.Appointment & {
+      tests: T_TestResultsRetType;
+    }
+  > = {};
+
+  for (const test of tests) {
+    if (appts[test.appointment.appointment_id]) {
+      continue;
+    }
+
+    appts[test.appointment.appointment_id] = {
+      ...test.appointment,
+      tests: tests.filter(
+        (q) => q.appointment.appointment_id === test.appointment.appointment_id
+      ),
+    };
+  }
+
+  return appts;
+}

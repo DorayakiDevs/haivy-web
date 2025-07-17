@@ -17,11 +17,16 @@ declare global {
     type DBRow<T extends keyof Database["public"]["Tables"]> =
       Database["public"]["Tables"][T]["Row"];
 
+    type DBFunc<T extends keyof Database["public"]["Functions"]> =
+      Database["public"]["Functions"][T];
+
     type User = DBRow<"user_details">;
     type Appointment = DBRow<"appointment">;
     type Regimen = DBRow<"regimens">;
     type Medicine = DBRow<"medicines">;
     type Ticket = DBRow<"ticket">;
+    type TestResults = DBRow<"test_results">;
+    type TestType = DBRow<"tests">;
   }
 
   namespace React {
@@ -48,5 +53,9 @@ declare global {
 
     type Direction = "left" | "right" | "top" | "bottom";
     type Size = "xs" | "sm" | "md" | "lg" | "xl";
+  }
+
+  namespace Constant {
+    const IMG_PLACEHOLDER: string;
   }
 }

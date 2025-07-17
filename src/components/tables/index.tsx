@@ -30,8 +30,12 @@ type T_TableProps<T> = {
   defaultSortCol?: number;
   defaultSortDir?: T_SortDir;
 
-  rowsProps?: (item: T, index: number) => React.JSXProps<"div">;
-  onRowClick?: (item: T, index: number) => void;
+  rowsProps?: (
+    item: T,
+    index: number,
+    isActive: boolean
+  ) => React.JSXProps<"div">;
+  onRowClick?: (item: T, index: number, isActive: boolean) => void;
 
   emptyPlaceholder?: React.ReactNode;
 };
@@ -214,13 +218,15 @@ export function Table<T>(props: T_TableProps<T>) {
           </div>
           <div className="t-body">
             {sortedList.map((row, rowIndex) => {
-              const props = rowsProps ? rowsProps(row, rowIndex) : {};
+              const props = rowsProps
+                ? rowsProps(row, rowIndex, activeRows.isActive(rowIndex))
+                : {};
 
               function onClick() {
                 handleRowClick(rowIndex);
 
                 if (onRowClick) {
-                  onRowClick(row, rowIndex);
+                  onRowClick(row, rowIndex, activeRows.isActive(rowIndex));
                 }
               }
 
@@ -244,6 +250,8 @@ export function Table<T>(props: T_TableProps<T>) {
                 </TableRow>
               );
             })}
+
+            <div className="tactr p-4"> - End of the list - </div>
           </div>
         </div>
       ) : (

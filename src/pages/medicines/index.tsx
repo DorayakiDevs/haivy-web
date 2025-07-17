@@ -8,6 +8,7 @@ import { MedicationDetailsPanel } from "./details";
 import { MedicationListPanel } from "./list";
 import { extractTextInBrackets } from "@utils/parser";
 import { useServices } from "@services/index";
+import { useMedicinesRealtime } from "./realtime";
 
 export type Medicine = {
   commercialName: string;
@@ -17,6 +18,7 @@ export type Medicine = {
 type T_MedPageCtx = {
   medicines: Medicine[];
   curMedId: string;
+  curMed: Medicine | null;
 };
 
 const MedicinePageContext = createContext<T_MedPageCtx | null>(null);
@@ -24,7 +26,7 @@ const MedicinePageContext = createContext<T_MedPageCtx | null>(null);
 export function usePageContext() {
   const d = useContext(MedicinePageContext);
   if (!d) {
-    return { medicines: [], curMedId: "" };
+    return { medicines: [], curMedId: "", curMed: null };
   }
 
   return d;
@@ -41,6 +43,12 @@ export default function MedicationPages() {
   const [medicines, setMedicines] = useState<Haivy.Medicine[]>([]);
 
   const query = queryState[0];
+
+  useMedicinesRealtime((newMed) => {
+    setMedicines((meds) => {
+      return meds.map((med) => (med.id === newMed.id ? newMed : med));
+    });
+  });
 
   useEffect(() => {
     const c = new AbortController();
@@ -61,23 +69,26 @@ export default function MedicationPages() {
     };
   }, [query]);
 
+  const adjusted = medicines.map((med) => {
+    return {
+      ...med,
+      commercialName: med.name.split("(")[0] || med.name,
+      supplNames: extractTextInBrackets(med.name)
+        .split("/")
+        .map((q) => q.trim()),
+    };
+  });
+
   const value = {
-    medicines: medicines.map((med) => {
-      return {
-        ...med,
-        commercialName: med.name.split("(")[0] || med.name,
-        supplNames: extractTextInBrackets(med.name)
-          .split("/")
-          .map((q) => q.trim()),
-      };
-    }),
     curMedId,
+    medicines: adjusted,
+    curMed: adjusted.find((med) => med.id === curMedId) ?? null,
   };
 
   return (
     <MedicinePageContext.Provider value={value}>
       <Helmet>
-        <title>Haivy | Medicine</title>
+        <title>Haivy | Medication</title>
       </Helmet>
       <div className="content-wrapper flex aictr">
         <MedicationListPanel />

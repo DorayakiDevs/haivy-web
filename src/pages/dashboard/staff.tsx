@@ -45,7 +45,7 @@ export function StaffDashboard() {
 }
 
 const CLSS =
-  "rounded-xl p-4 pt-0 bg-base-300 hover:shadow-lg transition-all key-fade-in";
+  "rounded-xl p-4 pt-0 bg-base-200 hover:shadow-lg transition-all key-fade-in";
 
 function TicketOverview() {
   const { client } = useServices();
@@ -263,7 +263,7 @@ function ScheduleOverview() {
 
   return (
     <div className={CLSS + " h-full overflow-y-auto"}>
-      <div className="flex aictr spbtw border-b-1 border-[#0002] sticky top-0 bg-base-300 z-1">
+      <div className="flex aictr spbtw border-b-1 border-[#0002] sticky top-0 bg-base-200 z-1">
         <Header />
 
         <button

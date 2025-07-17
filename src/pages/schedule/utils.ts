@@ -19,12 +19,9 @@ export function adjustTimeToLocal(list: Haivy.Appointment[]) {
   return list.map((appointment) => {
     const { meeting_date, created_date, ...rest } = appointment;
 
-    const new_meeting = meeting_date
-      ? convertGMT00ToLocal(meeting_date).toISOString()
-      : null;
-    const new_created = created_date
-      ? convertGMT00ToLocal(created_date).toISOString()
-      : null;
+    const new_meeting = convertGMT00ToLocal(meeting_date).toISOString();
+
+    const new_created = convertGMT00ToLocal(created_date).toISOString();
 
     return {
       ...rest,

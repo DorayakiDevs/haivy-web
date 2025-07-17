@@ -195,7 +195,7 @@ export function TableDisplay() {
               <div className="flex coll">
                 <div className="font-bold">{a.title}</div>
                 <div className="overflow-hidden whitespace-nowrap overflow-ellipsis w-[90%]">
-                  ┗ {a.content}
+                  ┗ {a.content || <i>No description provided</i>}
                 </div>
               </div>
             );
@@ -277,7 +277,7 @@ function NoDisplay() {
   return (
     <div className="flex aictr jcctr h-full coll gap-8 p-8">
       <div className="flex coll aictr jcctr gap-8 text-xl font-bold">
-        <div className="text-[4rem]">! (0 . 0 ;)</div>
+        <div className="text-[3rem]">(0 . 0 ;)</div>
         No item to display
       </div>
     </div>

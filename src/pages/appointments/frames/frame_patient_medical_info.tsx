@@ -8,7 +8,7 @@ export function PatientMedicalInfoFrame() {
 
       <div className="flex-1 content-ctr flex coll gap-3">
         <h3>Patient doesn't have any recorded info</h3>
-        <Button className="btn-outline btn-primary">Create record</Button>
+        <Button className="btn-outline btn-primary">Request screening</Button>
       </div>
     </Frame>
   );

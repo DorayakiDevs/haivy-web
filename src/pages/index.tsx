@@ -10,6 +10,8 @@ import SchedulePages from "./schedule";
 import AuthenticationPages from "./auth";
 import NotFoundPage from "./others/notfound";
 import MedicationPages from "./medicines";
+import TestLabPages from "./testlab";
+import MedicalRecordsPages from "./patients";
 
 function AuthenticatedPage() {
   return (
@@ -27,6 +29,10 @@ function AuthenticatedPage() {
         <Route path="/schedule" element={<SchedulePages />} />
 
         <Route path="/medication" element={<MedicationPages />} />
+
+        <Route path="/labs" element={<TestLabPages />} />
+        <Route path="/records" element={<MedicalRecordsPages />} />
+        <Route path="/records/:id" element={<MedicalRecordsPages />} />
 
         <Route path="/login" element={<NavBack />} />
         <Route path="/register" element={<NavBack />} />

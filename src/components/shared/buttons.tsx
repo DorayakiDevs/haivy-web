@@ -117,7 +117,11 @@ export function IconButton(props: { title?: string; icon: string } & T_Props) {
   const clss = merge("btn-square", className);
 
   return (
-    <Button className={clss} title={props.title} {...rest}>
+    <Button
+      className={clss}
+      title={props.disabled ? "" : props.title}
+      {...rest}
+    >
       <Icon name={props.icon} />
     </Button>
   );

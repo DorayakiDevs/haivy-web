@@ -40,31 +40,32 @@ export function MedicationListPanel() {
 
   return (
     <div className="flex-1 flex coll w-full h-full">
-      <div className="pt-8">
-        <div className="mb-4 flex aictr gap-3">
+      <div className="pt-8 flex">
+        <div className="mb-4 flex flex-1 aictr gap-3">
           <Icon name="medication" size="3.5em" />
           <div>
             <h2 className="text-2xl font-semibold">System's Medication</h2>
             <div>{count} medicines available</div>
           </div>
         </div>
-        <div className="pb-4 flex aictr gap-4 aiend">
-          <div className="w-full">
-            <InputText
-              className="flex-1"
-              placeholder="Ex: Sertraline, Fluconazole, etc."
-              state={[query, setQuery]}
-              label={`Showing ${filteredList.length} out of ${medicines.length} items`}
-            />
-          </div>
-          <TabSelector
-            tabs={[
-              { name: "Grid", icon: "grid_view", value: "grid" },
-              { name: "Table", icon: "view_list", value: "table" },
-            ]}
-            state={displayState}
+      </div>
+
+      <div className="pb-4 flex gap-4 aiend">
+        <div className="w-full">
+          <InputText
+            className="flex-1"
+            placeholder="Ex: Sertraline, Fluconazole, etc."
+            state={[query, setQuery]}
+            label={`Showing ${filteredList.length} out of ${medicines.length} items`}
           />
         </div>
+        <TabSelector
+          tabs={[
+            { name: "Grid", icon: "grid_view", value: "grid" },
+            { name: "Table", icon: "view_list", value: "table" },
+          ]}
+          state={displayState}
+        />
       </div>
 
       {currentView === "grid" ? (
@@ -129,14 +130,15 @@ function TableView({ meds }: { meds: Medicine[] }) {
       columns={[
         {
           header: "",
-          width: 140,
+          width: 100,
           render(data) {
             return (
-              <img
-                src={data.image_url || ""}
-                style={{ height: 80, width: 120, objectFit: "cover" }}
-                className="rounded-lg"
-              />
+              <div
+                style={{
+                  backgroundImage: `url('${data.image_url}'), url('${Constant.IMG_PLACEHOLDER}')`,
+                }}
+                className="rounded-lg bg-cover bg-center h-15"
+              ></div>
             );
           },
         },
@@ -145,10 +147,16 @@ function TableView({ meds }: { meds: Medicine[] }) {
           header: "",
           render(data) {
             return (
-              <div className="max-w-0">
-                <div className="font-bold">{data.name.split("(")[0]}</div>
-                <div className="overflow-ellipsis w-full">
-                  {data.supplNames.join(", ")}
+              <div className="flex aictr pr-4">
+                <div className="flex-1">
+                  <div className="font-bold">{data.name.split("(")[0]}</div>
+                  <div className="overflow-ellipsis w-full">
+                    {data.supplNames.join(", ")}
+                  </div>
+                </div>
+
+                <div className="badge badge-primary">
+                  {data.dosage || "-"} {data.unit}
                 </div>
               </div>
             );
@@ -166,6 +174,7 @@ function TableView({ meds }: { meds: Medicine[] }) {
                 color: "var(--color-primary-content)",
               }
             : {},
+        className: "h-18",
       })}
       onRowClick={handleViewMedDetails}
       hideHeader

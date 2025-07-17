@@ -7,30 +7,33 @@ import {
   TextArea,
 } from "@components/shared/text";
 import { UserSearchInput } from "@components/shared/users";
-
 import { DatePicker } from "@components/shared/date";
+import { Loading } from "@components/icons/loading";
+import { Button } from "@components/shared/buttons";
 import { Icon } from "@components/icons/google";
 
+import { useServices } from "@services/index";
+
+import useValidatableState from "@hooks/useValidatableState";
 import useUI from "@hooks/useUI";
 
 import { validatePhoneNumber, validateNotEmpty } from "@utils/validator";
 
 import { convertDateToServerTimeString } from "./utils";
-import { useSchedulePanel } from "./staff";
-import { useServices } from "@services/index";
-import { useValidatableState } from "@hooks/useValidatableState";
-import { Loading } from "@components/icons/loading";
 
 export function CancelDialog({
   dialogRef,
   aptId,
+  onComplete,
 }: {
   dialogRef: any;
   aptId: string;
+  onComplete: (a: boolean) => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
   const { toaster } = useUI();
   const { client } = useServices();
-  const { reload } = useSchedulePanel();
 
   const reason = useValidatableState("", validateNotEmpty);
 
@@ -39,6 +42,7 @@ export function CancelDialog({
       return;
     }
 
+    setLoading(true);
     const { error } = await client.rpc("cancel_appointment", {
       p_appointment_id: aptId,
       p_note: reason.current,
@@ -46,10 +50,13 @@ export function CancelDialog({
 
     if (error) {
       toaster.error(`[${error.code}] An error occurred: ${error.message}`);
+      onComplete(false);
     } else {
       toaster.success("Appointment cancelled");
-      reload();
+      onComplete(true);
     }
+
+    setLoading(false);
   }
 
   return (
@@ -70,9 +77,13 @@ export function CancelDialog({
           <form method="dialog">
             <button className="btn btn-ghost">Cancel</button>
           </form>
-          <label className="btn btn-error" onClick={cancelApt}>
+          <Button
+            className="btn btn-error"
+            onClick={cancelApt}
+            loading={loading}
+          >
             Submit
-          </label>
+          </Button>
         </div>
       </div>
     </dialog>
@@ -82,13 +93,16 @@ export function CancelDialog({
 export function CompleteDialog({
   dialogRef,
   aptId,
+  onComplete,
 }: {
   dialogRef: any;
   aptId: string;
+  onComplete: (a: boolean) => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
   const { toaster } = useUI();
   const { client } = useServices();
-  const { reload } = useSchedulePanel();
   const note = useValidatableState("", validateNotEmpty);
 
   async function cancelApt() {
@@ -96,6 +110,7 @@ export function CompleteDialog({
       return;
     }
 
+    setLoading(true);
     const { error } = await client.rpc("complete_appointment", {
       p_appointment_id: aptId,
       p_note: note.current,
@@ -103,10 +118,13 @@ export function CompleteDialog({
 
     if (error) {
       toaster.error(`[${error.code}] An error occurred: ${error.message}`);
+      onComplete(false);
     } else {
       toaster.success("Appointment marked as complete");
-      reload();
+      onComplete(true);
     }
+
+    setLoading(false);
   }
 
   return (
@@ -125,9 +143,13 @@ export function CompleteDialog({
           <form method="dialog">
             <button className="btn btn-ghost">Cancel</button>
           </form>
-          <label className="btn btn-success" onClick={cancelApt}>
+          <Button
+            className="btn btn-success"
+            onClick={cancelApt}
+            loading={loading}
+          >
             Submit
-          </label>
+          </Button>
         </div>
       </div>
     </dialog>

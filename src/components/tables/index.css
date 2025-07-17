@@ -12,17 +12,18 @@
 
   transition: all 85ms;
   margin: 0.25rem 0;
-  border-radius: 8px;
+  border-radius: var(--radius-field);
 
   max-width: 100%;
 }
 
 .dft-table .t-row:hover {
-  background-color: #00000006;
+  background-color: #00000012;
+  cursor: pointer;
 }
 
 .dft-table .t-row.active {
-  background-color: #00000012;
+  background-color: #00000018;
   transform: translateY(-4px);
 }
 

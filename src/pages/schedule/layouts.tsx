@@ -45,7 +45,7 @@ export function ColumnView({
       <Helmet>
         <title>Haivy | Schedule - {title}</title>
       </Helmet>
-      <div className="flex sticky top-0 z-3 bg-base-200 text-primary">
+      <div className="flex sticky top-0 z-3 bg-base-200 text-primary rounded-box">
         <div className="w-12"></div>
         {dates.map((date) => {
           const today = isToday(date);

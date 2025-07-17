@@ -8,7 +8,7 @@ import { Icon } from "@components/icons/google";
 
 import { useServices } from "@services";
 
-import { useValidatableState } from "@hooks/useValidatableState";
+import useValidatableState from "@hooks/useValidatableState";
 import useUI from "@hooks/useUI";
 
 import { validateNotEmpty } from "@utils/validator";

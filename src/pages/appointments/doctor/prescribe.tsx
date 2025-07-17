@@ -9,12 +9,13 @@ import { Table } from "@components/tables";
 
 import { useServices } from "@services/index";
 
-import { PatientMedicalInfoFrame } from "./frames/patient_medical_info";
+import { PatientMedicalInfoFrame } from "../frames/frame_patient_medical_info";
 import useUI from "@hooks/useUI";
 import { errorToString } from "@utils/converter";
 import { useParams } from "react-router";
-import { useAptDetails } from "./details";
 import useNav from "@hooks/useNav";
+import { useAptDetails } from "../hooks/useAppointmentDetails";
+import { Helmet } from "react-helmet-async";
 
 const steps = [
   "Start with a regimen (optional)",
@@ -70,11 +71,14 @@ export default function PrescribeMedicinePanel() {
 
   return (
     <PanelContext.Provider value={value}>
+      <Helmet>
+        <title>Haivy | Appointment - Prescribe</title>
+      </Helmet>
       <div className="content-wrapper overflow-hidden px-8 flex coll gap-2">
         <div className="py-4 mt-4 flex aiend spbtw">
           <div>
-            <div className="text-lg mb-2">Add a prescription</div>
-            <div className="text-3xl font-medium">{steps[curStep]}</div>
+            <div className="text-md mb-2">Appointment • Add prescription</div>
+            <div className="text-2xl font-medium">{steps[curStep]}</div>
           </div>
           <ul className="steps w-1/2">
             {steps.map((_, i) => {

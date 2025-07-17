@@ -4,6 +4,8 @@ import { createRoot } from "react-dom/client";
 import "./main.css";
 import "./keyframes.css";
 
+import "./global";
+
 import MainApplication from "./app";
 
 createRoot(document.getElementById("root")!).render(

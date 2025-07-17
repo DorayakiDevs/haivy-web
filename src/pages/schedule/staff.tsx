@@ -95,7 +95,7 @@ function SchedulePageButWithoutProvider() {
   }, [_stamp]);
 
   const dateStrParam = params.get("date") || "";
-  const viewType = params.get("view") || "day";
+  const viewType = params.get("view") || "month";
 
   function setViewType(v: string) {
     setViewDateParams(v, null);

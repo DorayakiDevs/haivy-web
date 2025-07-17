@@ -156,7 +156,7 @@ export function ImageCard({
           backgroundColor: "#fff",
           backgroundImage: `linear-gradient(to top, ${
             active ? "#0000" : "#fffa"
-          } 30px, #0001) ,url('${url}')`,
+          } 30px, #0001) ,url('${url}'), url('${Constant.IMG_PLACEHOLDER}')`,
         }}
       ></div>
       <div className="card-body selectable-text">

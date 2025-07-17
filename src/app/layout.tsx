@@ -9,7 +9,7 @@ export default function ApplicationLayout() {
   const { auth } = useServices();
 
   if (!auth.userDetails) {
-    return <FullscreenLoading />;
+    return <FullscreenLoading showLogo showPlaceholder />;
   }
 
   if (!auth.user) {

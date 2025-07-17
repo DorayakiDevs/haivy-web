@@ -14,6 +14,7 @@ import { StatusColor } from "@utils/data";
 
 import { GridDisplay, KanbanDisplay, TableDisplay } from "./layouts";
 import { TicketCreationPanel } from "./create";
+import { Helmet } from "react-helmet-async";
 
 export type T_Ticket = Haivy.Table<"ticket">["Row"];
 
@@ -103,6 +104,9 @@ export default function StaffTickets() {
 
   return (
     <TicketPanelContext.Provider value={value}>
+      <Helmet>
+        <title>Haivy | Tickets</title>
+      </Helmet>
       <div className="content-wrapper flex">
         <div className="pr-8 flex coll flex-1">
           <div className="py-4 mt-4 flex aictr gap-4">

@@ -39,7 +39,7 @@ export function InputText(props: T_InputProps) {
   const { width, label, desc, state, icon, ...inputProps } = props;
   const { onChange, onInput, className, color, ...rest } = inputProps;
 
-  const extra = [className, translateColor(color)];
+  const extra = [translateColor(color), className];
 
   const clss = merge("pr-2", ...extra);
   const [value, setValue] = state ?? useState<string>("");
@@ -69,6 +69,7 @@ export function InputText(props: T_InputProps) {
           onInput={handleInput}
           onChange={handleChange}
           value={value}
+          autoComplete="off"
         />
       </label>
       {!desc || <p className="label">{desc}</p>}
@@ -77,17 +78,17 @@ export function InputText(props: T_InputProps) {
 }
 
 export function InputTextErrorable(props: { error?: string } & T_InputProps) {
-  const { error, ...rest } = props;
+  const { error, className, color, ...rest } = props;
   const desc = error ? (
     <span className="text-error font-semibold">* {error}</span>
   ) : (
     ""
   );
 
-  return <InputText desc={desc} {...rest} />;
+  return <InputText desc={desc} {...rest} color={error ? "error" : color} />;
 }
 
-type TextareaProps = {
+type T_TextareaProps = {
   id?: string;
   label?: string;
   placeholder?: string;
@@ -99,6 +100,7 @@ type TextareaProps = {
   readOnly?: boolean;
 
   state?: [string, React.Dispatch<React.SetStateAction<string>>];
+  className?: string;
 };
 
 export function TextArea({
@@ -112,7 +114,8 @@ export function TextArea({
   disabled = false,
   state,
   readOnly,
-}: TextareaProps) {
+  className,
+}: T_TextareaProps) {
   const local = useState("");
 
   const [value, setValue] = state || local;
@@ -120,6 +123,9 @@ export function TextArea({
   function handleChange(e: any) {
     setValue(e.target.value);
   }
+
+  const base = "textarea textarea-bordered resize-none w-full";
+  const clss = merge(base, height, className);
 
   return (
     <div className={`form-control ${width}`}>
@@ -138,7 +144,7 @@ export function TextArea({
       <textarea
         readOnly={readOnly}
         id={id}
-        className={`textarea textarea-bordered resize-none w-full ${height}`}
+        className={clss}
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
@@ -146,6 +152,22 @@ export function TextArea({
         maxLength={maxLength}
         disabled={disabled}
       />
+    </div>
+  );
+}
+
+export function TextAreaErrorable(props: T_TextareaProps & { error?: string }) {
+  const { error, className, ...rest } = props;
+
+  return (
+    <div>
+      <TextArea
+        {...rest}
+        className={merge(className, error ? "input-error!" : "")}
+      />
+      {!error || (
+        <div className="text-xs font-semibold text-error mt-1">* {error}</div>
+      )}
     </div>
   );
 }

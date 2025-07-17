@@ -51,14 +51,16 @@ export function TicketCard({
         </div>
         <div className="">
           <h1 className="text-[1.05rem] line-clamp-2 my-2">{ticket.title}</h1>
-          <p className="line-clamp-2">{ticket.content}</p>
+          <p className="line-clamp-2">
+            {ticket.content || <i>No description provided</i>}
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-export function StatusBadge(props: { status: string | null }) {
+export function StatusBadge(props: { status: string | null; size?: string }) {
   return (
     <Badge
       style={{
@@ -66,7 +68,7 @@ export function StatusBadge(props: { status: string | null }) {
         textTransform: "capitalize",
         color: "#fff",
       }}
-      className="p-3"
+      className={"p-3 " + props.size}
     >
       {snakeCap(props.status || "")}
     </Badge>

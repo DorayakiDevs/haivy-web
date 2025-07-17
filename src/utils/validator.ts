@@ -87,3 +87,25 @@ export function validatePhoneNumber(phone: string): string {
 
   return "";
 }
+
+export function validateNonNegativeInteger(input: string): string {
+  const trimmed = input.trim();
+
+  if (!trimmed) return "Value is required.";
+
+  const regex = /^\d+$/;
+
+  if (!regex.test(trimmed)) {
+    return "Value must be a non-negative integer.";
+  }
+
+  return "";
+}
+
+export function includesAll<T>(array: T[], values: T[]): boolean {
+  return values.every((value) => array.includes(value));
+}
+
+export function includesAny<T>(array: T[], values: T[]): boolean {
+  return values.some((value) => array.includes(value));
+}

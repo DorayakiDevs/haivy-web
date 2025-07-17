@@ -14,3 +14,12 @@ export function snakeCap(c: string) {
 export function capitalize(s: string) {
   return s[0].toUpperCase() + s.slice(1);
 }
+
+export function round(val: number, dec = 3): number {
+  const factor = Math.pow(10, dec);
+  return Math.round(val * factor) / factor;
+}
+
+export function roundToLocal(val: number, dec = 2) {
+  return round(val, dec).toLocaleString();
+}

@@ -13,6 +13,7 @@ import { getNameInitials, parseError } from "@utils/parser";
 import { sleep } from "@utils/timing";
 
 import logo from "@assets/logo.svg";
+import { includesAny } from "@utils/validator";
 
 const BASE_CLSS = "border-1 text-secondary rounded-full w-full aspect-square";
 const BTT_CLSS =
@@ -32,7 +33,11 @@ function buildNavBar(roles: Haivy.Enum<"role">[] = []): T_RouteButton[] {
 
   list.push({ name: "Dashboard", icon: "dashboard", path: "/", exact: true });
 
-  if (roles.includes("staff") || roles.includes("doctor")) {
+  if (roles.includes("customer")) {
+    list.push({ name: "Appointments", icon: "event", path: "/appointments" });
+  }
+
+  if (includesAny(roles, ["staff", "doctor"])) {
     list.push({
       name: "Ticket",
       icon: "confirmation_number",
@@ -40,9 +45,15 @@ function buildNavBar(roles: Haivy.Enum<"role">[] = []): T_RouteButton[] {
     });
 
     list.push({ name: "Schedule", icon: "calendar_month", path: "/schedule" });
+    list.push({ name: "Test Lab", icon: "experiment", path: "/labs" });
+    list.push({
+      name: "Medical Records",
+      icon: "assignment_ind",
+      path: "/records",
+    });
   }
 
-  list.push({ name: "Medicine", icon: "medication", path: "/medication" });
+  list.push({ name: "Medication", icon: "medication", path: "/medication" });
 
   return list;
 }
@@ -53,7 +64,7 @@ export function NavigationBar() {
   const routes = buildNavBar(auth.userDetails?.roles);
 
   return (
-    <div className="mx-6 h-full flex coll spbtw relative z-2 w-18">
+    <div className="mx-6 h-full flex coll spbtw relative z-2 max-w-18 min-w-18">
       <div className="bg-primary flex coll p-1.5 gap-1.5 rounded-b-full">
         <img src={logo} className="w-full" />
 

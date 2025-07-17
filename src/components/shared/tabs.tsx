@@ -16,15 +16,19 @@ export function TabButton({
   onClick,
   type = "icon",
 }: T_ListType & { active?: boolean; onClick: React.MouseEventHandler }) {
+  const domIcon =
+    !icon ||
+    (typeof icon === "string" ? <Icon name={icon} size="1.5em" /> : icon);
+
   if (type === "text") {
     return (
       <button
         onClick={onClick}
         className={
-          "btn btn-primary btn-sm flex aictr " + (active ? "" : "btn-outline")
+          "btn btn-primary btn-md flex aictr " + (active ? "" : "btn-outline")
         }
       >
-        {icon}
+        {domIcon}
         {name}
       </button>
     );
@@ -38,8 +42,7 @@ export function TabButton({
           "btn-primary btn btn-square btn-md " + (active ? "" : "btn-outline")
         }
       >
-        {!icon ||
-          (typeof icon === "string" ? <Icon name={icon} size="1.5em" /> : icon)}
+        {domIcon}
       </button>
     </Tooltip>
   );
@@ -60,7 +63,7 @@ export function TabSelector({
   const [currentTab, setCurrentTab] = state || local;
 
   return (
-    <div className="flex aictr gap-2 h-full">
+    <div className="flex aictr gap-2">
       {tabs.map((t, i) => {
         return (
           <TabButton

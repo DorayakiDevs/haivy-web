@@ -6,10 +6,12 @@ import { Frame, InfoRow } from "@pages/appointments/component";
 
 import { getUserAvatar } from "@utils/parser";
 
-import { useAptDetails } from "../details";
-
+import { useAptDetails } from "../hooks/useAppointmentDetails";
+import { Loading } from "@components/icons/loading";
 export function PatientOverviewFrame() {
   const { details: data } = useAptDetails();
+  if (!data) return <Loading />;
+
   const { patient } = data;
 
   const curDate = new Date();

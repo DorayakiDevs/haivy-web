@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type Validator = (cur: string) => string | undefined;
+export type Validators = (cur: string) => string | undefined;
 
-export function useValidatableState(
+export default function useValidatableState(
   initialValue = "",
-  ...validators: Validator[]
+  ...validators: Validators[]
 ) {
+  const initRef = useRef(initialValue);
+
   const state = useState(initialValue);
   const [errors, setErrors] = useState<string[]>([]);
   const [value, setValue] = state;
@@ -19,7 +21,7 @@ export function useValidatableState(
    * @param __validator Override validator
    * @returns
    */
-  function validate(...__validators: Validator[]) {
+  function validate(...__validators: Validators[]) {
     const vads = [...__validators, ...validators];
 
     const newErrors = [];
@@ -34,12 +36,28 @@ export function useValidatableState(
     return newErrors.length === 0;
   }
 
+  function hasChanged() {
+    return value !== initRef.current;
+  }
+
+  function setValueInit(value: string) {
+    setValue(value);
+    initRef.current = value;
+  }
+
+  function reset() {
+    setValue(initRef.current);
+  }
+
   return {
     state,
     current: value,
-    setValue,
     errors,
     validate,
+    hasChanged,
+    reset,
+    setValue,
+    setValueInit,
     error: errors[0] || "",
   };
 }

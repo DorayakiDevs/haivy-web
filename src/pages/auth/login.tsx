@@ -6,7 +6,7 @@ import { Button } from "@components/shared/buttons";
 
 import { useServices } from "@services/index";
 
-import { useValidatableState } from "@hooks/useValidatableState";
+import useValidatableState from "@hooks/useValidatableState";
 import useUI from "@hooks/useUI";
 
 import { validateBasicPassword, validateEmail } from "@utils/validator";

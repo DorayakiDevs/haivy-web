@@ -25,6 +25,7 @@ import {
   StatusColor,
   StatusIcons,
 } from "@utils/data";
+import { Helmet } from "react-helmet-async";
 
 type T_Ticket_Interaction = Omit<
   Haivy.DBRow<"ticket_interaction_history">,
@@ -150,6 +151,10 @@ function DetailsPanel() {
 
   return (
     <div className="content-wrapper p-6 overflow-y-auto">
+      <Helmet>
+        <title>Haivy | Ticket - {details.title} </title>
+      </Helmet>
+
       <div className="flex aiart">
         <div className="flex-1 pb-40">
           <div className="pb-2 pt-8 sticky -top-6 from-base-100 from-75% to-transparent bg-gradient-to-b flex aictr gap-4">
@@ -175,11 +180,13 @@ function DetailsPanel() {
             </div>
           </div>
 
-          <CommentFrame
-            note={details.content}
-            by={details.created_by}
-            time={details.date_created || ""}
-          />
+          {!details.content || (
+            <CommentFrame
+              note={details.content}
+              by={details.created_by}
+              time={details.date_created || ""}
+            />
+          )}
 
           <div>
             {interactions
@@ -383,6 +390,7 @@ function TicketActionMaker() {
     if (loading) return;
     if (!ticket_id) return;
 
+    setLoading(true);
     client
       .rpc("dismiss_ticket", {
         p_ticket_id: ticket_id,
@@ -400,6 +408,7 @@ function TicketActionMaker() {
       return toaster.error("Please select a user to forward this ticket to");
     }
 
+    setLoading(true);
     client
       .rpc("forward_ticket_comment", {
         p_ticket_id: ticket_id,
@@ -415,6 +424,7 @@ function TicketActionMaker() {
     if (loading) return;
     if (!ticket_id) return;
 
+    setLoading(true);
     client
       .rpc("approve_ticket", {
         p_ticket_id: ticket_id,

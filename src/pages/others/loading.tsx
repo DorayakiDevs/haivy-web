@@ -26,7 +26,12 @@ const funTexts = [
   "Calibrating medical instruments . . .",
 ];
 
-export default function FullscreenLoading() {
+export default function FullscreenLoading(props: {
+  showLogo?: boolean;
+  showPlaceholder?: boolean;
+}) {
+  const { showLogo, showPlaceholder } = props;
+
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -45,12 +50,14 @@ export default function FullscreenLoading() {
 
   return (
     <div className="app-wrapper center coll gap-24">
-      <img src={logo} width={156} />
+      {!showLogo || <img src={logo} width={156} />}
       <Loading type="spinner" size="xl" />
 
-      <div className="fade-in text-lg" key={"text-" + index}>
-        {funTexts[index]}
-      </div>
+      {!showPlaceholder || (
+        <div className="fade-in text-lg" key={"text-" + index}>
+          {funTexts[index]}
+        </div>
+      )}
     </div>
   );
 }

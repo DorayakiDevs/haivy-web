@@ -10,7 +10,7 @@ import { DatePicker } from "@components/shared/date";
 import { Button } from "@components/shared/buttons";
 import { Icon } from "@components/icons/google";
 
-import { useValidatableState } from "@hooks/useValidatableState";
+import useValidatableState from "@hooks/useValidatableState";
 import useUI from "@hooks/useUI";
 
 import { useServices } from "@services";
@@ -100,7 +100,7 @@ export function AppointmentExternalPanel() {
     setGhostAppointment({
       meeting_date: aptDate.toISOString(),
       duration: aptDur,
-      status: null,
+      status: "pending",
       content: aptDetails,
     });
   }, [aptDate.toISOString(), aptDur, aptDetails, sidePanel.panelId]);

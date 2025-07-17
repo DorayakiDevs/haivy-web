@@ -65,11 +65,11 @@ export function SelectOptions<T extends string>(props: SelectProps<T>) {
 
   return (
     <div className={clssArr.join(" ")}>
-      {!label || <div className="my-2 font-semibold text-sm">{label}</div>}
+      {!label || <div className="font-semibold text-sm">{label}</div>}
       <div tabIndex={0} role="button" className={"btn bg-base-200 w-full"}>
         <div className="flex-1 text-left">
-          {options[curIndex]?.text ||
-            options[curIndex]?.value ||
+          {options[curIndex]?.text ??
+            options[curIndex]?.value ??
             "Select an option"}
         </div>
         <Icon name="arrow_drop_down" />

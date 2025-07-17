@@ -4,11 +4,16 @@ import { Icon } from "@components/icons/google";
 
 import { Frame, InfoRow } from "@pages/appointments/component";
 
-import { useAptDetails } from "../details";
+import { useAptDetails } from "../hooks/useAppointmentDetails";
 import { Link } from "react-router";
+import { Loading } from "@components/icons/loading";
 
 export function CurrentAppointmentFrame() {
   const { details } = useAptDetails();
+
+  if (!details) {
+    return <Loading />;
+  }
 
   return (
     <Frame className="flex-1 pb-0">
