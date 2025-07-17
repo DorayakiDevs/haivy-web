@@ -72,3 +72,40 @@ export function validateNotEmpty(str: string): string {
 
   return "";
 }
+
+export function validatePhoneNumber(phone: string): string {
+  const trimmed = phone.trim();
+
+  if (!trimmed) return "Phone number is required.";
+
+  // Allow optional + at the start, followed by 10–15 digits
+  const regex = /^\+?\d{10,15}$/;
+
+  if (!regex.test(trimmed)) {
+    return "Phone number must be 10 - 15 digits and may start with '+'.";
+  }
+
+  return "";
+}
+
+export function validateNonNegativeInteger(input: string): string {
+  const trimmed = input.trim();
+
+  if (!trimmed) return "Value is required.";
+
+  const regex = /^\d+$/;
+
+  if (!regex.test(trimmed)) {
+    return "Value must be a non-negative integer.";
+  }
+
+  return "";
+}
+
+export function includesAll<T>(array: T[], values: T[]): boolean {
+  return values.every((value) => array.includes(value));
+}
+
+export function includesAny<T>(array: T[], values: T[]): boolean {
+  return values.some((value) => array.includes(value));
+}

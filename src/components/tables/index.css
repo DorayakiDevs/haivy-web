@@ -1,0 +1,49 @@
+.dft-table {
+  overflow-y: auto;
+  overflow-x: visible;
+  position: relative;
+}
+
+.dft-table .t-row {
+  display: flex;
+  padding: 0.25rem 0;
+  align-items: center;
+  z-index: 0;
+
+  transition: all 85ms;
+  margin: 0.25rem 0;
+  border-radius: var(--radius-field);
+
+  max-width: 100%;
+}
+
+.dft-table .t-row:hover {
+  background-color: #00000012;
+  cursor: pointer;
+}
+
+.dft-table .t-row.active {
+  background-color: #00000018;
+  transform: translateY(-4px);
+}
+
+.dft-table .t-row .t-col {
+  padding: 0.25rem 0.5rem;
+}
+
+.dft-table .t-header {
+  position: sticky;
+  top: 0px;
+
+  z-index: 1;
+
+  .t-row {
+    margin-top: 0;
+  }
+}
+
+.dft-table .t-header .t-row {
+  font-weight: 700;
+  color: var(--color-primary-content);
+  background-color: var(--color-primary);
+}

@@ -34,7 +34,8 @@
       "@layouts/*": ["layouts/*"],
       "@services/*": ["services/*"],
       "@utils/*": ["utils/*"],
-      "@pages/*": ["page/*"],
+      "@pages/*": ["pages/*"],
+      "@assets/*": ["assets/*"],
 
       "@services": ["services/index"],
       "@components": ["components/index"],
@@ -43,7 +44,7 @@
       "@context": ["context/index"],
       "@layouts": ["layouts/index"],
       "@utils": ["utils/index"],
-      "@pages": ["page/index"]
+      "@pages": ["pages/index"]
     }
   },
   "include": ["src"]

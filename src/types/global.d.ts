@@ -1,44 +1,61 @@
-import { Database } from "./db.types";
+import type { React } from "react";
 
-type DBCol<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Row"];
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-type DBFuncs = keyof Database["public"]["Functions"];
-
-type DBRpcFunc<T extends keyof Database["public"]["Functions"]> =
-  Database["public"]["Functions"][T];
-
-type DBEnum<T extends Database["public"]["Enums"]> =
-  Database["public"]["Enums"][T];
+import type { Database } from "./db.types";
 
 declare global {
   namespace Haivy {
-    type User = DBCol<"user_details">;
-    type Appointment = DBCol<"appointment">;
-    type Ticket = DBCol<"ticket">;
-    type TicketInteractions = DBCol<"ticket_interaction_history">;
-    type Medicine = DBCol<"medicines">;
+    type Client = SupabaseClient<Database>;
 
-    type RPCArgs<T extends DBFuncs> = DBRpcFunc<T>["Args"];
-    type RPCReturns<T extends DBFuncs> = DBRpcFunc<T>["Returns"];
+    type Table<T extends keyof Database["public"]["Tables"]> =
+      Database["public"]["Tables"][T];
 
-    type RPCFunc<T> = DBRpcFunc<T>;
-    type RPCFuncRet<T> = DBRpcFunc<T>["Returns"];
-    type RPCFuncs = keyof Database["public"]["Functions"];
-    type Enum<T> = DBEnum<T>;
+    type Enum<T extends keyof Database["public"]["Enums"]> =
+      Database["public"]["Enums"][T];
+
+    type DBRow<T extends keyof Database["public"]["Tables"]> =
+      Database["public"]["Tables"][T]["Row"];
+
+    type DBFunc<T extends keyof Database["public"]["Functions"]> =
+      Database["public"]["Functions"][T];
+
+    type User = DBRow<"user_details">;
+    type Appointment = DBRow<"appointment">;
+    type Regimen = DBRow<"regimens">;
+    type Medicine = DBRow<"medicines">;
+    type Ticket = DBRow<"ticket">;
+    type TestResults = DBRow<"test_results">;
+    type TestType = DBRow<"tests">;
   }
 
   namespace React {
-    type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
     type JSXProps<T extends keyof React.JSX.IntrinsicElements> =
       React.JSX.IntrinsicElements[T];
+
+    type ChildrenProps = {
+      children?: React.ReactNode;
+    };
+
+    type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
   }
 
-  interface Stringifiable {
-    toString(): string;
+  namespace Style {
+    type Color =
+      | "neutral"
+      | "primary"
+      | "secondary"
+      | "accent"
+      | "info"
+      | "success"
+      | "warning"
+      | "error";
+
+    type Direction = "left" | "right" | "top" | "bottom";
+    type Size = "xs" | "sm" | "md" | "lg" | "xl";
   }
 
-  const Constant = {
-    IMG_PLACEHOLDER_URL: "https://placehold.co/600x400?text=No+preview+image",
-  };
+  namespace Constant {
+    const IMG_PLACEHOLDER: string;
+  }
 }

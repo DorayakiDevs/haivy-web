@@ -1,65 +1,52 @@
-import { useEffect, useState } from "react";
-import SuperClient from "./create";
+import { createContext, useContext } from "react";
+import { SuperClient as Client } from "./init";
 
-import { usePasswordSignIn } from "./auth/signin";
-import { useSignOut } from "./auth/signout";
-import { useSignUp } from "./auth/signup";
-import { useOTPSignIn } from "./auth/otpsignin";
+import { AuthContext, AuthProvider } from "./auth";
+import { DataContext, DataProvider } from "./data";
 
-import { ClientProvider, type AccountType } from "services/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "types/db.types";
 
-import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
+type T_Context = SupabaseClient<Database>;
 
-export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<AuthChangeEvent>("INITIAL_SESSION");
-  const [account, setAccount] = useState<AccountType | null>(null);
+const ClientContext = createContext<T_Context | null>(null);
 
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<Session | null>(null);
-
-  const uuid = session?.user.id || "";
-
-  useEffect(() => {
-    async function loadAccountDetails(id?: string) {
-      const { data } = await SuperClient.from("user_details")
-        .select()
-        .eq("user_id", id)
-        .maybeSingle();
-
-      setAccount(data);
-    }
-
-    function handleAuthChange(ass: AuthChangeEvent, nss: Session | null) {
-      const nuuid = nss?.user.id;
-      if (nuuid === uuid) {
-        return;
-      }
-
-      setLoading(true);
-
-      if (ass != state) {
-        setState(ass);
-        setSession(nss);
-      }
-
-      setAccount(null);
-      loadAccountDetails(nss?.user.id);
-
-      setLoading(false);
-    }
-
-    const { data } = SuperClient.auth.onAuthStateChange(handleAuthChange);
-    return data.subscription.unsubscribe;
-  }, [uuid]);
-
-  const value = {
-    supabase: SuperClient,
-    session: session,
-    loading: loading,
-    account,
-  };
-
-  return <ClientProvider value={value}>{children}</ClientProvider>;
+export function ServiceProvider(props: React.ChildrenProps) {
+  return (
+    <ClientContext.Provider value={Client}>
+      <AuthProvider>
+        <DataProvider>{props.children}</DataProvider>
+      </AuthProvider>
+    </ClientContext.Provider>
+  );
 }
 
-export { usePasswordSignIn, useSignUp, useSignOut, useOTPSignIn };
+export function useServices() {
+  const client = useContext(ClientContext);
+  const auth = useContext(AuthContext);
+  const data = useContext(DataContext);
+
+  if (!client) {
+    throw new Error("Service 'client' context is missing!");
+  }
+
+  if (!auth) {
+    throw new Error("Service 'auth' context is missing!");
+  }
+
+  if (!data) {
+    throw new Error("Service 'data' context is missing!");
+  }
+
+  return { client, data, auth };
+}
+
+export function useClient() {
+  const data = useContext(ClientContext);
+
+  if (!data) {
+    throw new Error("Client context data is missing!");
+  }
+
+  return data;
+}

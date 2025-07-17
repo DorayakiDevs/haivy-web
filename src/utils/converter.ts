@@ -1,18 +1,25 @@
+export function errorToString(error: any) {
+  const { code = "000", message = "Unspecified error" } = error;
+
+  return `[${code}] ${message}`;
+}
+
+export function snakeCap(c: string) {
+  return c
+    .split("_")
+    .map((q) => q.charAt(0).toUpperCase() + q.slice(1))
+    .join(" ");
+}
+
 export function capitalize(s: string) {
   return s[0].toUpperCase() + s.slice(1);
 }
 
-export function clipString(input: string | null, maxLength: number): string {
-  if (input === null) return "";
+export function round(val: number, dec = 3): number {
+  const factor = Math.pow(10, dec);
+  return Math.round(val * factor) / factor;
+}
 
-  if (maxLength <= 3) {
-    // Not enough room for ellipsis and content
-    return ".".repeat(Math.max(0, maxLength));
-  }
-
-  if (input.length <= maxLength) {
-    return input;
-  }
-
-  return input.slice(0, maxLength - 3) + "...";
+export function roundToLocal(val: number, dec = 2) {
+  return round(val, dec).toLocaleString();
 }
