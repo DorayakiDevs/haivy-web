@@ -1,0 +1,40 @@
+name: Feature Request
+description: This issue template is used to request a feature for the
+assignees: The3dit0r
+labels: feat
+projects: dorayakidevs/haivy
+body:
+- type: markdown
+  attributes:
+    value: "## Feature request"
+- type: dropdown
+  id: download
+  attributes:
+    label: Iteration Number
+    options:
+      - Iteration 0 - Core Infrastructure & Auth
+      - Iteration 1 - Appointment feature
+      - Iteration 2 - Prescription, regimen, medication and drug tracking
+  validations:
+    required: true
+- type: input
+  id: name
+  attributes:
+    label: What is the feature called
+    description: "The name should be short and concise, describing the feature in the most general way."
+  validations:
+    required: true
+- type: textarea
+  id: purpose
+  attributes:
+    label: What does this feature do?
+    description: "Describe in detail what the feature accomplishes."
+  validations:
+    required: true
+- type: textarea
+  id: how_display
+  attributes:
+    label: Describe the format how data should be displayed
+    description: "Describe how the data is laid out and displayed to the user."
+  validations:
+    required: true

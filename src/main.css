@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css2?family=Chivo+Mono&display=swap");
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@plugin "daisyui/theme" {
+  name: "haivylight";
+  default: false;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(96% 0 0);
+  --color-base-300: oklch(93% 0 0);
+  --color-base-content: oklch(0% 0 0);
+  --color-primary: rgb(33, 43, 0);
+  --color-primary-content: oklch(100% 0 0);
+  --color-secondary: rgb(241, 255, 196);
+  --color-secondary-content: var(--color-primary);
+  --color-accent: oklch(72.772% 0.149 33.2);
+  --color-accent-content: oklch(0% 0 0);
+  --color-neutral: oklch(35.519% 0.032 262.988);
+  --color-neutral-content: oklch(98.462% 0.001 247.838);
+  --color-info: rgb(255, 255, 255);
+  --color-info-content: oklch(0% 0 0);
+  --color-success: oklch(64.8% 0.15 160);
+  --color-success-content: rgb(255, 255, 255);
+  --color-warning: oklch(84.71% 0.199 83.87);
+  --color-warning-content: oklch(0% 0 0);
+  --color-error: oklch(61.76% 0.221 22.18);
+  --color-error-content: oklch(100% 0 0);
+
+  --radius-selector: 1rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+:root {
+  interpolate-size: allow-keywords;
+}
+
+html {
+  height: 100%;
+  background-color: #000;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+
+  --font-mono: "Chivo Mono", monospace;
+  --font-sans: "Lexend", "Helvetica", sans-serif;
+
+  font-family: var(--font-sans);
+  font-size: 15px;
+
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+#root {
+  background-color: #000;
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.flex {
+  display: flex;
+  min-width: 0px;
+}
+
+.flex-1 {
+  min-height: 0px;
+  min-width: 0px;
+}
+
+.coll {
+  flex-direction: column;
+}
+
+.aictr {
+  align-items: center;
+}
+
+.aiart {
+  align-items: flex-start;
+}
+
+.aiend {
+  align-items: flex-end;
+}
+
+.jcctr {
+  justify-content: center;
+}
+
+.jcart {
+  justify-content: flex-start;
+}
+
+.jcend {
+  justify-content: flex-end;
+}
+
+.spard {
+  justify-content: space-around;
+}
+
+.spevl {
+  justify-content: space-evenly;
+}
+
+.spbtw {
+  justify-content: space-between;
+}
+
+.tactr {
+  text-align: center;
+}
+
+.talft {
+  text-align: left;
+}
+
+.targt {
+  text-align: right;
+}
+
+.input {
+  outline: none;
+}
+
+.content-ctr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+*:not(.selectable),
+*:not(.selectable-text),
+*:not(.selectable-all),
+.usn {
+  user-select: none;
+}
+
+.selectable-text,
+.selectable-text * {
+  user-select: text;
+}
+
+.selectable-all,
+.selectable-all > * {
+  user-select: all;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.clickable:hover {
+  transform: translateY(-3px);
+}
+
+.clickable:active {
+  transform: translateY(0px);
+}
+
+.card-list {
+  white-space: nowrap;
+  overflow-x: scroll;
+
+  > * {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+}
+
+.cards-grid {
+  --w: 300px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--w), 1fr));
+
+  gap: 16px;
+
+  .card-expand {
+    width: 100%;
+  }
+}
+
+.transition-keyword {
+  interpolate-size: allow-keywords;
+}
+
+.first-child-header {
+  > *:first-child {
+    /* border-left: 0.35rem solid #000; */
+    /* padding-left: 0.65rem; */
+    font-size: 1.1em;
+  }
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}

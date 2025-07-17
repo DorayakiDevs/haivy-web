@@ -1,0 +1,22 @@
+A. Functions, Classes import
+    1. By location
+        - 3rd party (installed)
+        - Shared
+        - Local
+
+    2. By type
+        - Components
+        - Services
+        - Context Providers
+        - Hooks
+        - Pages
+        - Utils
+
+B. Static Resource
+    1. Static images
+    2. Stylesheet
+
+C. TS Types
+
+    
+# Note: Always prioritize React imports (react -> react-* -> others)
