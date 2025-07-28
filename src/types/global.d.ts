@@ -27,6 +27,7 @@ declare global {
     type Ticket = DBRow<"ticket">;
     type TestResults = DBRow<"test_results">;
     type TestType = DBRow<"tests">;
+    type MedSchedule = DBRow<"medicine_schedule">;
   }
 
   namespace React {

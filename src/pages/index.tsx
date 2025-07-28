@@ -12,6 +12,7 @@ import NotFoundPage from "./others/notfound";
 import MedicationPages from "./medicines";
 import TestLabPages from "./testlab";
 import MedicalRecordsPages from "./patients";
+import SettingsPage from "./settings";
 
 function AuthenticatedPage() {
   return (
@@ -33,6 +34,8 @@ function AuthenticatedPage() {
         <Route path="/labs" element={<TestLabPages />} />
         <Route path="/records" element={<MedicalRecordsPages />} />
         <Route path="/records/:id" element={<MedicalRecordsPages />} />
+
+        <Route path="/settings" element={<SettingsPage />} />
 
         <Route path="/login" element={<NavBack />} />
         <Route path="/register" element={<NavBack />} />

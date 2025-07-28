@@ -209,7 +209,7 @@ function AppointmentList({ list, title }: { list: any[]; title: string }) {
         }}
       >
         {list
-          .sort((a, b) => compareAsc(a.meeting_date, b.meeting_date))
+          .sort((a, b) => compareAsc(b.meeting_date, a.meeting_date))
           .map((apt: any) => (
             <AppointmentCard data={apt} />
           ))}

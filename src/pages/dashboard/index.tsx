@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useServices } from "@services/index";
 
 import { StaffDashboard } from "./staff";
-import CustomerDashboard from "./customer";
+import { PatientDashboard } from "./patient";
 
 export default function DashboardPage() {
   const { auth } = useServices();
@@ -18,7 +18,7 @@ export default function DashboardPage() {
       return <StaffDashboard />;
     }
 
-    return <CustomerDashboard />;
+    return <PatientDashboard />;
   }
 
   return (

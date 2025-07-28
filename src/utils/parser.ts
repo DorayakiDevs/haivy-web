@@ -43,7 +43,8 @@ export function parseError(error: { code?: string }) {
     "22001": "One of the inputs is too long",
 
     // Supabase Auth
-    user_already_registered: "This email is already registered",
+    user_already_exists:
+      "This email is already registered, please log-in instead",
     invalid_credentials: "Incorrect email or password",
     email_not_confirmed: "Please confirm your email before logging in",
     invalid_email: "The email address is not valid",

@@ -2,13 +2,14 @@ import { useState } from "react";
 import { format, isValid } from "date-fns";
 
 type DatePickerProps = {
-  label: string;
+  label?: string;
   min?: string;
   max?: string;
   width?: string;
   disabled?: boolean;
   readOnly?: boolean;
   dateOnly?: boolean;
+  hideFormatHint?: boolean;
   onChange?: (d: Date) => void;
 
   state?: [Date, React.Dispatch<React.SetStateAction<Date>>];
@@ -37,6 +38,7 @@ export function DatePicker({
   readOnly = false,
   dateOnly = false,
   onChange,
+  hideFormatHint = false,
   state,
 }: DatePickerProps) {
   const local = useState(new Date());
@@ -55,13 +57,17 @@ export function DatePicker({
 
   return (
     <div className={`form-control ${width}`}>
-      <div className="flex aiend spbtw my-2">
-        <label className="text-sm font-semibold">
-          <span className="label-text">{label}</span>
-        </label>
-        <span className="text-xs font-light">
-          {dateOnly ? "mm/dd/yyyy" : "mm/dd/yyyy hh:mm --"}
-        </span>
+      <div className="flex aiend spbtw">
+        {!label || (
+          <label className="text-sm font-semibold mb-2">
+            <span className="label-text">{label}</span>
+          </label>
+        )}
+        {hideFormatHint || (
+          <span className="text-xs font-light">
+            {dateOnly ? "mm/dd/yyyy" : "mm/dd/yyyy hh:mm --"}
+          </span>
+        )}
       </div>
       <input
         type={dateOnly ? "date" : "datetime-local"}

@@ -226,3 +226,23 @@ body {
   width: 0px;
   height: 0px;
 }
+
+.show-on-hover {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.hide-on-hover {
+  opacity: unset;
+  transition: opacity 0.1s;
+}
+
+.hover-wrapper:hover > .show-on-hover,
+.show-on-hover:hover {
+  opacity: 1;
+}
+
+.hover-wrapper:hover > .hide-on-hover,
+.hide-on-hover {
+  opacity: 0;
+}

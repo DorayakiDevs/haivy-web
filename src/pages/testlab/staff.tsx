@@ -50,7 +50,7 @@ export default function StaffTestLabPage() {
           </div>
         </div>
         <div className="flex-1 h-full overflow-y-scroll">
-          <div className="sticky top-0 z-2">
+          <div className="sticky top-0 z-2 bg-base-100 pb-2 ">
             <div className="text-lg">Appointments</div>
             <div className="text-md">
               Showing {list.length} appointment ({fetcher.data.length} tests)

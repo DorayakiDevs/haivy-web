@@ -15,6 +15,7 @@ import { StatusColor } from "@utils/data";
 import { GridDisplay, KanbanDisplay, TableDisplay } from "./layouts";
 import { TicketCreationPanel } from "./create";
 import { Helmet } from "react-helmet-async";
+import { InputText } from "@components/shared/text";
 
 export type T_Ticket = Haivy.Table<"ticket">["Row"];
 
@@ -42,6 +43,7 @@ export default function StaffTickets() {
 
   const [tickets, setTickets] = useState<T_Ticket[]>([]);
   const [loading, setLoading] = useState(false);
+  const query = useState("");
 
   const [reloadSig, toggleReload] = useState({});
 
@@ -91,7 +93,12 @@ export default function StaffTickets() {
   }
 
   const filtered = tickets.filter((ticket) => {
-    return ticket.status.startsWith(statusFilter[0]);
+    const q = query[0].toLowerCase();
+    const s = [ticket.content || "No description provided", ticket.title]
+      .join(" ")
+      .toLowerCase();
+
+    return s.includes(q) && ticket.status.startsWith(statusFilter[0]);
   });
 
   const value = {
@@ -123,6 +130,8 @@ export default function StaffTickets() {
             </div>
 
             <div className="flex-1"></div>
+
+            <InputText placeholder="Search for tickets . . ." state={query} />
 
             {viewType[0] === "k" || (
               <SelectOptions

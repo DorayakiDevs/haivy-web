@@ -5,24 +5,27 @@ import { InputText } from "@components/shared/text";
 import { useServices } from "@services/index";
 import { useEffect, useState } from "react";
 
-export function MedicineRow() {
+type T_Data =
+  Haivy.DBFunc<"get_medication_schedule_for_authenticated_user">["Returns"][0];
+
+export function MedicineRow({ data }: { data: T_Data }) {
+  const { medicine } = data;
+
   return (
     <div className="bg-base-200 flex aictr spbtw h-18 p-2 pr-6 mb-4 rounded-box gap-2">
-      <div className="h-full aspect-square rounded-box bg-blue-400"></div>
+      <div
+        className="h-full aspect-square rounded-box bg-cover"
+        style={{
+          backgroundImage: `url('${medicine.image_url}')`,
+        }}
+      ></div>
 
       <div className="flex-1">
-        <div className="text-md font-semibold">Medicine name</div>
+        <div className="text-md font-semibold">{medicine.name}</div>
         <div className="flex aictr gap-4 text-xs">
           <div className="flex aictr gap-1">
-            <Icon name="assignment" size="1.2rem" />
-            ATP
-          </div>
-          <div className="flex aictr gap-1">
-            <Icon name="percent" size="1.2rem" />
-            100% pills taken
-          </div>
-          <div>
-            <Icon name="" />
+            <Icon name="note" size="1.2rem" />
+            {data.medicine.consumption_note}
           </div>
         </div>
       </div>

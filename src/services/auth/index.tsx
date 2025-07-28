@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 import { useClient } from "..";
 
@@ -13,6 +13,8 @@ type T_Provider = {
 export const AuthContext = createContext<T_Provider | null>(null);
 
 export function AuthProvider(props: React.PropsWithChildren) {
+  const authState = useRef<AuthChangeEvent>("INITIAL_SESSION");
+
   const client = useClient();
 
   const [session, setSession] = useState<Session | null>(null);
@@ -21,9 +23,16 @@ export function AuthProvider(props: React.PropsWithChildren) {
   const [userDetails, setUserDetails] = useState<Haivy.User | null>(null);
 
   function handleAuthChange(_e: AuthChangeEvent, session: Session | null) {
+    console.log(authState.current);
+
+    if (authState.current === _e) return;
+
+    authState.current = _e;
+    console.log("Changed to:", _e);
+
     setSession(session);
     setUser(session?.user || null);
-    // console.log(_e);
+    console.log(_e);
   }
 
   useEffect(() => {
@@ -35,6 +44,10 @@ export function AuthProvider(props: React.PropsWithChildren) {
   }, []);
 
   const USER_ID = user?.id || "";
+
+  useEffect(() => {
+    console.log(USER_ID);
+  }, [USER_ID]);
 
   useEffect(() => {
     if (!USER_ID) return;
