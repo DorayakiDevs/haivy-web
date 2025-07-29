@@ -9,7 +9,29 @@ type T_Data =
   Haivy.DBFunc<"get_medication_schedule_for_authenticated_user">["Returns"][0];
 
 export function MedicineRow({ data }: { data: T_Data }) {
-  const { medicine } = data;
+  const { client } = useServices();
+  const { medicine, id } = data;
+
+  const [taken, setTaken] = useState(data.taken);
+  const [loading, setLoading] = useState(false);
+
+  async function markMedicineAs(t = false) {
+    setLoading(true);
+
+    const { error } = await client
+      .from("medicine_schedule")
+      .update({ taken: t })
+      .eq("id", id);
+
+    setLoading(false);
+
+    if (error) {
+      console.error("Error updating record:", error);
+      return null;
+    }
+
+    setTaken(t);
+  }
 
   return (
     <div className="bg-base-200 flex aictr spbtw h-18 p-2 pr-6 mb-4 rounded-box gap-2">
@@ -23,16 +45,44 @@ export function MedicineRow({ data }: { data: T_Data }) {
       <div className="flex-1">
         <div className="text-md font-semibold">{medicine.name}</div>
         <div className="flex aictr gap-4 text-xs">
+          <div className="flex aictr gap-1 capitalize w-24">
+            <Icon name="event" size="1.2rem" />
+            {data.take_at}
+          </div>
           <div className="flex aictr gap-1">
             <Icon name="note" size="1.2rem" />
             {data.medicine.consumption_note}
           </div>
         </div>
       </div>
-      <Button className="rounded-full" size="sm">
-        <Icon name="undo" />
-        Undo?
-      </Button>
+      {taken ? (
+        <>
+          <Button
+            className="rounded-full"
+            size="sm"
+            onClick={() => markMedicineAs(false)}
+            loading={loading}
+          >
+            <Icon name="undo" />
+            Undo?
+          </Button>
+          <Icon
+            name="check_circle"
+            color="var(--color-primary)"
+            size="1.7rem"
+          />
+        </>
+      ) : (
+        <Button
+          className="rounded-full btn-outline"
+          color="primary"
+          size="sm"
+          onClick={() => markMedicineAs(true)}
+          loading={loading}
+        >
+          Mark as taken
+        </Button>
+      )}
     </div>
   );
 }

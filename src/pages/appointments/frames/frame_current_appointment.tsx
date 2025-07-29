@@ -25,12 +25,24 @@ export function CurrentAppointmentFrame() {
           icon={<Icon name="clock_loader_40" size="2em" />}
           className="gap-2"
         />
-        <InfoRow
-          name={format(details.created_date || "", "EEEE, dd.MM.yyyy")}
-          desc="Created on"
-          icon={<Icon name="event" size="2em" />}
-          className="gap-2"
-        />
+        {details.meeting_link ? (
+          <InfoRow
+            name={"Online appointment"}
+            desc={
+              <Link to={details.meeting_link} className="link link-hover">
+                Meeting Link
+              </Link>
+            }
+            icon={<Icon name="link" size="2em" />}
+            className="gap-2"
+          />
+        ) : (
+          <InfoRow
+            desc="Offline appointment"
+            icon={<Icon name="meeting_room" size="2em" />}
+            className="gap-2"
+          />
+        )}
         <InfoRow
           desc={
             <Link to={`/tickets/${details.ticket_id}`} className="link-hover">

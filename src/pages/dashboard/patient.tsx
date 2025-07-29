@@ -100,8 +100,8 @@ function MedicinePanel() {
           className="flex-1 overflow-y-auto fade-in"
           key={timeOfDay[0] + curDate[0].toISOString()}
         >
-          {timeOfDayMeds.map((d) => (
-            <MedicineRow data={d} />
+          {sortByTakenAt(timeOfDayMeds).map((d) => (
+            <MedicineRow data={d as any} />
           ))}
         </div>
       ) : (
@@ -135,4 +135,18 @@ function getMedCount(list: T_List) {
   }
 
   return Object.values(obj);
+}
+
+function sortByTakenAt(scheduleArray: { take_at: string }[]) {
+  const order = ["morning", "noon", "afternoon", "evening", "night"];
+
+  return scheduleArray.sort((a, b) => {
+    const indexA = order.indexOf(a.take_at);
+    const indexB = order.indexOf(b.take_at);
+
+    // If not found, treat it as a large index so it goes last
+    return (
+      (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
+    );
+  });
 }

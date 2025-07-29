@@ -66,7 +66,7 @@ function DetailsPageWithoutProvider() {
     };
   }
 
-  const { meeting_date, status, content } = details;
+  const { meeting_date, status, content, is_online } = details;
 
   return (
     <>
@@ -85,6 +85,7 @@ function DetailsPageWithoutProvider() {
           <div className="flex aictr gap-2 mt-2">
             <div className="head-text">{content}</div>
             <StatusBadge status={status} />
+            <StatusBadge status={is_online ? "Online" : "Offline"} />
             {status !== "scheduled" || (
               <div className="flex-1 flex aictr jcend gap-4">
                 <Button

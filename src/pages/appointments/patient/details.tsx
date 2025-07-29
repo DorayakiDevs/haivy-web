@@ -28,7 +28,8 @@ export default function DetailsPage() {
     return <></>;
   }
 
-  const { meeting_date, content, status } = value.details;
+  const { meeting_date, content, status, meeting_link, is_online } =
+    value.details;
 
   return (
     <AppointmentDetailsContext.Provider
@@ -49,6 +50,7 @@ export default function DetailsPage() {
           <div className="flex aictr gap-2 mt-2">
             <div className="head-text">{content}</div>
             <StatusBadge status={status} />
+            <StatusBadge status={is_online ? "Online" : "Offline"} />
           </div>
         </div>
 
