@@ -115,6 +115,14 @@ export function DetailCards({
             Support ticket link <Icon name="open_in_new" size="1em" />
           </Link>
         </div>
+
+        <div className="flex aictr spbtw">
+          <div className="flex aictr gap-4">
+            <Icon name="door_open" />
+            Meeting type
+          </div>
+          <div>{details.is_online ? "Online" : "Offline"}</div>
+        </div>
       </div>
 
       {[null, "no_show", "pending", "cancelled"].includes(details.status) || (

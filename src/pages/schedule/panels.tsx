@@ -47,6 +47,7 @@ export function AppointmentExternalPanel() {
 
   const stateDate = useState(new Date());
   const stateDur = useState("30");
+  const meetType = useState("offline");
 
   // const stateDoctor = useState<Haivy.User | null>(null);
   const statePatient = useState<Haivy.User | null>(null);
@@ -133,6 +134,7 @@ export function AppointmentExternalPanel() {
       p_service_desc: aptService,
       p_meeting_date: convertDateToServerTimeString(aptDate),
       p_content: aptDetails,
+      p_is_online: meetType[0] === "online",
     });
 
     if (error) {
@@ -216,6 +218,18 @@ export function AppointmentExternalPanel() {
           placeholder="0123 456 789"
           icon="phone"
         />
+        <div className="my-4">
+          <SelectOptions
+            width="w-full"
+            label="Meeting type"
+            options={[
+              { value: "offline", text: "Offline" },
+              { text: "Online", value: "online" },
+            ]}
+            closeOnClick
+            state={meetType}
+          />
+        </div>
       </div>
       <div className="py-4">
         <Button

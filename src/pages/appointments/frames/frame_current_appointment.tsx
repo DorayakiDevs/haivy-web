@@ -23,13 +23,17 @@ export function CurrentAppointmentFrame() {
           icon={<Icon name="clock_loader_40" size="2em" />}
           className="gap-2"
         />
-        {details.meeting_link ? (
+        {details.is_online ? (
           <InfoRow
             name={"Online appointment"}
             desc={
-              <Link to={details.meeting_link} className="link link-hover">
+              <a
+                href={details.meeting_link}
+                className="link link-hover"
+                target="_blank"
+              >
                 Meeting Link
-              </Link>
+              </a>
             }
             icon={<Icon name="link" size="2em" />}
             className="gap-2"

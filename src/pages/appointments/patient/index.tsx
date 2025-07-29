@@ -243,6 +243,10 @@ function AppointmentCard({ data }: { data: any }) {
             <div className="w-[30%]">Duration:</div>
             <div>{data.duration} minutes</div>
           </div>
+          <div className="flex aictr">
+            <div className="w-[30%]">Type:</div>
+            <div>{data.is_online ? "Online" : "Offline"}</div>
+          </div>
         </div>
       }
       details={data.content || "Unnamed appointment"}

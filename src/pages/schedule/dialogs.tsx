@@ -20,6 +20,7 @@ import useUI from "@hooks/useUI";
 import { validatePhoneNumber, validateNotEmpty } from "@utils/validator";
 
 import { convertDateToServerTimeString } from "./utils";
+import { SelectOptions } from "@components/shared/select";
 
 export function CancelDialog({
   dialogRef,
@@ -174,6 +175,7 @@ export function RequestAppointmentDialog({
   const sDate = useState(new Date());
   const sNote = useState("");
   const sPhone = useState("");
+  const mType = useState("offline");
 
   const doctor = sDoctor[0];
   const date = sDate[0];
@@ -218,6 +220,7 @@ export function RequestAppointmentDialog({
       p_patient_id: account.user_id,
       p_phone: phone.trim(),
       p_service_desc: "Check-up",
+      p_is_online: mType[0] === "online",
     });
 
     if (error) {
@@ -266,6 +269,18 @@ export function RequestAppointmentDialog({
           state={sNote}
           maxLength={64}
           height="h-18"
+        />
+        <div className="h-4"></div>
+
+        <SelectOptions
+          width="w-full"
+          label="Meeting type"
+          options={[
+            { value: "offline", text: "Offline" },
+            { text: "Online", value: "online" },
+          ]}
+          closeOnClick
+          state={mType}
         />
 
         {loading ? (

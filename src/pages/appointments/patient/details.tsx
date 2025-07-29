@@ -14,6 +14,7 @@ import { PatientTestOrderFrame } from "../frames/frame_patient_test_records";
 import { PatientPrescriptionFrame } from "../frames/frame_paitient_prescription";
 import { Frame } from "../component";
 import { Helmet } from "react-helmet-async";
+import { CurrentAppointmentFrame } from "../frames/frame_current_appointment";
 
 export default function DetailsPage() {
   const { id } = useParams();
@@ -54,7 +55,10 @@ export default function DetailsPage() {
         </div>
 
         <div className="flex-1 flex gap-4">
-          <PatientPrescriptionFrame />
+          <div className="flex-1 flex coll">
+            <PatientPrescriptionFrame />
+            <CurrentAppointmentFrame />
+          </div>
 
           <div className="flex coll flex-[1.8]">
             <div className="h-40 flex coll">

@@ -3,7 +3,7 @@ import Badge from "@components/shared/badge";
 import { format } from "date-fns";
 
 export function AppointmentCard({ data }: { data: Haivy.Appointment }) {
-  const { status, duration, staff_id, content, meeting_date } = data;
+  const { status, duration, staff_id, content, meeting_date, is_online } = data;
 
   return (
     <div className="card card-md bg-base-200 min-w-64 min-h-44 border-1 clickable">
@@ -14,6 +14,9 @@ export function AppointmentCard({ data }: { data: Haivy.Appointment }) {
             {duration} minutes
           </div>
           <Badge className="badge-sm badge-primary">{status}</Badge>
+          <Badge className="badge-sm badge-primary">
+            {is_online ? "Online" : "Offline"}
+          </Badge>
         </div>
         <div className="mb-2">
           <h1 className="card-title">
