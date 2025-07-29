@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-
 import { Icon } from "@components/icons/google";
 
 import { Frame, InfoRow } from "@pages/appointments/component";

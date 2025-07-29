@@ -28,8 +28,7 @@ export default function DetailsPage() {
     return <></>;
   }
 
-  const { meeting_date, content, status, meeting_link, is_online } =
-    value.details;
+  const { meeting_date, content, status, is_online } = value.details;
 
   return (
     <AppointmentDetailsContext.Provider
