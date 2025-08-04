@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { compareDesc, format } from "date-fns";
+import { Helmet } from "react-helmet-async";
 
+import { Tooltip } from "@components/shared/tooltip";
 import { Icon } from "@components/icons/google";
 import { Table } from "@components/tables";
 
@@ -12,13 +15,12 @@ import { useRPC } from "@hooks/useRPC";
 import { groupTestResultsByAppointments } from "@utils/parser";
 
 import { AppointmentTestDetails } from "./details";
-import { Tooltip } from "@components/shared/tooltip";
-import { Helmet } from "react-helmet-async";
 
 export default function StaffTestLabPage() {
   const fetcher = useRPC("get_all_tests_for_authenticated_user");
 
-  const [currentID, setCurrentID] = useState("");
+  const { id: currentID = "" } = useParams();
+  const navigate = useNavigate();
 
   if (fetcher.status === "loading" || fetcher.status === "idle") {
     return <FullscreenLoading />;
@@ -34,6 +36,11 @@ export default function StaffTestLabPage() {
   );
 
   const current = appts[currentID];
+
+  function setCurrentID(id: string) {
+    if (id === currentID) return;
+    navigate("/tests/" + id);
+  }
 
   return (
     <div className="content-wrapper flex">
@@ -57,7 +64,6 @@ export default function StaffTestLabPage() {
             </div>
           </div>
           <Table
-            selectable
             list={list}
             hideHeader
             columns={[
@@ -95,11 +101,12 @@ export default function StaffTestLabPage() {
               setCurrentID(a.appointment_id);
             }}
             tableProps={{ className: "pt-4" }}
-            rowsProps={(_, __, a) => ({
+            rowsProps={(_) => ({
               style: { height: 80, transform: "none" },
-              className: a
-                ? "bg-primary! text-primary-content my-3!"
-                : "border-1 my-3!",
+              className:
+                _.appointment_id === currentID
+                  ? "bg-primary! text-primary-content my-3!"
+                  : "border-1 my-3!",
             })}
           />
         </div>

@@ -26,6 +26,8 @@ import {
   StatusIcons,
 } from "@utils/data";
 import { Helmet } from "react-helmet-async";
+import { capitalize } from "@utils/converter";
+import { AppointmentCard } from "@components/features/appointment";
 
 type T_Ticket_Interaction = Omit<
   Haivy.DBRow<"ticket_interaction_history">,
@@ -40,6 +42,7 @@ type T_Details = {
   interactions: T_Ticket_Interaction[];
   created_by: Haivy.DBRow<"user_details"> | null;
   assigned_to: Haivy.DBRow<"user_details"> | null;
+  appointment: Haivy.Appointment | null;
 } & Omit<Haivy.DBRow<"ticket">, "created_by" | "assigned_to">;
 
 type T_Context = {
@@ -79,7 +82,8 @@ export default function TicketDetailsPanel() {
           `ticket_id, date_created, title, content, ticket_type, status, 
            interactions:ticket_interaction_history(id, ticket_id, time, action, note, by: user_details(*)), 
            created_by:user_details!ticket_created_by_fkey1(*),
-           assigned_to:user_details!ticket_assigned_to_fkey1(*)
+           assigned_to:user_details!ticket_assigned_to_fkey1(*),
+           appointment:appointment(*)
           `
         )
         .abortSignal(controller.signal)
@@ -149,6 +153,8 @@ function DetailsPanel() {
       .catch(() => toaster.error("Failed to copy to clipboard!"));
   }
 
+  console.log(details);
+
   return (
     <div className="content-wrapper p-6 overflow-y-auto">
       <Helmet>
@@ -199,7 +205,7 @@ function DetailsPanel() {
           </div>
         </div>
 
-        <div className="w-[30%] max-w-128 float-right sticky top-28">
+        <div className="w-[32%] max-w-128 float-right sticky top-28">
           <SectionSep icon="label" title="Tags">
             <TypeBadge type={ticket_type} />
             <StatusBadge status={status} />
@@ -208,6 +214,12 @@ function DetailsPanel() {
           <SectionSep icon="account_circle" title="Created by">
             <UserFrame user={created_by} />
           </SectionSep>
+
+          <div className="ml-4">
+            {!details.appointment || (
+              <AppointmentCard data={details.appointment} />
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -326,7 +338,7 @@ function SectionSep(
   return (
     <div className="ml-4 mb-4 border-1 rounded-field overflow-hidden">
       <div className="p-4">
-        <div className="font-semibold mb-4">
+        <div className="font-semibold mb-4 flex aictr gap-2">
           <Icon name={props.icon} className="mr-2" />
           {props.title}
         </div>

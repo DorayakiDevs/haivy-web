@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { format } from "date-fns";
+import { useReactToPrint } from "react-to-print";
 
 import {
   QualitativeBadge,
   QuantitiveBadge,
 } from "@components/features/testlab";
 import { Icon } from "@components/icons/google";
-import { IconButton } from "@components/shared/buttons";
+import { Button, IconButton } from "@components/shared/buttons";
 import { InputTextErrorable } from "@components/shared/text";
 
 import { useServices } from "@services/index";
@@ -15,6 +16,7 @@ import { useServices } from "@services/index";
 import useUI from "@hooks/useUI";
 
 import { parseError, type groupTestResultsByAppointments } from "@utils/parser";
+import { TestPrint } from "@pages/printable/test";
 
 type T_Details = ReturnType<typeof groupTestResultsByAppointments>[string];
 
@@ -29,25 +31,74 @@ export function AppointmentTestDetails({ details }: { details?: T_Details }) {
     );
   }
 
-  const { tests } = details;
+  const { tests, appointment_id } = details;
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const printTestResults = useReactToPrint({
+    documentTitle: `test_results_${appointment_id}`,
+    contentRef,
+  });
+
+  const [printMode, setPrintMode] = useState(false);
+
+  function togglePrintMode() {
+    setPrintMode(true);
+  }
+
+  function closePrintMode() {
+    setPrintMode(false);
+  }
+
+  useEffect(closePrintMode, [appointment_id]);
 
   const totalCount = tests.length;
   const doneCount = tests.filter((t) => t.value !== null).length;
+
+  if (printMode) {
+    return (
+      <div className="px-4 h-full fade-in flex coll">
+        <div className="flex aictr spbtw">
+          <div className="text-lg font-medium">Print Preview</div>
+          <div className="p-2 flex aictr gap-2">
+            <Button className="btn-ghost" onClick={closePrintMode}>
+              <Icon name="close" />
+              Close
+            </Button>
+            <Button color="primary" onClick={printTestResults}>
+              <Icon name="print" />
+              Print
+            </Button>
+          </div>
+        </div>
+        <TestPrint details={details} contentRef={contentRef} />
+      </div>
+    );
+  }
 
   return (
     <div
       className="h-full mx-4 border-1 rounded-box p-4 fade-in flex coll"
       key={details.appointment_id}
     >
-      <div className="subhead-text mb-0!">Showing {totalCount} tests for</div>
-      <Link
-        to={"/appointments/" + details.appointment_id}
-        className="link link-hover"
-      >
-        <Icon name="link" className="mr-2" />
-        Appointment {details.content} • Date:{" "}
-        {format(details.meeting_date, "dd.MM.yyyy - kk:mm")}
-      </Link>
+      <div className="flex aictr spbtw">
+        <div className="mt-4">
+          <div className="subhead-text m-0!">
+            Showing {totalCount} tests for
+          </div>
+          <Link
+            to={"/appointments/" + details.appointment_id}
+            className="link link-hover"
+          >
+            <Icon name="link" className="mr-2" />
+            Appointment {details.content} • Date:{" "}
+            {format(details.meeting_date, "dd.MM.yyyy - kk:mm")}
+          </Link>
+        </div>
+        <Button onClick={togglePrintMode}>
+          <Icon name="print" />
+          Preview Print
+        </Button>
+      </div>
 
       <div className="my-4">
         <div className="text-md my-2 flex aictr gap-6">

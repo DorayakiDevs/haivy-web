@@ -33,10 +33,10 @@ export function PatientOverviewFrame() {
         desc={
           <div className="flex aictr gap-1 mt-1">
             <Icon name="calendar_month" />
-            <div>Born: {getYear(birthDate)}</div>
-            <div>-</div>
+            <div>Born: {getYear(birthDate) || "N/A"}</div>
+            <div></div>
             <Icon name="cake" />
-            <div>Age: {differenceInYears(curDate, birthDate)}</div>
+            <div>Age: {differenceInYears(curDate, birthDate) || "N/A"}</div>
           </div>
         }
         className="mb-0"

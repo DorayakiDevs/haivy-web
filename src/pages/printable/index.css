@@ -1,0 +1,56 @@
+.printable {
+  background-image: linear-gradient(0deg, #ffffffee, #ffffffee),
+    url("../../assets/logo.svg");
+
+  background-position: center;
+  background-size: auto, 300px;
+  background-repeat: no-repeat;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+
+  padding: 24px;
+
+  height: 100%;
+
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-box);
+
+  section {
+    > h2 {
+      text-align: center;
+      font-size: 1.25em;
+      font-weight: 500;
+
+      margin: 16px 0;
+    }
+  }
+
+  font-size: 13px;
+
+  footer {
+    display: none;
+  }
+}
+
+@media print {
+  .printable {
+    overflow-y: visible;
+    height: fit-content;
+    border: none;
+
+    min-height: 100%;
+
+    footer {
+      display: flex;
+    }
+  }
+
+  body {
+    background-color: #fff;
+  }
+}

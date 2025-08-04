@@ -31,7 +31,8 @@ function AuthenticatedPage() {
 
         <Route path="/medication" element={<MedicationPages />} />
 
-        <Route path="/labs" element={<TestLabPages />} />
+        <Route path="/tests" element={<TestLabPages />} />
+        <Route path="/tests/:id/*" element={<TestLabPages />} />
         <Route path="/records" element={<MedicalRecordsPages />} />
         <Route path="/records/:id" element={<MedicalRecordsPages />} />
 

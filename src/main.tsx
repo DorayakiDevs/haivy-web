@@ -7,6 +7,7 @@ import "./keyframes.css";
 import "./global";
 
 import MainApplication from "./app";
+import { TestPrint } from "@pages/printable/test";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

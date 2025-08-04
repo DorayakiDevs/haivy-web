@@ -34,19 +34,7 @@ export function TestResultsDisplay(props: { results: T_Results }) {
             {test_type.name} {test_type.unit ? `(${test_type.unit})` : ""}
           </div>
           <div className="flex aictr gap-2">
-            {value === null ? (
-              <>
-                <BadgePending />
-                <IconButton
-                  icon="close"
-                  title="Cancel request"
-                  dir="left"
-                  className="btn-sm btn-soft btn-error btn-circle"
-                />
-              </>
-            ) : (
-              <BadgeComplete />
-            )}
+            {value === null ? <BadgePending /> : <BadgeComplete />}
           </div>
         </div>
         <sub>{test_type.description}</sub>
@@ -63,7 +51,7 @@ export function TestResultsDisplay(props: { results: T_Results }) {
             Results: {value ? "Positive" : "Negative"}
           </div>
         ) : (
-          <div className="mt-4">
+          <div className="mt-4 text-xs">
             <div className="h-3 rounded-full border-1 border-base-300 bg-primary flex aictr">
               <div
                 style={{
@@ -80,6 +68,7 @@ export function TestResultsDisplay(props: { results: T_Results }) {
                 style={{
                   transform: "translate(-50%, 100%)",
                 }}
+                className="text-sm"
               >
                 {roundToLocal(value)}
               </div>
