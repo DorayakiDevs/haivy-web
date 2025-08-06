@@ -225,6 +225,8 @@ export function RequestAppointmentDialog({
 
     if (error) {
       toaster.error(`${error.code} An error occured: ${error.message}`);
+    setLoading(false);
+
       return;
     } else {
       toaster.success("Appointment requested, please wait for updates!");
@@ -232,10 +234,10 @@ export function RequestAppointmentDialog({
       if (onFinish) {
         onFinish();
       }
-
+      
       setShown(false);
     }
-
+    
     setLoading(false);
   }
 
