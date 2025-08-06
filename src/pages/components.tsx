@@ -43,10 +43,9 @@ function buildNavBar(roles: Haivy.Enum<"role">[] = []): T_RouteButton[] {
       icon: "confirmation_number",
       path: "/tickets",
     });
-
+    
     list.push({ name: "Schedule", icon: "calendar_month", path: "/schedule" });
-    list.push({ name: "Tests", icon: "experiment", path: "/tests" });
-
+    
     // list.push({ name: "Test Lab", icon: "experiment", path: "/labs" });
     list.push({
       name: "Medical Records",
@@ -54,7 +53,8 @@ function buildNavBar(roles: Haivy.Enum<"role">[] = []): T_RouteButton[] {
       path: "/records",
     });
   }
-
+  
+  list.push({ name: "Tests", icon: "experiment", path: "/tests" });
   list.push({ name: "Medication", icon: "medication", path: "/medication" });
 
   return list;

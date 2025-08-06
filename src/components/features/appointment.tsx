@@ -67,7 +67,18 @@ export function AppointmentCard({ data }: { data: Haivy.Appointment }) {
         >
           Appointment's details
         </button>
+        {status !== "scheduled" || <button className="btn btn-sm btn-primary w-full">
+          Check in patient
+        </button>}
+
+          <CheckInPanel />
+
+
+
       </div>
     </div>
   );
 }
+
+
+function CheckInPanel()

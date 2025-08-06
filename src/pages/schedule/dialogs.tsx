@@ -225,7 +225,7 @@ export function RequestAppointmentDialog({
 
     if (error) {
       toaster.error(`${error.code} An error occured: ${error.message}`);
-    setLoading(false);
+      setLoading(false);
 
       return;
     } else {
@@ -234,10 +234,10 @@ export function RequestAppointmentDialog({
       if (onFinish) {
         onFinish();
       }
-      
+
       setShown(false);
     }
-    
+
     setLoading(false);
   }
 

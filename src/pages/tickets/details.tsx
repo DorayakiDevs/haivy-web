@@ -217,7 +217,9 @@ function DetailsPanel() {
 
           <div className="ml-4">
             {!details.appointment || (
+              <>
               <AppointmentCard data={details.appointment} />
+              </>
             )}
           </div>
         </div>
